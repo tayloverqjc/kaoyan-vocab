@@ -1,6 +1,7 @@
 (() => {
   const STORAGE_KEY = "kaoyan_vocab_progress_v1";
   const THEME_KEY = "kaoyan_vocab_theme_v1";
+  const SET_KEY = "kaoyan_vocab_set_v1";
 
   const ICONS = {
     speaker: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>',
@@ -19,8 +20,17 @@
   const manifest = window.VOCAB_MANIFEST || [];
   const sets = window.VOCAB_SETS || {};
 
+  function initialSetId() {
+    try {
+      const saved = localStorage.getItem(SET_KEY);
+      if (saved && manifest.some(m => m.id === saved)) return saved;
+    } catch (_) {}
+    const def = manifest.find(m => m.id === "2012-en2-reading") || manifest[0];
+    return def ? def.id : "";
+  }
+
   const state = {
-    setId: manifest[0] ? manifest[0].id : "",
+    setId: initialSetId(),
     passage: "ALL",
     collection: "all", // all | unmastered | hard | secondary | mastered
     view: "cards", // cards | ledger | deck
@@ -207,12 +217,20 @@
       b.type = "button";
       b.className = `year-btn ${item.id === state.setId ? "active" : ""}`;
       b.textContent = item.shortLabel;
+      b.title = `${item.label}（共 ${item.count} 词）`;
       b.onclick = () => {
+        if (state.setId === item.id) return;
         state.setId = item.id;
         state.passage = "ALL";
+        state.collection = "all";
+        state.revealedIds.clear();
+        state.expandedIds.clear();
+        try { localStorage.setItem(SET_KEY, item.id); } catch (_) {}
         syncDeckOrder(false);
         closeDrawer();
         render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        showToast(`已切换：${item.label}`);
       };
       setEl.appendChild(b);
     });
