@@ -621,7 +621,9 @@
     renderMain();
   }
 
-  // 5 Handcrafted Themes
+  // 5 Handcrafted Themes + 3 Bubeidanci-style Scenic Wallpapers for Glass
+  const WALLPAPER_KEY = "kaoyan_vocab_wallpaper_v1";
+
   const THEMES = [
     {
       id: "paper",
@@ -635,8 +637,8 @@
     },
     {
       id: "glass",
-      name: "苹果毛玻璃",
-      swatch: "linear-gradient(135deg, #b8dcff 0%, #f4d6e8 50%, #0071e3 100%)"
+      name: "不背毛玻璃",
+      swatch: "linear-gradient(135deg, #1b3158 0%, #4d7ea8 48%, #f3a683 100%)"
     },
     {
       id: "momo",
@@ -650,15 +652,51 @@
     }
   ];
 
+  const WALLPAPERS = [
+    { id: "alpine", name: "雪山", full: "雪山暮色", img: "assets/bg-alpine.jpg" },
+    { id: "sunset", name: "落日", full: "橘海落日", img: "assets/bg-sunset.jpg" },
+    { id: "forest", name: "松雾", full: "晨雾松林", img: "assets/bg-forest.jpg" }
+  ];
+
   function normalizeTheme(id) {
     if (id === "light" || !id) return "paper";
     return THEMES.some(t => t.id === id) ? id : "paper";
   }
 
+  function normalizeWallpaper(id) {
+    return WALLPAPERS.some(w => w.id === id) ? id : "alpine";
+  }
+
   let activeTheme = "paper";
+  let activeWallpaper = "alpine";
   try {
     activeTheme = normalizeTheme(localStorage.getItem(THEME_KEY));
+    activeWallpaper = normalizeWallpaper(localStorage.getItem(WALLPAPER_KEY));
   } catch (_) {}
+
+  function applyWallpaper(wpId, notify = false) {
+    const id = normalizeWallpaper(wpId);
+    activeWallpaper = id;
+    if (id === "alpine") {
+      document.documentElement.removeAttribute("data-wallpaper");
+    } else {
+      document.documentElement.setAttribute("data-wallpaper", id);
+    }
+    try {
+      localStorage.setItem(WALLPAPER_KEY, id);
+    } catch (_) {}
+
+    document.querySelectorAll("[data-wp-pick]").forEach(btn => {
+      const isCurrent = btn.getAttribute("data-wp-pick") === id;
+      btn.classList.toggle("active", isCurrent);
+      btn.setAttribute("aria-checked", isCurrent ? "true" : "false");
+    });
+
+    if (notify) {
+      const meta = WALLPAPERS.find(w => w.id === id);
+      if (meta) showToast("已切换壁纸：" + meta.full);
+    }
+  }
 
   function applyTheme(themeId, notify = false) {
     const id = normalizeTheme(themeId);
@@ -687,6 +725,9 @@
   function initThemePickers() {
     const grid = document.getElementById("themeGrid");
     const dots = document.getElementById("themeDots");
+    const wpGrid = document.getElementById("wpGrid");
+    const wpPill = document.getElementById("wpPill");
+
     if (grid) {
       grid.innerHTML = THEMES.map(t => `
         <button type="button" class="theme-chip" role="radio" aria-checked="false" data-theme-pick="${t.id}">
@@ -700,9 +741,27 @@
         <button type="button" class="theme-dot-btn" role="radio" aria-checked="false" data-theme-pick="${t.id}" title="主题：${t.name}" aria-label="切换主题：${t.name}" style="background:${t.swatch}"></button>
       `).join("");
     }
+    if (wpGrid) {
+      wpGrid.innerHTML = WALLPAPERS.map(w => `
+        <button type="button" class="wp-card" role="radio" aria-checked="false" data-wp-pick="${w.id}" style="background-image:url('${w.img}')" title="${w.full}">
+          <span>${w.name}</span>
+        </button>
+      `).join("");
+    }
+    if (wpPill) {
+      wpPill.innerHTML = WALLPAPERS.map(w => `
+        <button type="button" class="wp-mini" role="radio" aria-checked="false" data-wp-pick="${w.id}" title="切换壁纸：${w.full}">${w.name}</button>
+      `).join("");
+    }
+
     document.querySelectorAll("[data-theme-pick]").forEach(btn => {
       btn.onclick = () => applyTheme(btn.getAttribute("data-theme-pick"), true);
     });
+    document.querySelectorAll("[data-wp-pick]").forEach(btn => {
+      btn.onclick = () => applyWallpaper(btn.getAttribute("data-wp-pick"), true);
+    });
+
+    applyWallpaper(activeWallpaper, false);
     applyTheme(activeTheme, false);
   }
 

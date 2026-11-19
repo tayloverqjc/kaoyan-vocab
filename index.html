@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>考研英语阅读精装词本 · Lexicon</title>
   <meta name="description" content="考研英语真题阅读核心生词本：精装书房排版、真题详细用法、词根联想记忆、模糊遮义自测与 3D 物理闪卡。" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=2" />
   <script>
-    (function(){try{var t=localStorage.getItem("kaoyan_vocab_theme_v1");if(t==="light")t="paper";if(["mono","glass","momo","dark"].indexOf(t)>=0)document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
+    (function(){try{var t=localStorage.getItem("kaoyan_vocab_theme_v1");if(t==="light")t="paper";if(["mono","glass","momo","dark"].indexOf(t)>=0)document.documentElement.setAttribute("data-theme",t);var w=localStorage.getItem("kaoyan_vocab_wallpaper_v1");if(["alpine","sunset","forest"].indexOf(w)>=0)document.documentElement.setAttribute("data-wallpaper",w);}catch(e){}})();
   </script>
 </head>
 <body>
@@ -70,6 +70,10 @@
       <div>
         <div class="side-section-label">主题风格</div>
         <div class="theme-grid" id="themeGrid" role="radiogroup" aria-label="主题风格"></div>
+        <div class="wp-section">
+          <div class="side-section-label" style="margin-top:10px">氛围壁纸</div>
+          <div class="wp-grid" id="wpGrid" role="radiogroup" aria-label="氛围壁纸"></div>
+        </div>
       </div>
 
       <div class="side-footer">
@@ -102,6 +106,8 @@
 
           <button type="button" class="mask-btn" id="maskBtn"></button>
 
+          <div class="wp-pill" id="wpPill" role="radiogroup" aria-label="切换氛围壁纸"></div>
+
           <div class="theme-dots" id="themeDots" role="radiogroup" aria-label="快捷切换主题"></div>
         </div>
       </header>
@@ -133,6 +139,6 @@
 
   <script src="data/manifest.js"></script>
   <script src="data/2012.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>
