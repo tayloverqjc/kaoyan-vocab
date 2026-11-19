@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>考研英语阅读词本 · 2012 英二</title>
+  <meta name="description" content="2012 考研英语（二）阅读核心生词本：真题详细用法、词根联想记忆、模糊遮义自测与闪卡复习。" />
+  <style>
+    :root {
+      --bg: #f8f7f4;
+      --surface: #ffffff;
+      --surface-hover: #faf9f7;
+      --surface-subtle: #f2f1ed;
+      --border: rgba(24, 24, 27, 0.08);
+      --border-strong: rgba(24, 24, 27, 0.16);
+      --text: #18181b;
+      --text-secondary: #52525b;
+      --text-muted: #8e8e93;
+      --accent: #1d4ed8;
+      --accent-soft: rgba(29, 78, 216, 0.08);
+      --emerald: #0f766e;
+      --emerald-soft: rgba(15, 118, 110, 0.09);
+      --amber: #b45309;
+      --amber-soft: rgba(180, 83, 9, 0.09);
+      --danger: #be123c;
+      --danger-soft: rgba(190, 18, 60, 0.08);
+      --code-bg: #f1f0ec;
+      --code-text: #1e3a8a;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 8px 24px rgba(0, 0, 0, 0.03);
+      --shadow-card: 0 10px 32px rgba(0, 0, 0, 0.06);
+    }
+
+    [data-theme="dark"] {
+      --bg: #111214;
+      --surface: #181a1d;
+      --surface-hover: #1e2024;
+      --surface-subtle: #22252a;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text: #f1f1f3;
+      --text-secondary: #a8abb2;
+      --text-muted: #71757e;
+      --accent: #60a5fa;
+      --accent-soft: rgba(96, 165, 250, 0.14);
+      --emerald: #34d399;
+      --emerald-soft: rgba(52, 211, 153, 0.12);
+      --amber: #fbbf24;
+      --amber-soft: rgba(251, 191, 36, 0.12);
+      --danger: #fb7185;
+      --danger-soft: rgba(251, 113, 133, 0.12);
+      --code-bg: #23272f;
+      --code-text: #93c5fd;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      --shadow-card: 0 14px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    button, input, textarea { font: inherit; color: inherit; }
+    button { border: none; background: none; cursor: pointer; padding: 0; }
+    svg { display: block; flex-shrink: 0; }
+
+    /* Sticky Minimal Nav */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: color-mix(in srgb, var(--bg) 86%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      height: 56px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .site-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+
+    .year-tag {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--surface-subtle);
+      white-space: nowrap;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .seg {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: 9px;
+      background: var(--surface-subtle);
+    }
+
+    .seg-btn {
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: all 0.16s ease;
+    }
+
+    .seg-btn.active {
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .nav-icon-btn:hover {
+      background: var(--surface-subtle);
+      color: var(--text);
+    }
+
+    .nav-icon-btn.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    /* Main Container */
+    .wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+
+    /* Editorial Header Area (No outer card!) */
+    .header-area {
+      margin-bottom: 22px;
+    }
+
+    .progress-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px 16px;
+      margin-bottom: 10px;
+    }
+
+    .metrics {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .metrics strong {
+      font-weight: 600;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-emerald strong { color: var(--emerald); }
+    .metric-amber strong { color: var(--amber); }
+
+    .pct-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hair-progress {
+      width: 100%;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--surface-subtle);
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .hair-progress-fill {
+      height: 100%;
+      width: 0;
+      background: var(--emerald);
+      border-radius: 999px;
+      transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Underline Passage Tabs */
+    .passage-tabs {
+      display: flex;
+      gap: 22px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
+      scrollbar-width: none;
+      margin-bottom: 14px;
+    }
+    .passage-tabs::-webkit-scrollbar { display: none; }
+
+    .p-tab {
+      position: relative;
+      white-space: nowrap;
+      padding: 8px 0 11px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: color 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .p-tab:hover { color: var(--text-secondary); }
+
+    .p-tab.active {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .p-tab.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px 2px 0 0;
+    }
+
+    .p-tab-num {
+      font-size: 11.5px;
+      font-variant-numeric: tabular-nums;
+      opacity: 0.7;
+    }
+
+    /* Slim Utility Bar */
+    .util-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px 12px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill {
+      height: 30px;
+      padding: 0 11px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border);
+      transition: all 0.15s ease;
+    }
+
+    .pill:hover {
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+
+    .pill.active {
+      background: var(--text);
+      border-color: var(--text);
+      color: var(--bg);
+    }
+
+    .pill.amber.active {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: #ffffff;
+    }
+
+    .util-right {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-wrap {
+      position: relative;
+      width: 190px;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 32px;
+      padding: 0 10px 0 30px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .search-input:focus { border-color: var(--accent); }
+    .search-input::placeholder { color: var(--text-muted); }
+
+    .ghost-toggle {
+      height: 32px;
+      padding: 0 11px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      font-size: 12.5px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+
+    .ghost-toggle:hover {
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+
+    .ghost-toggle.active {
+      background: var(--accent-soft);
+      border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Passage Sheet (Single clean sheet per passage, hairline dividers) */
+    .sheet-group {
+      margin-bottom: 28px;
+    }
+
+    .sheet-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 0 4px 10px;
+    }
+
+    .sheet-title {
+      margin: 0;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: 0.01em;
+    }
+
+    .sheet-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .sheet {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .entry {
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--border);
+      transition: background-color 0.15s ease, opacity 0.2s ease;
+    }
+
+    .entry:last-child { border-bottom: none; }
+    .entry.is-mastered { opacity: 0.56; }
+
+    .entry-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .entry-word-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px 10px;
+    }
+
+    .headword {
+      font-family: "New York", "Iowan Old Style", Georgia, "Times New Roman", serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .ipa {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .audio-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      color: var(--text-muted);
+      transition: background-color 0.15s ease, color 0.15s ease;
+      transform: translateY(2px);
+    }
+
+    .audio-btn:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .sec-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--amber);
+      background: var(--amber-soft);
+      padding: 2px 7px;
+      border-radius: 999px;
+      letter-spacing: 0.01em;
+    }
+
+    .entry-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .mark-btn {
+      height: 30px;
+      padding: 0 9px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .mark-btn:hover {
+      background: var(--surface-subtle);
+      color: var(--text);
+    }
+
+    .mark-btn.hard-on {
+      background: var(--amber-soft);
+      color: var(--amber);
+      font-weight: 600;
+    }
+
+    .mark-btn.master-on {
+      background: var(--emerald-soft);
+      color: var(--emerald);
+      font-weight: 600;
+    }
+
+    /* Meaning Line with Blur-to-Reveal */
+    .meaning-row {
+      margin-top: 8px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .meaning-text {
+      font-size: 15.5px;
+      font-weight: 500;
+      color: var(--text);
+      transition: filter 0.18s ease, opacity 0.18s ease;
+    }
+
+    .meaning-text.blurred {
+      filter: blur(7px);
+      opacity: 0.45;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .meaning-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .peek-hint {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .pos {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-right: 5px;
+    }
+
+    .expand-link {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+    .expand-link:hover { color: var(--text); }
+
+    /* Editorial Guide Lines (No nested boxes!) */
+    .notes {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 720px) {
+      .notes {
+        grid-template-columns: 1.25fr 1fr;
+        gap: 20px;
+      }
+    }
+
+    .note-col {
+      padding-left: 12px;
+      border-left: 2px solid var(--border-strong);
+      font-size: 13.5px;
+      line-height: 1.75;
+      color: var(--text-secondary);
+    }
+
+    .note-col.mem {
+      border-left-color: color-mix(in srgb, var(--emerald) 55%, transparent);
+    }
+
+    .note-k {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+      display: block;
+    }
+
+    .note-col.mem .note-k { color: var(--emerald); }
+
+    .en-hl {
+      font-size: 13px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--code-bg);
+      color: var(--code-text);
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    .compact-entry {
+      padding: 15px 22px;
+    }
+
+    /* Flashcard Mode */
+    .fc-shell {
+      max-width: 600px;
+      margin: 8px auto 0;
+    }
+
+    .fc-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .fc-meta strong {
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .fc-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px 28px;
+      box-shadow: var(--shadow-card);
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .fc-front {
+      text-align: center;
+      padding: 26px 0 18px;
+    }
+
+    .fc-crumb {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .fc-word {
+      font-family: "New York", "Iowan Old Style", Georgia, serif;
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 10px;
+      line-height: 1.15;
+    }
+
+    .fc-ipa-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 22px;
+    }
+
+    .primary-btn {
+      height: 40px;
+      padding: 0 24px;
+      border-radius: 999px;
+      background: var(--text);
+      color: var(--bg);
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: opacity 0.15s ease, transform 0.1s ease;
+    }
+
+    .primary-btn:hover { opacity: 0.88; }
+    .primary-btn:active { transform: scale(0.98); }
+
+    .fc-back {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: rise 0.18s ease;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fc-meaning {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .fc-ratings {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .rate-btn {
+      height: 44px;
+      border-radius: 11px;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: transform 0.12s ease, opacity 0.15s ease;
+    }
+    .rate-btn:hover { transform: translateY(-1px); }
+    .rate-btn.forgot { background: var(--danger-soft); color: var(--danger); }
+    .rate-btn.fuzzy { background: var(--amber-soft); color: var(--amber); }
+    .rate-btn.know { background: var(--emerald-soft); color: var(--emerald); }
+
+    .fc-kbd {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 14px;
+    }
+
+    /* Empty State */
+    .empty {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 48px 20px;
+      text-align: center;
+    }
+    .empty h3 { margin: 0 0 6px; font-size: 16px; }
+    .empty p { margin: 0 0 18px; font-size: 13.5px; color: var(--text-muted); }
+
+    /* Modal */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-bg.open { display: flex; }
+
+    .modal {
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .modal-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .modal-top h2 { margin: 0; font-size: 16px; font-weight: 700; }
+
+    .sync-box {
+      width: 100%;
+      min-height: 96px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      margin: 12px 0 14px;
+      resize: vertical;
+      outline: none;
+    }
+
+    .modal-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(14px);
+      background: var(--text);
+      color: var(--bg);
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      z-index: 70;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 600px) {
+      .nav-inner { padding: 0 14px; }
+      .year-tag { display: none; }
+      .wrap { padding: 18px 14px 72px; }
+      .entry, .compact-entry { padding: 16px 16px; }
+      .headword { font-size: 20px; }
+      .fc-card { padding: 24px 18px; }
+      .fc-word { font-size: 30px; }
+      .search-wrap { width: 100%; order: -1; }
+      .util-right { width: 100%; }
+      .mark-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <h1 class="site-title">考研阅读词本</h1>
+        <span class="year-tag">2012 英语（二）</span>
+      </div>
+      <div class="nav-right">
+        <div class="seg" role="tablist" aria-label="学习模式">
+          <button type="button" class="seg-btn active" id="modeListBtn">词表</button>
+          <button type="button" class="seg-btn" id="modeFlashBtn">闪卡</button>
+        </div>
+        <button type="button" class="nav-icon-btn" id="syncBtn" title="同步学习进度" aria-label="同步进度">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+        </button>
+        <button type="button" class="nav-icon-btn" id="themeBtn" title="切换浅色/夜间模式" aria-label="切换主题"></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="header-area">
+      <div class="progress-header">
+        <div class="metrics">
+          <span>共 <strong id="statTotal">84</strong> 词</span>
+          <span class="metric-emerald">已掌握 <strong id="statMastered">0</strong></span>
+          <span>待复习 <strong id="statRemain">84</strong></span>
+          <span class="metric-amber">易忘 <strong id="statHard">0</strong></span>
+        </div>
+        <span class="pct-label" id="progressPct">0%</span>
+      </div>
+      <div class="hair-progress"><div class="hair-progress-fill" id="progressBarFill"></div></div>
+
+      <nav id="passageTabs" class="passage-tabs" aria-label="篇目切换"></nav>
+
+      <div class="util-bar">
+        <div class="filters">
+          <button type="button" class="pill active" data-status="all">全部</button>
+          <button type="button" class="pill" data-status="unmastered">未掌握</button>
+          <button type="button" class="pill amber" data-status="hard">易忘</button>
+          <button type="button" class="pill" data-status="mastered">已掌握</button>
+          <button type="button" class="pill amber" id="secondaryBtn">熟词生义</button>
+        </div>
+
+        <div class="util-right">
+          <div class="search-wrap">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input id="searchInput" class="search-input" type="search" placeholder="搜索单词或释义..." />
+          </div>
+          <button type="button" class="ghost-toggle" id="maskBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+            <span id="maskBtnText">遮义自测</span>
+          </button>
+          <button type="button" class="ghost-toggle" id="compactBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
+            <span id="compactBtnText">极简模式</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div id="mainContent"></div>
+  </main>
+
+  <div class="modal-bg" id="syncModal" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modal-top">
+        <h2>同步学习进度</h2>
+        <button type="button" class="ghost-toggle" id="closeSyncBtn">关闭</button>
+      </div>
+      <p style="margin:0;font-size:13px;color:var(--text-muted)">进度自动保存在当前浏览器。更换设备时，复制进度码粘贴导入即可。</p>
+      <textarea id="syncTextarea" class="sync-box" spellcheck="false"></textarea>
+      <div class="modal-foot">
+        <button type="button" class="ghost-toggle" id="resetProgressBtn">重置</button>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="ghost-toggle" id="copySyncBtn">复制</button>
+          <button type="button" class="primary-btn" style="height:32px;padding:0 14px;font-size:13px" id="importSyncBtn">导入覆盖</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const VOCAB_DATA = {
+      passages: [
+        {
+          id: "T1", code: "Text 1", title: "作业新政",
+          words: [
+            {id:"2012-T1-1",word:"scorn",ipa:"/skɔːn/",meaning:"`v.` 鄙视；痛批；轻蔑",usage:"`be particularly scorned`（尤其受到痛批）。原文：`in recent years it has been particularly scorned.` 本词既是作者切入“作业不受待见”的线索词，也常以形容词 `scornful`（鄙视的）出现在态度题选项中（如同年 Text 3 第 35 题 C）。",memory:"谐音画面：**“死磕嗯”**——对着别人“死磕”不顺眼，就是**鄙视、嘲讽、痛批**；也可联想 `scar`（伤疤），用话戳人伤疤＝嘲弄鄙视。",secondary:false},
+            {id:"2012-T1-2",word:"revise",ipa:"/rɪˈvaɪz/",meaning:"`v.` 修正；重新审视并调整",usage:"`revise one’s thinking on sth.`（调整对某事的看法）。原文：`are revising their thinking on this educational ritual.` 考研中不仅指“修改文章/修订法律”，常考“反思并改变政策或观念”。",memory:"词根：`re-`（再、重新）+ `vis`（看，同 `visible` 可见的）→ **再看一遍去修改、调整看法**。",secondary:false},
+            {id:"2012-T1-3",word:"ritual",ipa:"/ˈrɪtʃuəl/",meaning:"`n.` 惯例；例行公事；仪式",usage:"`educational ritual`（教育界沿袭已久的惯例）。原文用它指代 `homework`，带有一点“大家习以为常却未必反思其合理性”的意味。",memory:"联想：`rit` 像 `rite`（仪式）→ 每天固定重复像做仪式一样的事情＝**例行公事、惯例**。",secondary:false},
+            {id:"2012-T1-4",word:"inflexible",ipa:"/ɪnˈfleksəbl/",meaning:"`adj.` 僵化的；死板的；不可变通的",usage:"`produce an inflexible policy`（出台一项死板的政策）。出现在第 1 段 `Unfortunately` 之后，直接定下作者对该政策**否定批判**的基调，对应第 25 题标题里的 `Faulty`。",memory:"词根：`in-`（不）+ `flex`（弯曲，同 `flexible` 灵活的）+ `-ible`（能……的）→ **弯不动的 → 死板僵化的**。",secondary:false},
+            {id:"2012-T1-5",word:"mandate",ipa:"/ˈmændeɪt/",meaning:"`v.` 强制规定；明令要求",usage:"`mandate that...`（明文规定……，后接从句）。原文：`policy which mandates that... homework may no longer count for more than 10%...` 常见作名词表“命令、授权、任期”。",memory:"词根：`man`（手，同 `manual` 手工）+ `date`（给）→ 亲手交办下来的硬任务 → **命令、强制规定**。",secondary:false},
+            {id:"2012-T1-6",word:"count for",ipa:"/kaʊnt fɔː/",meaning:"`v. phr.` 占……比重；有价值，重要",usage:"**熟词生义**：1. 原文 `count for more than 10% of a student’s academic grade`（在学业成绩中**占比**超过 10%）；2. 第 24 题选项 B `counts much in schooling`（在学校教育中**很重要**，同义替换文中的 `matters`）。",memory:"逻辑延伸：数数时能算得上数（`count`）→ 才有分量 → **占比重 / 很重要**。记住 `Every minute counts`（分秒必争）。",secondary:true},
+            {id:"2012-T1-7",word:"impoverished",ipa:"/ɪmˈpɒvərɪʃt/",meaning:"`adj.` 贫困的；穷困的",usage:"`students from impoverished or chaotic homes`（来自贫困或混乱家庭的学生）。第 22 题题干直接同义改写为 `poor students`。",memory:"词族：中间的 `pover` 就是 **`poverty`（贫穷）**！`im-`（使进入）+ `poverty` + `-ish` → **陷入贫穷的**。",secondary:false},
+            {id:"2012-T1-8",word:"chaotic",ipa:"/keɪˈɒtɪk/",meaning:"`adj.` 混乱的；无序的",usage:"`chaotic homes`（混乱失序的家庭环境）。与 `impoverished` 并列，解释为什么有些学生回家根本没条件写作业。",memory:"词族：来自名词 **`chaos`** `/ˈkeɪɒs/`（大混乱），加 `-tic` 变成形容词；谐音“吵死”，家里吵死＝**混乱的**。",secondary:false},
+            {id:"2012-T1-9",word:"contradictory",ipa:"/ˌkɒntrəˈdɪktəri/",meaning:"`adj.` 自相矛盾的；对立的",usage:"`be unclear and contradictory`（含糊且自相矛盾）。原文第 2 段转折句核心评价词，直接否定该政策的逻辑自洽性。",memory:"词根：`contra-`（反、对着）+ `dict`（说，同 `dictionary`）→ **反着说 → 自相矛盾的**。",secondary:false},
+            {id:"2012-T1-10",word:"give a pass",ipa:"/ɡɪv ə pɑːs/",meaning:"`phr.` 放行；网开一面；免予追究",usage:"**熟词生义**：`give a pass to sb.`（对某人网开一面/直接放过）。原文：`giving a pass to students who do not do their homework`（对不交作业的学生直接放行免责）。",memory:"画面联想：`pass` 是“通行证/放行条”，老师直接给你一张免死通行证 → **网开一面、放过一马**。",secondary:true},
+            {id:"2012-T1-11",word:"implication",ipa:"/ˌɪmplɪˈkeɪʃn/",meaning:"`n.` 暗示；言外之意；可能后果",usage:"`close to the implication that...`（接近于暗示……）。原文：如果给不做作业的学生放行，就危险地接近于暗示要对穷孩子降低标准。",memory:"词族：动词 **`imply`**（暗示，推断题最高频词根：`im-` 向内 + `ply` 折叠 → 叠在里面的话 → **言外之意、暗示**）。",secondary:false},
+            {id:"2012-T1-12",word:"empower",ipa:"/ɪmˈpaʊə(r)/",meaning:"`v.` 赋权；授权；使能够",usage:"`empower sb. to do sth.`（授权某人做某事）。原文：`rather than empowering teachers to find what works best`（没有赋权给老师去寻找最适合学生的方法），第 23 题选项 C 正是借此设坑。",memory:"构词极其直观：`em-`（使……获得）+ **`power`（权力/能力）** → **赋权、赋能**。",secondary:false},
+            {id:"2012-T1-13",word:"flat",ipa:"/flæt/",meaning:"`adj.` 一刀切的；统一的；固定的",usage:"**熟词生义**：`impose a flat, across-the-board rule`（强加一项“一刀切”的统一规定）。常见作“平的/公寓”，但在政策、价格语境中常指“不分差异、一律相同的”（如 `a flat fee` 一口价）。",memory:"画面记忆：把所有高低不平的个体全压**平（flat）**成一条直线 → **一刀切的、固定不变的**。",secondary:true},
+            {id:"2012-T1-14",word:"across-the-board",ipa:"/əˌkrɒs ðə ˈbɔːd/",meaning:"`adj./adv.` 一刀切的；全面无例外的",usage:"`a flat, across-the-board rule`（一刀切的普遍规定）。与 `flat` 构成同义叠用，强调“对所有人/所有情况无差别适用”。",memory:"画面联想：横扫整张棋盘/公告板（`across the board`）不留死角 → **全面地、无一例外地**。",secondary:false},
+            {id:"2012-T1-15",word:"thorny",ipa:"/ˈθɔːni/",meaning:"`adj.` 棘手的；难处理的",usage:"`the truly thorny questions`（真正棘手的问题）。第 4 段核心词，也在第 25 题干扰项 C `Thorny Questions about Homework` 中原词重现。",memory:"词根：`thorn`（荆棘、刺）+ `-y` → **长满刺的 → 摸起来扎手 → 棘手的**。",secondary:false},
+            {id:"2012-T1-16",word:"eliminate",ipa:"/ɪˈlɪmɪneɪt/",meaning:"`v.` 取消；消除；淘汰",usage:"`reduce or eliminate the assignments`（减少或取消作业）。出现在第 4 段条件句中，并复现于第 24 题选项 A `be eliminated`。",memory:"词根：`e-`（出）+ `limin`（门槛，同 `limit`）+ `-ate` → **赶出门槛之外 → 淘汰、取消**。",secondary:false},
+            {id:"2012-T1-17",word:"conversely",ipa:"/ˈkɒnvɜːsli/",meaning:"`adv.` 相反地；反过来",usage:"用于引出与前文截然相反的条件或结果。原文用 `If..., Conversely, if...` 构成正反对比（第 24 题定位核心信号词）。",memory:"词根：`con-`（共同/互相）+ `vers`（转，同 `reverse`）→ **转到反面去 → 相反地**。",secondary:false},
+            {id:"2012-T1-18",word:"put on hold",ipa:"/pʊt ɒn həʊld/",meaning:"`v. phr.` 暂缓；搁置",usage:"`be put on hold while...`（在……期间被暂缓执行）。末段作者提出建议：在听证和调研期间，先把这套作业新规搁置。",memory:"画面联想：打电话时按 **`Hold`** 键就是“暂时保持/挂起不处理” → **搁置、暂缓**。",secondary:false},
+            {id:"2012-T1-19",word:"undermine",ipa:"/ˌʌndəˈmaɪn/",meaning:"`v.` 暗中破坏；逐渐削弱",usage:"考研选项极高频动词！第 23 题选项 B `undermine the authority of state tests`（削弱州统考的权威性）。常见搭配：`undermine confidence / trust / health`。",memory:"拆分神记忆：**`under`（在下面）+ `mine`（矿井/地雷）** → 在城墙底下悄悄挖地道埋雷 → **暗中破坏、削弱根基**。",secondary:false},
+            {id:"2012-T1-20",word:"indifference",ipa:"/ɪnˈdɪfrəns/",meaning:"`n.` 漠不关心；冷漠",usage:"`indifference to sth.`（对某事漠不关心）。第 23 题选项 A `students’ indifference to their report cards`（学生对成绩单漠不关心）；形容词 `indifferent` 也是态度题常客。",memory:"逻辑拆分：`in-`（不）+ `difference`（区别/在意）→ 对好坏都觉得“没区别、无所谓” → **漠不关心**。",secondary:false},
+            {id:"2012-T1-21",word:"interpretation",ipa:"/ɪnˌtɜːprɪˈteɪʃn/",meaning:"`n.` 解读；理解；阐释",usage:"第 25 题选项 D `Wrong Interpretations of an Educational Policy`（对某项教育政策的错误解读）。动词 `interpret`（解读、口译）。",memory:"词根：`inter-`（在两者之间）+ `pret`（价格/价值，同 `price`）→ 在两种语言或文字之间解释意思 → **解读、解释**。",secondary:false}
+          ]
+        },
+        {
+          id: "T2", code: "Text 2", title: "粉色营销",
+          words: [
+            {id:"2012-T2-1",word:"obsessed",ipa:"/əbˈsest/",meaning:"`adj.` 着迷的；痴迷的",usage:"`be obsessed with sth.`（对某物极度着迷）。原文：`do not remember being so obsessed with the colour`（不记得自己曾如此痴迷粉色）。名词 `obsession`（痴迷）。",memory:"词根：`ob-`（在……上）+ `sess`（坐，同 `session`）→ 有个念头一直死死“坐”在你脑子里赶不走 → **着迷的、困扰的**。",secondary:false},
+            {id:"2012-T2-2",word:"pervasive",ipa:"/pəˈveɪsɪv/",meaning:"`adj.` 普遍存在的；无处不在的",usage:"`be pervasive in...`（在……中无处不在）。原文：`yet it is pervasive in our young girls’ lives.`（粉色如今却充斥着小女孩的生活），直接否定第 26 题 D“不能影响女孩生活”。",memory:"词根：`per-`（贯穿、到处）+ `vas`（走，同 `invade` 入侵）→ 走到哪儿都能渗进去 → **无处不在的、普遍渗透的**。",secondary:false},
+            {id:"2012-T2-3",word:"intrinsically",ipa:"/ɪnˈtrɪnzɪkli/",meaning:"`adv.` 本质上；内在地",usage:"`It is not that pink is intrinsically bad`（并不是粉色在本质上不好）。常用于让步句，承认事物本身无罪，错在人为包装；同义词即第 3 段的 `inherently`。",memory:"词根：`in-`（内部）+ `trins`（跟随）→ 天生就跟在东西里面的属性 → **本质上、固有地**。",secondary:false},
+            {id:"2012-T2-4",word:"fuse",ipa:"/fjuːz/",meaning:"`v.` 融合；将……紧密绑定",usage:"`fuse A to B`（把 A 熔合/绑定到 B 上）。原文：`repeatedly and firmly fuses girls’ identity to appearance.`（反复牢固地把女孩身份与外貌捆绑在一起）。",memory:"联想：物理上的“保险丝”（`fuse`）会熔断、焊接金属 → 引申为把两样东西**熔合、死死绑在一起**。",secondary:false},
+            {id:"2012-T2-5",word:"innocence",ipa:"/ˈɪnəsns/",meaning:"`n.` 纯真；天真；无辜",usage:"`evidence of innocence`（纯真的证明）。原文出现 `not only innocent but as evidence of innocence`，并在第 26 题干扰项 B 中复现。",memory:"词根：`in-`（无）+ `noc`（伤害，同 `noxious` 有害的）→ 没有伤害、害不了别人 → **纯真、无辜**。",secondary:false},
+            {id:"2012-T2-6",word:"despair",ipa:"/dɪˈspeə(r)/",meaning:"`v.` 绝望；感到无望",usage:"`despair at sth.`（对某事感到绝望）。原文：`I despaired at the singular lack of imagination`（我对这种单一想象力感到绝望），表达作者强烈不满。",memory:"词根：`de-`（向下/否定）+ `spair`（希望，同 `prosper`）→ 希望掉到谷底 → **绝望**。",secondary:false},
+            {id:"2012-T2-7",word:"singular",ipa:"/ˈsɪŋɡjələ(r)/",meaning:"`adj.` 突出的；极度的；单一的",usage:"**熟词生义**：`the singular lack of imagination`（令人震惊的/单一性的想象力匮乏）。语法里学过“单数”，阅读中常考“非凡的、极度的、单一的”。",memory:"逻辑记忆：`single`（单一的）→ 唯一到极点、独一份 → **突出的、极度的、单一的**。",secondary:true},
+            {id:"2012-T2-8",word:"encode",ipa:"/ɪnˈkəʊd/",meaning:"`v.` 编码；刻入（基因/信息）",usage:"`be encoded in one’s DNA`（刻在 DNA 里/天生注定）。第 2 段先说仿佛刻在 DNA 里，随即用 `but... it is not` 推翻，对应第 27 题 A 排除。",memory:"构词：`en-`（使进入）+ **`code`（密码/代码）** → 把信息编进代码里 → **编码、写入基因**。",secondary:false},
+            {id:"2012-T2-9",word:"masculine",ipa:"/ˈmæskjəlɪn/",meaning:"`adj.` 男性的；阳刚的",usage:"`the more masculine colour`（更偏男性的颜色）。原文历史大反转：过去粉色被视为红色的柔和版，象征力量，反而属于**男性色**！",memory:"联想记忆：发音像 **`man` / `muscle`（肌肉）** → 充满肌肉感 → **男性的、阳刚的**。",secondary:false},
+            {id:"2012-T2-10",word:"femininity",ipa:"/ˌfeməˈnɪnəti/",meaning:"`n.` 女性气质；阴柔美",usage:"`symbolised femininity`（象征女性特质）。第 27 题 B 正确定位句：`Blue... symbolised femininity` → 同义改写为 `the colour for girls`。",memory:"词根：`fem`（女人，同 `female`）+ `-inity`（性质）→ **女性气质**（与 `masculine` 一男一女成对背）。",secondary:false},
+            {id:"2012-T2-11",word:"constancy",ipa:"/ˈkɒnstənsi/",meaning:"`n.` 忠贞；坚定不移；恒常",usage:"`intimations of the Virgin Mary, constancy and faithfulness`（象征圣母玛利亚、忠贞与忠诚）。",memory:"词族：来自 **`constant`**（不断的、忠实的）→ 一直保持不变的感情/态度 → **恒常、忠贞**。",secondary:false},
+            {id:"2012-T2-12",word:"come into one’s own",ipa:"/kʌm ˈɪntuː wʌnz əʊn/",meaning:"`phr.` 大行其道；充分展示魅力",usage:"`pink fully came into its own`（粉色才真正独占鳌头/大放异彩）。前面加 `It was not until the mid-1980s... that...` 强调句，是历史转折时间节点。",memory:"字面画面：终于走进了“属于它自己的主场” → **大显身手、大行其道**。",secondary:false},
+            {id:"2012-T2-13",word:"inherently",ipa:"/ɪnˈherəntli/",meaning:"`adv.` 内在地；天生地；固有地",usage:"`seem inherently attractive to girls`（看起来似乎天生对女孩有吸引力）。与第 1 段的 `intrinsically`、选项的 `inborn` 属于同义词群。",memory:"词根：`in-`（在里面）+ `her`（黏附，同 `adhere` 黏附）→ 一出生就黏在里面的 → **天生地、固有的**。",secondary:false},
+            {id:"2012-T2-14",word:"dictate",ipa:"/ˈdɪkteɪt/",meaning:"`v.` 支配；决定；主宰",usage:"**熟词生义**：`dictate our perception`（支配/左右我们的认知）。别只记“听写”！第 28 题把 `dictated` 直接同义替换成了 `was much influenced by`。",memory:"联想记忆：领导口授（`dictate`）命令让下属照做 → 引申为**发号施令、支配、决定**。",secondary:true},
+            {id:"2012-T2-15",word:"perception",ipa:"/pəˈsepʃn/",meaning:"`n.` 认知；观念；看法",usage:"`our perception of what is natural to kids`（我们对什么是儿童天性的认知）。第 28 题题干原词重现。",memory:"词根：`per-`（完全）+ `cept`（抓，同 `accept`）→ 脑子把外界信息抓进来形成理解 → **认知、看法**。",secondary:false},
+            {id:"2012-T2-16",word:"popularise",ipa:"/ˈpɒpjələraɪz/",meaning:"`v.` 推广；普及；使流行",usage:"`be popularised as a marketing trick`（被当作一种营销伎俩推广开来）。英式拼写 `-ise`，美式为 `-ize`。",memory:"构词：**`popular`（流行的）** + `-ise`（使……）→ **使流行、普及、推广**。",secondary:false},
+            {id:"2012-T2-17",word:"counsel",ipa:"/ˈkaʊnsl/",meaning:"`v.` 建议；劝告；指导",usage:"**熟词生义**：`counsel sb. that...`（建议某人……）。原文：`Trade publications counselled department stores that...`，第 29 题题干直接同义替换为 `were advised to`。",memory:"联想记忆：学校/心理老师叫 `counselor`（辅导员/顾问），动词就是**给出建议、劝告**（注意区别 `council` 委员会）。",secondary:true},
+            {id:"2012-T2-18",word:"evolve",ipa:"/ɪˈvɒlv/",meaning:"`v.` 演变；逐步发展（成）",usage:"`evolve into...`（演变成……）。原文：先变成常见购物词汇，之后才 `evolved into a broadly accepted developmental stage`（演变成公认的发育阶段）。",memory:"词根：`e-`（向外）+ `volv`（滚动，同 `revolve`）→ 像滚雪球一样滚大变样 → **演变、进化**。",secondary:false},
+            {id:"2012-T2-19",word:"segment",ipa:"/ˈseɡmənt/",meaning:"`v.` 细分，分割；`n.` 部分",usage:"`segment a market`（细分市场）。对应前句 `Splitting kids... into ever-tinier categories`，以及第 29 题正确项 A `classify consumers into smaller groups`。",memory:"词根：`seg`（切，同 `section` 部分）+ `-ment` → 切出来的一块 → **部分；细分、分割**。",secondary:false},
+            {id:"2012-T2-20",word:"magnify",ipa:"/ˈmæɡnɪfaɪ/",meaning:"`v.` 放大；夸大",usage:"`magnify gender differences`（放大性别差异）。与第 3 段的 `amplify`（放大）呼应，说明商家靠放大男女差异赚钱。",memory:"词根：`magn`（大，同 `magnificent` 宏伟的）+ `-ify`（使……）→ **使变大 → 放大、夸大**。",secondary:false},
+            {id:"2012-T2-21",word:"inborn",ipa:"/ˌɪnˈbɔːn/",meaning:"`adj.` 天生的；与生俱来的",usage:"第 30 题干扰项 B `their inborn tendency`（她们的天生倾向），属于“先竖靶子后推翻”的典型陷阱（原文第 2 段明确否定了天生论）。",memory:"拆分秒懂：**`in`（在里面）+ `born`（出生）** → 娘胎里带来的 → **天生的**。",secondary:false},
+            {id:"2012-T2-22",word:"sole",ipa:"/səʊl/",meaning:"`adj.` 唯一的；单独的",usage:"第 26 题正确答案 C `should not be the sole representation of girlhood`（不应成为女孩时代的唯一代表），同义概括文中的 `a tiny slice of the rainbow`。",memory:"谐音对比：`solo`（独奏/单飞）→ 就一个人 → **`sole`（唯一的、单独的）**。",secondary:false}
+          ]
+        },
+        {
+          id: "T3", code: "Text 3", title: "基因专利",
+          words: [
+            {id:"2012-T3-1",word:"biotech",ipa:"/ˈbaɪəʊtek/",meaning:"`adj./n.` 生物技术的；生物科技",usage:"`America’s biotech industry`（美国生物技术产业）。第 31 题题干原词 `the biotech companies`。",memory:"拆分记忆：**`bio`（生命/生物，同 `biology`）+ `tech`（技术，同 `technology`）**。",secondary:false},
+            {id:"2012-T3-2",word:"patent",ipa:"/ˈpeɪtnt/",meaning:"`n.` 专利；`v.` 获得专利",usage:"`win patents for...`（为……赢得专利）；`gene patenting`（基因专利申请）；衍生 `patentable`（可申请专利的）/ `unpatentable`（不可专利的）。",memory:"词根：`pat`（展开、公开）→ 公开你的发明换取国家独占保护 → **专利**。",secondary:false},
+            {id:"2012-T3-3",word:"isolated",ipa:"/ˈaɪsəleɪtɪd/",meaning:"`adj.` 分离的；孤立的",usage:"`isolated DNA`（分离出来的 DNA 分子）。第 3 段司法部把“从细胞分离出的 DNA”比作“从棉籽里剥离出的棉纤维”，论证其仍属自然产物。",memory:"词根：`i-` + **`sol`（单独，同 `sole`）** + `-ated` → 被单独挑出来的 → **分离的、孤立的**。",secondary:false},
+            {id:"2012-T3-4",word:"agitated",ipa:"/ˈædʒɪteɪtɪd/",meaning:"`adj.` 情绪激动的；焦虑不安的",usage:"`Executives were violently agitated.`（高管们大为震怒/坐立不安）。第 31 题选项 C 把它偷换成褒义的 `active`（活跃）来骗人！",memory:"词根：`ag`（做、驱动）+ `-itate` → 心里被搅得翻江倒海 → **焦虑不安的、激怒的**。",secondary:false},
+            {id:"2012-T3-5",word:"assure",ipa:"/əˈʃʊə(r)/",meaning:"`v.` 向……保证；安抚使放心",usage:"`assure sb. that...`（向某人保证……）。原文行业组织 BIO 安抚成员这只是漫长战役的第一步，第 31 题选项 B 却偷换成 `issue a warning`（发警告）。",memory:"拆分：`as-`（一再）+ **`sure`（确定）** → 一再对你说“稳的、放心” → **向某人保证、安抚**。",secondary:false},
+            {id:"2012-T3-6",word:"preliminary",ipa:"/prɪˈlɪmɪnəri/",meaning:"`adj.` 初步的；预备的",usage:"`a “preliminary step” in a longer battle`（一场更持久战中的“初步一步”）。常见搭配：`preliminary results / findings`（初步结果）。",memory:"词根：`pre-`（提前、在前）+ `limin`（门槛）→ 还没跨过正式门槛、在门前先走的一步 → **初步的、预备的**。",secondary:false},
+            {id:"2012-T3-7",word:"relieved",ipa:"/rɪˈliːvd/",meaning:"`adj.` 如释重负的；宽慰的",usage:"`they were relieved, at least temporarily`（他们松了一口气，至少是暂时的）。常考于态度题词频表，表达负面压力解除后的“宽慰”。",memory:"词根：`re-`（再、回）+ `liev`（轻，同 `light` 轻）→ 把重担放回地上变轻松 → **如释重负的**。",secondary:false},
+            {id:"2012-T3-8",word:"overturn",ipa:"/ˌəʊvəˈtɜːn/",meaning:"`v.` 推翻（判决）；颠覆",usage:"`overturn the prior decision`（推翻先前的裁决）。法律新闻最高频动词，近义 `reverse` / `overrule`。",memory:"拆分秒懂：**`over`（翻过去）+ `turn`（转）** → 整个翻个底朝天 → **推翻、颠覆**。",secondary:false},
+            {id:"2012-T3-9",word:"prior",ipa:"/ˈpraɪə(r)/",meaning:"`adj.` 先前的；较早的",usage:"`the prior decision`（先前的判决）。高频介词短语：`prior to...`（在……之前，等同 `before`）。",memory:"联想：谐音/同源 `pre-`（在前）→ 比现在靠前的 → **先前的、优先的**（`priority` 优先级）。",secondary:false},
+            {id:"2012-T3-10",word:"suppress",ipa:"/səˈpres/",meaning:"`v.` 抑制；压制；遏制",usage:"`suppress innovation rather than reward it`（抑制而非奖励创新）。第 32 题原文反驳点，选项 C 却说成 `depend much on innovation`（依赖创新）。",memory:"词根：`sup-`（向下）+ `press`（压）→ 用力往下按压 → **压制、抑制**。",secondary:false},
+            {id:"2012-T3-11",word:"monopoly",ipa:"/məˈnɒpəli/",meaning:"`n.` 垄断；专卖权",usage:"`patents’ monopolies restrict access to genetic tests`（专利垄断限制了基因检测的获取）。复数 `monopolies`。",memory:"词根：**`mono-`（单一，一人）+ `poly`（卖）** → 全市场只有他一家在卖 → **垄断、专卖**。",secondary:false},
+            {id:"2012-T3-12",word:"violate",ipa:"/ˈvaɪəleɪt/",meaning:"`v.` 侵犯（专利/权利）；违反",usage:"`violate the patents of individual genes`（侵犯单个基因的专利权）。常见：`violate the law / privacy`（违法/侵犯隐私）。",memory:"谐音画面：联想 **`violent`（暴力的）** → 用暴力去打破规则或侵犯别人权益 → **违反、侵犯**。",secondary:false},
+            {id:"2012-T3-13",word:"suit",ipa:"/suːt/",meaning:"`n.` 诉讼；官司",usage:"**熟词生义**：`other suits` / `a suit brought by the Mayo Clinic`（梅奥诊所提起的诉讼）。别只记“西装”！看到 `bring/file a suit` 必为“提起诉讼”。",memory:"联想画面：打官司上法庭得穿正式的“西装（`suit`）”，在法院语境里直接就是 **`lawsuit`（诉讼）** 的缩写！",secondary:true},
+            {id:"2012-T3-14",word:"domain",ipa:"/dəˈmeɪn/",meaning:"`n.` 领域；范畴；领地",usage:"`in the public domain`（处于公有领域，即无版权/专利限制、所有人均可免费使用）。常见：`domain knowledge`（领域知识）。",memory:"词根：`dom`（家、屋顶、统治，同 `domestic`）→ 归某人管辖的一块地盘 → **领地、领域**。",secondary:false},
+            {id:"2012-T3-15",word:"correlation",ipa:"/ˌkɒrəˈleɪʃn/",meaning:"`n.` 相关性；关联性",usage:"`looking for correlations that might be used to...`（寻找可用于……的相关性）。第 33 题干扰项 B 借用了本词设陷阱。",memory:"拆分：**`cor-`（共同、互相）+ `relation`（关系）** → 相互之间的关系 → **相关性、关联**。",secondary:false},
+            {id:"2012-T3-16",word:"efficacy",ipa:"/ˈefɪkəsi/",meaning:"`n.` 功效；效力；疗效",usage:"`predict a drug’s efficacy`（预测药物的疗效）。学术阅读中常替代 `effectiveness`，用来指政策、药物或措施的实际效用。",memory:"词族：长相和 **`effective`（有效的）** 是亲戚 → 药物有没有效 → **功效、疗效**。",secondary:false},
+            {id:"2012-T3-17",word:"hear",ipa:"/hɪə(r)/",meaning:"`v.` 审理；听审（案件）",usage:"**熟词生义**：`which the Supreme Court will hear in its next term`（最高法院将在下一开庭期**审理**该案）。句中 `term` 也是熟词生义＝“开庭期”。",memory:"画面逻辑：法官坐在上面“听”控辩双方陈词（`hear a case`）→ **审理案件**。",secondary:true},
+            {id:"2012-T3-18",word:"coach",ipa:"/kəʊtʃ/",meaning:"`v.` 培训；辅导；指导",usage:"**熟词生义**：`sessions to coach lawyers on the shifting landscape`（培训律师应对不断变化的专利格局）。名词是“教练”，作动词直接表示“像教练一样指导培训”。",memory:"词性活用：教练（`coach`）干的活就是**辅导、培训**。",secondary:true},
+            {id:"2012-T3-19",word:"packed",ipa:"/pækt/",meaning:"`adj.` 座无虚席的；挤满人的",usage:"**熟词生义**：`Each meeting was packed.`（每场会议都爆满）。第 34 题考点句，作者借“座无虚席”体现各界对基因专利的高度关注。",memory:"画面联想：像行李箱被塞得严严实实（`pack` 打包）一样，一屋子塞满了人 → **挤满人的、座无虚席的**。",secondary:true},
+            {id:"2012-T3-20",word:"scornful",ipa:"/ˈskɔːnfl/",meaning:"`adj.` 鄙视的；轻蔑的；嘲讽的",usage:"第 35 题作者态度题干扰项 C。考场上看到作者只是客观呈现各方观点、未用阴阳怪气词时，可直接排除此强烈负向词。",memory:"构词：`scorn`（鄙视）+ `-ful`（充满……的）→ **充满鄙视的、轻蔑的**。",secondary:false}
+          ]
+        },
+        {
+          id: "T4", code: "Text 4", title: "衰退影响",
+          words: [
+            {id:"2012-T4-1",word:"recession",ipa:"/rɪˈseʃn/",meaning:"`n.` 经济衰退；不景气",usage:"`The great recession may be over...`（大衰退或许已经过去）。全文核心主题词，36–39 题题干或选项均有出现。",memory:"词根：`re-`（向后退）+ `cess`（走，同 `process`）→ 经济不往前走反而往后退 → **经济衰退**。",secondary:false},
+            {id:"2012-T4-2",word:"silver lining",ipa:"/ˈsɪlvə ˈlaɪnɪŋ/",meaning:"`n. phr.` 困境中的一线希望/积极面",usage:"`find silver linings in this national economic disaster`（在经济灾难中寻找积极面）。第 36 题直接考语境词义，对应 D `look on the bright side`。",memory:"英语谚语：`Every cloud has a silver lining`（每朵乌云背后都有一道银边）→ 黑暗背后的光明 → **一线希望、积极面**。",secondary:false},
+            {id:"2012-T4-3",word:"materialistic",ipa:"/məˌtɪəriəˈlɪstɪk/",meaning:"`adj.` 物质主义的；贪图享乐的",usage:"`become less materialistic`（变得不那么物质/拜金）。第 2 段用来描写失业带给人们生活态度的反思，对应第 37 题“重新审视生活方式”。",memory:"词族：**`material`（物质/材料）** + `-istic` → 只看重物质享受的 → **物质主义的**。",secondary:false},
+            {id:"2012-T4-4",word:"prudent",ipa:"/ˈpruːdnt/",meaning:"`adj.` 谨慎的；精明的；节俭的",usage:"`more financially prudent`（在财务上更加审慎节俭）。第 37 题干扰项 C 把它反向改写为 `challenge their prudence`（名词 `prudence`）。",memory:"联想记忆：发音像“不鲁钝（不乱花钱）”／同源 `provident`（有远见的）→ 提前做打算不乱来 → **审慎的、节俭的**。",secondary:false},
+            {id:"2012-T4-5",word:"better off",ipa:"/ˌbetər ˈɒf/",meaning:"`adj. phr.` 境况更好的；更宽裕的",usage:"`leave society better off`（让社会状况变得更好）。常考比较结构 `be better off doing sth.`（做某事更划算/更好）；反义 `worse off`。",memory:"字面理解：比原来所处的位置“更离开困境一点、更好（`better`）” → **境况更好、更富裕**。",secondary:false},
+            {id:"2012-T4-6",word:"reckless",ipa:"/ˈrekləs/",meaning:"`adj.` 鲁莽的；轻率的；不顾后果的",usage:"`reckless personal spending`（鲁莽无节制的个人消费）。与前面的 `prudent`（审慎节俭）正好构成反义对照！",memory:"构词：`reck`（顾及、在乎）+ `-less`（无）→ 啥都不顾及就乱花/乱来 → **鲁莽的、不计后果的**。",secondary:false},
+            {id:"2012-T4-7",word:"stagnation",ipa:"/stæɡˈneɪʃn/",meaning:"`n.` 停滞；不景气；萧条",usage:"`lengthy periods of economic stagnation or decline`（长期的经济停滞或下滑）。与 `recession`、`lean times` 属于同话题替换词。",memory:"联想：`stag` 像死水一潭不动（动词 `stagnate` 水停滞发臭）→ 经济像一潭死水不动弹 → **停滞、萧条**。",secondary:false},
+            {id:"2012-T4-8",word:"mean-spirited",ipa:"/ˌmiːn ˈspɪrɪtɪd/",meaning:"`adj.` 刻薄的；心胸狭隘的；小气的",usage:"`left society more mean-spirited and less inclusive`（让社会变得更刻薄、更不包容）。对应第 38 题正确项 B 中的 `evils of human nature`。",memory:"拆分记忆：这里的 **`mean`** 取“刻薄的、小气的”意思 + `spirited`（精神/心肠的）→ 心肠刻薄的 → **狭隘刻薄的**。",secondary:false},
+            {id:"2012-T4-9",word:"inclusive",ipa:"/ɪnˈkluːsɪv/",meaning:"`adj.` 包容的；包含在内的",usage:"`less inclusive`（更缺乏包容性）。考研常考社会文化议论文，讨论社会对移民、少数群体的接纳程度。",memory:"词族：**`include`（包括、接纳进来）** 的形容词 → 愿意把别人接纳进来的 → **包容的**。",secondary:false},
+            {id:"2012-T4-10",word:"reverse",ipa:"/rɪˈvɜːs/",meaning:"`v.` 逆转；倒退；撤销",usage:"`stopped or reversed the advance of rights and freedoms`（阻止或逆转了权利与自由的进步）。第 38 题直接凭它排除方向相反的 C（`promote`）。",memory:"词根：`re-`（回）+ `vers`（转）→ 倒车往回转 → **逆转、倒退**（车挡里的 R 挡就是 `Reverse`）。",secondary:false},
+            {id:"2012-T4-11",word:"sentiment",ipa:"/ˈsentɪmənt/",meaning:"`n.` 情绪；舆论倾向；感情",usage:"`Anti-immigrant sentiment typically increases`（反移民情绪通常会加剧）。第 38 题选项 A 把“情绪上升”偷换成“给移民施加更重负担”。",memory:"词根：`sent`（感觉，同 `sense`）+ `-iment` → 大家心里共同的感觉/态度 → **情绪、观点倾向**。",secondary:false},
+            {id:"2012-T4-12",word:"shrink",ipa:"/ʃrɪŋk/",meaning:"`v.` 缩小；缩水；减少",usage:"`it has not shrunk in this one`（收入不平等在这次衰退中并没有缩小）。注意不规则变化：`shrink - shrank - shrunk`。",memory:"拟声画面：衣服洗了“嗖”地一下缩水（`shrink`）了 → **缩小、萎缩**。",secondary:false},
+            {id:"2012-T4-13",word:"reinforce",ipa:"/ˌriːɪnˈfɔːs/",meaning:"`v.` 强化；加强；加剧",usage:"`reinforce class divides`（固化/加剧阶级鸿沟）。第 4 段主题句动词，说明这次衰退不仅没缩小差距，反而加剧分层。",memory:"拆分：**`re-`（再次）+ `in` + `force`（力量）** → 再次往里面加力量 → **强化、加固**。",secondary:false},
+            {id:"2012-T4-14",word:"dim",ipa:"/dɪm/",meaning:"`v.` 使暗淡；使渺茫；`adj.` 昏暗的",usage:"**熟词生义**：`see their life chances dimmed`（看到自己的人生机会变得渺茫）。第 39 题选项 C 原词复现，借它考查比较范围。",memory:"画面联想：灯光调暗（`dim`）看不清前景 → 人生机会暗淡下去 → **使渺茫、使暗淡**。",secondary:true},
+            {id:"2012-T4-15",word:"elite",ipa:"/eɪˈliːt/",meaning:"`adj./n.` 精英的；顶尖的；精英阶层",usage:"`graduates from elite universities`（来自顶尖/名校大学的毕业生）。第 39 题核心限定主体词！",memory:"词根：`e-`（出）+ `lit`（挑选，同 `elect` 选举）→ 千挑万选出来的人 → **精英**。",secondary:false},
+            {id:"2012-T4-16",word:"resentment",ipa:"/rɪˈzentmənt/",meaning:"`n.` 怨恨；愤恨；不满",usage:"`see the resentment that has always been hidden`（看到一直潜藏在社会内部的怨恨情绪）。注意别和 `represent`（代表）看混！",memory:"词根：`re-`（反）+ `sent`（感觉）→ 对人产生反感、心里一直憋着气 → **怨恨、愤恨**。",secondary:false},
+            {id:"2012-T4-17",word:"discern",ipa:"/dɪˈsɜːn/",meaning:"`v.` 辨别；看清；察觉",usage:"`discerning precisely how...`（准确看清/辨别究竟如何……）。位于第 5 段主语位置（倒装句：`More difficult... is discerning...`），指判断衰退对社会品格的长期影响很难。",memory:"词根：`dis-`（分开）+ `cern`（区分，同 `concern`）→ 把混在一起的东西分清楚看明白 → **辨别、看清**。",secondary:false},
+            {id:"2012-T4-18",word:"lean",ipa:"/liːn/",meaning:"`adj.` 艰难的；匮乏的；萧条的",usage:"**熟词生义**：`these lean times`（这些艰难/萧条的时期）。前文刚写 `recession`，后句用 `hard times` 替换，读到 `lean times` 一看就懂是同一概念！",memory:"画面联想：人瘦（`lean`）得没有多余脂肪 → 岁月清苦没有油水 → **匮乏的、艰难的**（`lean years` 荒年）。",secondary:true},
+            {id:"2012-T4-19",word:"fabric",ipa:"/ˈfæbrɪk/",meaning:"`n.` 结构；肌理；构架",usage:"**熟词生义**：`reshape our social fabric`（重塑我们的社会结构）。常规义指“布料/织物”，但考研社会学文章中 `social fabric` 固定指“社会结构/社会纽带”。",memory:"画面联想：布料（`fabric`）是一根根丝线纵横交织成的网 → 社会也是人与人交织成的网 → **社会结构**。",secondary:true},
+            {id:"2012-T4-20",word:"subsidy",ipa:"/ˈsʌbsədi/",meaning:"`n.` 补贴；津贴；补助金",usage:"第 36 题选项 A `seek subsidies from the government`（向政府寻求补贴）。极高频经济类词汇，动词 `subsidize`（补贴/资助）。",memory:"词根：`sub-`（在下面）+ `sid`（坐）→ 在下面坐着托住你、给你兜底的钱 → **补贴、补助金**。",secondary:false},
+            {id:"2012-T4-21",word:"trivial",ipa:"/ˈtrɪviəl/",meaning:"`adj.` 微不足道的；琐碎的；不重要的",usage:"第 40 题选项 A，考研阅读态度/评价题高频负向干扰词，意思是“无关紧要的”（与作者主张“必然深刻重塑”相反）。",memory:"词根：`tri-`（三）+ `via`（路）→ 古代三条路交叉口（`tri-via`）随便就能听到的家长里短 → **琐碎的、微不足道的**。",secondary:false}
+          ]
+        }
+      ]
+    };
+
+    (() => {
+      const STORAGE_KEY = "kaoyan_vocab_progress_v1";
+      const THEME_KEY = "kaoyan_vocab_theme_v1";
+      const ICONS = {
+        speaker: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>',
+        star: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+        starFill: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+        check: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+        moon: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>',
+        sun: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>',
+        shuffle: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>',
+        prev: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>'
+      };
+
+      const state = {
+        passage: "ALL", statusFilter: "all", secondaryOnly: false, maskMeaning: false, compactMode: false,
+        search: "", mode: "list", revealedIds: new Set(), expandedIds: new Set(),
+        fcIndex: 0, fcFlipped: false, fcOrder: [],
+        progress: (() => { try { const p = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); return { mastered: p.mastered || [], hard: p.hard || [] }; } catch (_) { return { mastered: [], hard: [] }; } })()
+      };
+
+      const saveProgress = () => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress)); } catch (_) {} };
+      const isMastered = id => state.progress.mastered.includes(id);
+      const isHard = id => state.progress.hard.includes(id);
+
+      const toggleMastered = (id, v) => {
+        const next = typeof v === "boolean" ? v : !isMastered(id);
+        state.progress.mastered = state.progress.mastered.filter(x => x !== id);
+        if (next) { state.progress.mastered.push(id); state.progress.hard = state.progress.hard.filter(x => x !== id); }
+        saveProgress();
+      };
+
+      const toggleHard = (id, v) => {
+        const next = typeof v === "boolean" ? v : !isHard(id);
+        state.progress.hard = state.progress.hard.filter(x => x !== id);
+        if (next) { state.progress.hard.push(id); state.progress.mastered = state.progress.mastered.filter(x => x !== id); }
+        saveProgress();
+      };
+
+      const allWords = () => VOCAB_DATA.passages.flatMap(p => p.words.map(w => ({ ...w, passageId: p.id, passageCode: p.code, passageTitle: p.title })));
+
+      const filteredWords = () => {
+        const q = state.search.trim().toLowerCase();
+        return allWords().filter(w => {
+          if (state.passage !== "ALL" && w.passageId !== state.passage) return false;
+          if (state.secondaryOnly && !w.secondary) return false;
+          if (state.statusFilter === "unmastered" && isMastered(w.id)) return false;
+          if (state.statusFilter === "hard" && !isHard(w.id)) return false;
+          if (state.statusFilter === "mastered" && !isMastered(w.id)) return false;
+          if (q && !`${w.word} ${w.meaning} ${w.usage} ${w.memory}`.toLowerCase().includes(q)) return false;
+          return true;
+        });
+      };
+
+      const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+      const fmt = s => esc(s).replace(/`([^`]+)`/g,'<span class="en-hl">$1</span>').replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
+      const fmtM = s => esc(s).replace(/`([^`]+)`/g,'<span class="pos">$1</span>');
+
+      let toastT;
+      const toast = msg => {
+        const el = document.getElementById("toast");
+        el.textContent = msg;
+        el.classList.add("show");
+        clearTimeout(toastT);
+        toastT = setTimeout(() => el.classList.remove("show"), 1800);
+      };
+
+      const speak = w => {
+        if (!("speechSynthesis" in window)) return toast("当前浏览器不支持朗读");
+        try {
+          speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(w);
+          u.lang = "en-US";
+          u.rate = 0.92;
+          speechSynthesis.speak(u);
+        } catch (_) {}
+      };
+
+      const syncOrder = (shuffle = false) => {
+        const ids = filteredWords().map(w => w.id);
+        if (shuffle) for (let i = ids.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ids[i], ids[j]] = [ids[j], ids[i]]; }
+        state.fcOrder = ids;
+        state.fcIndex = 0;
+        state.fcFlipped = false;
+      };
+
+      const resetFilters = () => {
+        state.passage = "ALL";
+        state.statusFilter = "all";
+        state.secondaryOnly = false;
+        state.search = "";
+        document.getElementById("searchInput").value = "";
+        syncOrder(false);
+        render();
+      };
+
+      function renderProgress() {
+        const list = allWords(), t = list.length;
+        const m = list.filter(w => isMastered(w.id)).length;
+        const h = list.filter(w => isHard(w.id)).length;
+        const pct = t ? Math.round((m / t) * 100) : 0;
+        document.getElementById("statTotal").textContent = t;
+        document.getElementById("statMastered").textContent = m;
+        document.getElementById("statHard").textContent = h;
+        document.getElementById("statRemain").textContent = t - m;
+        document.getElementById("progressPct").textContent = pct + "%";
+        document.getElementById("progressBarFill").style.width = pct + "%";
+      }
+
+      function renderTabs() {
+        const el = document.getElementById("passageTabs");
+        el.innerHTML = "";
+        const tabs = [
+          { id: "ALL", label: "全部", count: allWords().length },
+          ...VOCAB_DATA.passages.map(p => ({ id: p.id, label: `${p.code} · ${p.title}`, count: p.words.length }))
+        ];
+        tabs.forEach(t => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = `p-tab ${state.passage === t.id ? "active" : ""}`;
+          b.innerHTML = `<span>${esc(t.label)}</span><span class="p-tab-num">${t.count}</span>`;
+          b.onclick = () => { state.passage = t.id; syncOrder(false); render(); };
+          el.appendChild(b);
+        });
+      }
+
+      function renderMain() {
+        const list = filteredWords(), box = document.getElementById("mainContent");
+        box.innerHTML = "";
+
+        if (state.mode === "flashcard") {
+          const map = new Map(list.map(w => [w.id, w]));
+          let ids = state.fcOrder.filter(id => map.has(id));
+          if (!ids.length && list.length) { syncOrder(false); ids = state.fcOrder.filter(id => map.has(id)); }
+          if (!ids.length) {
+            box.innerHTML = `<div class="empty"><h3>当前词组已复习完毕</h3><p>可以切换筛选条件，或重点复刷「易忘」词汇。</p><button type="button" class="primary-btn" id="rstBtn">恢复全部</button></div>`;
+            document.getElementById("rstBtn").onclick = resetFilters;
+            return;
+          }
+          if (state.fcIndex >= ids.length) state.fcIndex = 0;
+          const item = map.get(ids[state.fcIndex]);
+
+          box.innerHTML = `
+            <div class="fc-shell">
+              <div class="fc-meta">
+                <span>第 <strong>${state.fcIndex + 1}</strong> / ${ids.length} 词</span>
+                <div style="display:flex;gap:8px">
+                  <button type="button" class="ghost-toggle" id="fcPrev">${ICONS.prev}<span>上一词</span></button>
+                  <button type="button" class="ghost-toggle" id="fcShuf">${ICONS.shuffle}<span>乱序</span></button>
+                </div>
+              </div>
+              <div class="fc-card">
+                <div class="fc-front">
+                  <div class="fc-crumb">${esc(item.passageCode)} · ${esc(item.passageTitle)}${item.secondary ? " · 熟词生义" : ""}</div>
+                  <h2 class="fc-word">${esc(item.word)}</h2>
+                  <div class="fc-ipa-bar">
+                    <span class="ipa">${esc(item.ipa)}</span>
+                    <button type="button" class="audio-btn" id="fcSpk" title="朗读">${ICONS.speaker}</button>
+                  </div>
+                  ${!state.fcFlipped ? '<div><button type="button" class="primary-btn" id="fcFlip">显示释义与记忆法</button></div>' : ""}
+                </div>
+                ${state.fcFlipped ? `
+                  <div class="fc-back">
+                    <div class="fc-meaning">${fmtM(item.meaning)}</div>
+                    <div class="notes" style="margin-top:0">
+                      <div class="note-col"><span class="note-k">真题用法</span><div>${fmt(item.usage)}</div></div>
+                      <div class="note-col mem"><span class="note-k">记忆方法</span><div>${fmt(item.memory)}</div></div>
+                    </div>
+                    <div class="fc-ratings">
+                      <button type="button" class="rate-btn forgot" id="fc1">忘了 · 标易忘</button>
+                      <button type="button" class="rate-btn fuzzy" id="fc2">模糊 · 下一词</button>
+                      <button type="button" class="rate-btn know" id="fc3">认识 · 已掌握</button>
+                    </div>
+                  </div>` : ""}
+              </div>
+              <div class="fc-kbd">快捷键：空格键翻面 · 1 忘了 · 2 模糊 · 3 认识</div>
+            </div>`;
+
+          document.getElementById("fcSpk").onclick = () => speak(item.word);
+          document.getElementById("fcPrev").onclick = () => { state.fcIndex = (state.fcIndex - 1 + ids.length) % ids.length; state.fcFlipped = false; renderMain(); };
+          document.getElementById("fcShuf").onclick = () => { syncOrder(true); toast("已打乱闪卡顺序"); renderMain(); };
+          if (document.getElementById("fcFlip")) document.getElementById("fcFlip").onclick = () => { state.fcFlipped = true; renderMain(); };
+          if (document.getElementById("fc1")) {
+            document.getElementById("fc1").onclick = () => { toggleHard(item.id, true); toast("已标为易忘"); state.fcIndex = (state.fcIndex + 1) % ids.length; state.fcFlipped = false; render(); };
+            document.getElementById("fc2").onclick = () => { state.fcIndex = (state.fcIndex + 1) % ids.length; state.fcFlipped = false; render(); };
+            document.getElementById("fc3").onclick = () => { toggleMastered(item.id, true); toast("已标为掌握"); if (state.statusFilter !== "unmastered") state.fcIndex = (state.fcIndex + 1) % ids.length; state.fcFlipped = false; render(); };
+          }
+          return;
+        }
+
+        if (!list.length) {
+          box.innerHTML = `<div class="empty"><h3>没有匹配的单词</h3><p>试试切换筛选标签或清空搜索词。</p><button type="button" class="primary-btn" id="rstBtn">显示全部</button></div>`;
+          document.getElementById("rstBtn").onclick = resetFilters;
+          return;
+        }
+
+        VOCAB_DATA.passages.forEach(p => {
+          const pw = list.filter(w => w.passageId === p.id);
+          if (!pw.length) return;
+          const group = document.createElement("section");
+          group.className = "sheet-group";
+          group.innerHTML = `<div class="sheet-heading"><h2 class="sheet-title">${esc(p.code)} · ${esc(p.title)}</h2><span class="sheet-sub">${pw.filter(w => isMastered(w.id)).length} / ${pw.length} 已掌握</span></div>`;
+          const sheet = document.createElement("div");
+          sheet.className = "sheet";
+
+          pw.forEach(item => {
+            const m = isMastered(item.id), h = isHard(item.id);
+            const masked = state.maskMeaning && !state.revealedIds.has(item.id);
+            const showNotes = !state.compactMode || state.expandedIds.has(item.id);
+            const row = document.createElement("article");
+            row.className = `entry ${state.compactMode ? "compact-entry" : ""} ${m ? "is-mastered" : ""}`;
+
+            row.innerHTML = `
+              <div class="entry-top">
+                <div class="entry-word-line">
+                  <span class="headword">${esc(item.word)}</span>
+                  <span class="ipa">${esc(item.ipa)}</span>
+                  <button type="button" class="audio-btn" title="朗读发音" aria-label="朗读">${ICONS.speaker}</button>
+                  ${item.secondary ? '<span class="sec-badge">熟词生义</span>' : ""}
+                </div>
+                <div class="entry-actions">
+                  <button type="button" class="mark-btn ${h ? "hard-on" : ""}" data-a="h" title="标为易忘">${h ? ICONS.starFill : ICONS.star}<span class="mark-label">${h ? "易忘" : "易忘"}</span></button>
+                  <button type="button" class="mark-btn ${m ? "master-on" : ""}" data-a="m" title="标为已掌握">${ICONS.check}<span class="mark-label">${m ? "已掌握" : "掌握"}</span></button>
+                </div>
+              </div>
+              <div class="meaning-row">
+                <div class="meaning-wrap" data-a="p">
+                  <div class="meaning-text ${masked ? "blurred" : ""}">${fmtM(item.meaning)}</div>
+                  ${masked ? '<span class="peek-hint">点击查看释义</span>' : ""}
+                </div>
+                ${state.compactMode ? `<button type="button" class="expand-link" data-a="e">${showNotes ? "收起详情" : "展开用法"}</button>` : ""}
+              </div>
+              ${showNotes ? `
+                <div class="notes">
+                  <div class="note-col"><span class="note-k">真题用法</span><div>${fmt(item.usage)}</div></div>
+                  <div class="note-col mem"><span class="note-k">记忆方法</span><div>${fmt(item.memory)}</div></div>
+                </div>` : ""}
+            `;
+
+            row.querySelector(".audio-btn").onclick = () => speak(item.word);
+            row.querySelector('[data-a="h"]').onclick = () => { toggleHard(item.id); render(); };
+            row.querySelector('[data-a="m"]').onclick = () => { toggleMastered(item.id); render(); };
+            row.querySelector('[data-a="p"]').onclick = () => {
+              if (!state.maskMeaning) return;
+              state.revealedIds.has(item.id) ? state.revealedIds.delete(item.id) : state.revealedIds.add(item.id);
+              renderMain();
+            };
+            const expBtn = row.querySelector('[data-a="e"]');
+            if (expBtn) {
+              expBtn.onclick = () => {
+                state.expandedIds.has(item.id) ? state.expandedIds.delete(item.id) : state.expandedIds.add(item.id);
+                renderMain();
+              };
+            }
+            sheet.appendChild(row);
+          });
+
+          group.appendChild(sheet);
+          box.appendChild(group);
+        });
+      }
+
+      function render() {
+        renderProgress();
+        renderTabs();
+        document.querySelectorAll("[data-status]").forEach(b => b.classList.toggle("active", b.getAttribute("data-status") === state.statusFilter));
+        document.getElementById("secondaryBtn").classList.toggle("active", state.secondaryOnly);
+        document.getElementById("maskBtn").classList.toggle("active", state.maskMeaning);
+        document.getElementById("maskBtnText").textContent = state.maskMeaning ? "取消遮义" : "遮义自测";
+        document.getElementById("compactBtn").classList.toggle("active", state.compactMode);
+        document.getElementById("compactBtnText").textContent = state.compactMode ? "精读视图" : "极简模式";
+        document.getElementById("modeListBtn").classList.toggle("active", state.mode === "list");
+        document.getElementById("modeFlashBtn").classList.toggle("active", state.mode === "flashcard");
+        document.getElementById("maskBtn").classList.toggle("hidden", state.mode === "flashcard");
+        document.getElementById("compactBtn").classList.toggle("hidden", state.mode === "flashcard");
+        renderMain();
+      }
+
+      const updateTheme = () => {
+        const dark = document.documentElement.getAttribute("data-theme") === "dark";
+        document.getElementById("themeBtn").innerHTML = dark ? ICONS.sun : ICONS.moon;
+      };
+      const savedT = localStorage.getItem(THEME_KEY);
+      if (savedT === "dark" || savedT === "light") document.documentElement.setAttribute("data-theme", savedT);
+      updateTheme();
+
+      document.getElementById("themeBtn").onclick = () => {
+        const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        try { localStorage.setItem(THEME_KEY, next); } catch (_) {}
+        updateTheme();
+      };
+
+      document.getElementById("modeListBtn").onclick = () => { state.mode = "list"; render(); };
+      document.getElementById("modeFlashBtn").onclick = () => { state.mode = "flashcard"; syncOrder(false); render(); };
+      document.querySelectorAll("[data-status]").forEach(b => { b.onclick = () => { state.statusFilter = b.getAttribute("data-status"); syncOrder(false); render(); }; });
+      document.getElementById("secondaryBtn").onclick = () => { state.secondaryOnly = !state.secondaryOnly; syncOrder(false); render(); };
+      document.getElementById("maskBtn").onclick = () => { state.maskMeaning = !state.maskMeaning; state.revealedIds.clear(); render(); };
+      document.getElementById("compactBtn").onclick = () => { state.compactMode = !state.compactMode; state.expandedIds.clear(); render(); };
+      document.getElementById("searchInput").oninput = e => { state.search = e.target.value; syncOrder(false); renderMain(); };
+
+      document.addEventListener("keydown", e => {
+        if (state.mode !== "flashcard" || ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+        if (e.code === "Space") { e.preventDefault(); if (!state.fcFlipped) { state.fcFlipped = true; renderMain(); } }
+        else if (state.fcFlipped && ["1", "2", "3"].includes(e.key)) { const btn = document.getElementById("fc" + e.key); if (btn) btn.click(); }
+      });
+
+      const sm = document.getElementById("syncModal"), st = document.getElementById("syncTextarea");
+      document.getElementById("syncBtn").onclick = () => { st.value = JSON.stringify(state.progress); sm.classList.add("open"); };
+      document.getElementById("closeSyncBtn").onclick = () => sm.classList.remove("open");
+      sm.onclick = e => { if (e.target === sm) sm.classList.remove("open"); };
+      document.getElementById("copySyncBtn").onclick = async () => { try { await navigator.clipboard.writeText(st.value); toast("进度码已复制"); } catch (_) { st.select(); document.execCommand("copy"); toast("进度码已复制"); } };
+      document.getElementById("importSyncBtn").onclick = () => { try { const p = JSON.parse(st.value.trim()); if (!Array.isArray(p.mastered) || !Array.isArray(p.hard)) throw 0; state.progress = { mastered: [...new Set(p.mastered)], hard: [...new Set(p.hard)] }; saveProgress(); sm.classList.remove("open"); toast("进度已同步"); render(); } catch (_) { toast("JSON 格式不正确"); } };
+      document.getElementById("resetProgressBtn").onclick = () => { if (!confirm("确定清空所有学习进度吗？")) return; state.progress = { mastered: [], hard: [] }; saveProgress(); sm.classList.remove("open"); toast("进度已重置"); render(); };
+
+      syncOrder(false);
+      render();
+    })();
+  </script>
+</body>
+</html>
