@@ -2,8 +2,8 @@ window.VOCAB_MANIFEST = [
   {
     id: "2007-en1-reading",
     year: 2007,
-    label: "2007 英语（一）阅读",
-    shortLabel: "2007 英一",
+    label: "2007 考研英语阅读",
+    shortLabel: "2007 真题",
     count: 34,
     file: "data/2007.js"
   },

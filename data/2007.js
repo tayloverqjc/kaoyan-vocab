@@ -2,7 +2,7 @@ window.VOCAB_SETS = window.VOCAB_SETS || {};
 window.VOCAB_SETS['2007-en1-reading'] = {
   "id": "2007-en1-reading",
   "year": 2007,
-  "label": "2007 英语（一）阅读",
+  "label": "2007 考研英语阅读",
   "subtitle": "Reading Comprehension Part A · Text 1 精选复盘词",
   "updatedAt": "2026-11-19",
   "passages": [
