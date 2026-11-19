@@ -21,8 +21,101 @@
   --shadow-hover: 0 2px 6px rgba(28, 25, 22, 0.05), 0 14px 32px rgba(28, 25, 22, 0.08);
   --shadow-deck: 0 18px 46px rgba(28, 25, 22, 0.11);
   --grain-opacity: 0.032;
+  --radius-card: 16px;
+  --font-display: "Songti SC", "STSong", "Noto Serif SC", "PingFang SC", Georgia, serif;
+  --font-headword: "New York", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --glass-blur: 0px;
 }
 
+/* Theme 2: 极简黑白 (Swiss Minimal Monochrome) */
+[data-theme="mono"] {
+  --bg: #ffffff;
+  --bg-elevated: #fafafa;
+  --surface: #ffffff;
+  --surface-hover: #f5f5f5;
+  --surface-tint: #f2f2f2;
+  --border: rgba(0, 0, 0, 0.11);
+  --border-strong: rgba(0, 0, 0, 0.24);
+  --text: #0a0a0a;
+  --text-secondary: #404040;
+  --text-muted: #767676;
+  --pine: #0a0a0a;
+  --pine-soft: rgba(0, 0, 0, 0.07);
+  --vermilion: #111111;
+  --vermilion-soft: rgba(0, 0, 0, 0.08);
+  --ochre: #525252;
+  --ochre-soft: rgba(0, 0, 0, 0.06);
+  --code-bg: #f3f3f3;
+  --code-text: #0a0a0a;
+  --shadow-card: none;
+  --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.06);
+  --shadow-deck: 0 16px 40px rgba(0, 0, 0, 0.1);
+  --grain-opacity: 0;
+  --radius-card: 8px;
+  --font-display: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", sans-serif;
+  --font-headword: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", sans-serif;
+}
+
+/* Theme 3: 苹果毛玻璃风 (Apple Frosted Liquid Glass) */
+[data-theme="glass"] {
+  --bg: #eaf1fb;
+  --bg-elevated: rgba(255, 255, 255, 0.54);
+  --surface: rgba(255, 255, 255, 0.66);
+  --surface-hover: rgba(255, 255, 255, 0.82);
+  --surface-tint: rgba(255, 255, 255, 0.48);
+  --border: rgba(255, 255, 255, 0.78);
+  --border-strong: rgba(15, 23, 42, 0.14);
+  --text: #111827;
+  --text-secondary: #374151;
+  --text-muted: #6b7280;
+  --pine: #0071e3;
+  --pine-soft: rgba(0, 113, 227, 0.12);
+  --vermilion: #d9483b;
+  --vermilion-soft: rgba(217, 72, 59, 0.11);
+  --ochre: #c27803;
+  --ochre-soft: rgba(194, 120, 3, 0.12);
+  --code-bg: rgba(0, 113, 227, 0.08);
+  --code-text: #0058b3;
+  --shadow-card: 0 8px 28px rgba(30, 58, 110, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  --shadow-hover: 0 14px 36px rgba(30, 58, 110, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.96);
+  --shadow-deck: 0 22px 54px rgba(30, 58, 110, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  --grain-opacity: 0;
+  --radius-card: 20px;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
+  --font-headword: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  --glass-blur: 22px;
+}
+
+/* Theme 4: 墨墨背单词风 (MaMemo Fresh Mint Study) */
+[data-theme="momo"] {
+  --bg: #f2f7f5;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #f7fbf9;
+  --surface-tint: #eaf3ef;
+  --border: rgba(20, 115, 88, 0.09);
+  --border-strong: rgba(20, 115, 88, 0.18);
+  --text: #1c2b26;
+  --text-secondary: #4e625b;
+  --text-muted: #82968f;
+  --pine: #16b385;
+  --pine-soft: rgba(22, 179, 133, 0.12);
+  --vermilion: #f06a4a;
+  --vermilion-soft: rgba(240, 106, 74, 0.11);
+  --ochre: #e59b25;
+  --ochre-soft: rgba(229, 155, 37, 0.12);
+  --code-bg: #e9f7f2;
+  --code-text: #0f8a65;
+  --shadow-card: 0 2px 10px rgba(22, 140, 106, 0.055), 0 1px 2px rgba(0, 0, 0, 0.025);
+  --shadow-hover: 0 10px 26px rgba(22, 140, 106, 0.11);
+  --shadow-deck: 0 18px 42px rgba(22, 140, 106, 0.14);
+  --grain-opacity: 0;
+  --radius-card: 18px;
+  --font-display: "PingFang SC", "Hiragino Sans GB", -apple-system, sans-serif;
+  --font-headword: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Segoe UI", sans-serif;
+}
+
+/* Theme 5: 深夜护眼 (Midnight Warm Lamp) */
 [data-theme="dark"] {
   --bg: #121110;
   --bg-elevated: #171614;
@@ -66,7 +159,229 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  transition: background-color 0.28s ease, color 0.25s ease;
+}
+
+/* Apple Glass Luminous Daylight Mesh Backdrop */
+[data-theme="glass"] body {
+  background-attachment: fixed;
+  background-image:
+    radial-gradient(at 14% 12%, rgba(186, 218, 255, 0.72) 0px, transparent 52%),
+    radial-gradient(at 86% 18%, rgba(246, 214, 232, 0.56) 0px, transparent 48%),
+    radial-gradient(at 78% 82%, rgba(186, 238, 224, 0.62) 0px, transparent 54%),
+    radial-gradient(at 18% 86%, rgba(219, 230, 254, 0.68) 0px, transparent 52%);
+}
+
+[data-theme="glass"] .sidebar,
+[data-theme="glass"] .ring-card,
+[data-theme="glass"] .lex-card,
+[data-theme="glass"] .ledger,
+[data-theme="glass"] .flip-face,
+[data-theme="glass"] .empty-box,
+[data-theme="glass"] .modal-box,
+[data-theme="glass"] .search-input,
+[data-theme="glass"] .mask-btn,
+[data-theme="glass"] .view-seg,
+[data-theme="glass"] .theme-dots,
+[data-theme="glass"] .theme-chip,
+[data-theme="glass"] .mobile-bar,
+[data-theme="glass"] .deck-stack::before,
+[data-theme="glass"] .deck-stack::after {
+  backdrop-filter: blur(var(--glass-blur)) saturate(185%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(185%);
+}
+
+[data-theme="glass"] .mobile-bar {
+  background: rgba(255, 255, 255, 0.56);
+}
+
+[data-theme="glass"] .memory-strip {
+  background: rgba(255, 255, 255, 0.48);
+  border-left-color: var(--pine);
+}
+
+[data-theme="glass"] .ink-btn,
+[data-theme="glass"] .year-btn.active {
+  background: var(--pine);
+  border-color: var(--pine);
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 113, 227, 0.25);
+}
+
+[data-theme="glass"] .view-btn.active {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(30, 58, 110, 0.09);
+}
+
+[data-theme="glass"] .toast {
+  background: rgba(17, 24, 39, 0.82);
+  color: #ffffff;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Swiss Mono Sharp Crisp Refinements */
+[data-theme="mono"] .lex-card,
+[data-theme="mono"] .ring-card,
+[data-theme="mono"] .ledger,
+[data-theme="mono"] .flip-face,
+[data-theme="mono"] .empty-box {
+  border-radius: var(--radius-card);
+}
+
+[data-theme="mono"] .lex-card {
+  border-color: rgba(0, 0, 0, 0.14);
+}
+
+[data-theme="mono"] .lex-card:hover {
+  border-color: #0a0a0a;
+  transform: translateY(-1px);
+}
+
+[data-theme="mono"] .lex-card.is-hard {
+  border-color: #0a0a0a;
+  border-left: 3px solid #0a0a0a;
+}
+
+[data-theme="mono"] .view-seg,
+[data-theme="mono"] .search-input,
+[data-theme="mono"] .mask-btn,
+[data-theme="mono"] .side-item,
+[data-theme="mono"] .side-foot-btn,
+[data-theme="mono"] .mobile-menu-btn,
+[data-theme="mono"] .theme-chip,
+[data-theme="mono"] .rate-pill {
+  border-radius: 6px;
+}
+
+[data-theme="mono"] .view-btn {
+  border-radius: 4px;
+}
+
+[data-theme="mono"] .view-btn.active,
+[data-theme="mono"] .mask-btn.active {
+  background: #0a0a0a;
+  border-color: #0a0a0a;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+[data-theme="mono"] .side-item.active {
+  background: #0a0a0a;
+  color: #ffffff;
+  box-shadow: none;
+}
+
+[data-theme="mono"] .side-item.active .side-count {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+[data-theme="mono"] .side-item.active .chapter-dot,
+[data-theme="mono"] .side-item.active .mini-bar-fill {
+  background: #ffffff;
+}
+
+[data-theme="mono"] .side-item.active .mini-bar {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+[data-theme="mono"] .seal-tag {
+  background: #0a0a0a;
+  color: #ffffff;
+  border-color: #0a0a0a;
+  border-radius: 2px;
+}
+
+[data-theme="mono"] .memory-strip {
+  background: #fafafa;
+  border-left: 2px solid #0a0a0a;
+  border-radius: 0;
+}
+
+[data-theme="mono"] .headword,
+[data-theme="mono"] .fc-big-word,
+[data-theme="mono"] .ledger-word {
+  letter-spacing: -0.03em;
+}
+
+[data-theme="mono"] .card-num {
+  font-style: normal;
+}
+
+[data-theme="mono"] .pos-chip {
+  font-style: normal;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* MaMemo Mint Study Refinements */
+[data-theme="momo"] .masthead-kicker,
+[data-theme="momo"] .chapter-roman {
+  color: var(--pine);
+}
+
+[data-theme="momo"] .side-item.active .chapter-dot {
+  background: var(--pine);
+}
+
+[data-theme="momo"] .side-item.active {
+  background: var(--pine-soft);
+  color: #0f8a65;
+  box-shadow: none;
+}
+
+[data-theme="momo"] .year-btn.active,
+[data-theme="momo"] .mask-btn.active {
+  background: var(--pine);
+  border-color: var(--pine);
+  color: #ffffff;
+}
+
+[data-theme="momo"] .view-seg {
+  background: #e6f2ed;
+  border-color: transparent;
+}
+
+[data-theme="momo"] .view-btn.active {
+  background: #ffffff;
+  color: #0f8a65;
+  box-shadow: 0 2px 6px rgba(22, 179, 133, 0.14);
+}
+
+[data-theme="momo"] .seal-tag {
+  border-radius: 999px;
+  padding: 1px 9px;
+}
+
+[data-theme="momo"] .card-num {
+  font-style: normal;
+  font-weight: 600;
+}
+
+[data-theme="momo"] .pos-chip {
+  font-style: normal;
+  background: var(--pine-soft);
+  color: #0f8a65;
+  padding: 1px 7px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+[data-theme="momo"] .memory-strip {
+  background: #f4fbf8;
+  border-left: 3px solid var(--pine);
+  border-radius: 10px;
+}
+
+[data-theme="momo"] .ink-btn {
+  background: var(--pine);
+  color: #ffffff;
+}
+
+[data-theme="momo"] .rate-pill {
+  border-radius: 999px;
 }
 
 /* Tactile Archival Paper Grain */
@@ -125,7 +440,7 @@ svg {
 }
 
 .masthead-kicker {
-  font-family: "New York", "Iowan Old Style", Georgia, serif;
+  font-family: var(--font-headword);
   font-size: 10.5px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -136,7 +451,7 @@ svg {
 
 .masthead-title {
   margin: 0;
-  font-family: "Songti SC", "STSong", "Noto Serif SC", "PingFang SC", Georgia, serif;
+  font-family: var(--font-display);
   font-size: 21px;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -153,7 +468,7 @@ svg {
 .ring-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: calc(var(--radius-card) - 2px);
   padding: 16px;
   display: flex;
   align-items: center;
@@ -197,7 +512,7 @@ svg {
 }
 
 .ring-pct {
-  font-family: "New York", Georgia, serif;
+  font-family: var(--font-headword);
   font-size: 16px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -336,6 +651,95 @@ svg {
   color: var(--bg);
 }
 
+/* 5-Theme Handcrafted Picker */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.theme-chip {
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.16s ease;
+  text-align: left;
+  min-width: 0;
+}
+
+.theme-chip:last-child {
+  grid-column: span 2;
+  justify-content: center;
+}
+
+.theme-chip:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.theme-chip.active {
+  border-color: var(--pine);
+  box-shadow: 0 0 0 2px var(--pine-soft);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.theme-swatch {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid var(--border-strong);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35);
+}
+
+.theme-chip-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Compact Quick Theme Switcher in Stage Controls */
+.theme-dots {
+  height: 36px;
+  padding: 0 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.theme-dot-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  flex-shrink: 0;
+}
+
+.theme-dot-btn:hover {
+  transform: scale(1.16);
+}
+
+.theme-dot-btn.active {
+  transform: scale(1.12);
+  border-color: var(--text);
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--pine);
+}
+
 .side-footer {
   margin-top: auto;
   padding-top: 14px;
@@ -436,7 +840,7 @@ svg {
 }
 
 .stage-kicker {
-  font-family: "New York", Georgia, serif;
+  font-family: var(--font-headword);
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -446,7 +850,7 @@ svg {
 
 .stage-title {
   margin: 0;
-  font-family: "Songti SC", "STSong", "Noto Serif SC", "PingFang SC", Georgia, serif;
+  font-family: var(--font-display);
   font-size: 26px;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -492,7 +896,7 @@ svg {
 /* Search & Mask Pill */
 .search-field {
   position: relative;
-  width: 210px;
+  width: 192px;
 }
 
 .search-field svg {
@@ -569,7 +973,7 @@ svg {
 
 .chapter-banner h2 {
   margin: 0;
-  font-family: "Songti SC", "STSong", "PingFang SC", Georgia, serif;
+  font-family: var(--font-display);
   font-size: 17px;
   font-weight: 700;
   display: flex;
@@ -578,7 +982,7 @@ svg {
 }
 
 .chapter-roman {
-  font-family: "New York", Georgia, serif;
+  font-family: var(--font-headword);
   font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -607,7 +1011,7 @@ svg {
 .lex-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius-card);
   padding: 22px 22px 18px;
   box-shadow: var(--shadow-card);
   display: flex;
@@ -639,7 +1043,7 @@ svg {
 }
 
 .card-num {
-  font-family: "New York", Georgia, serif;
+  font-family: var(--font-headword);
   font-size: 12px;
   font-style: italic;
   color: var(--text-muted);
@@ -666,7 +1070,7 @@ svg {
 }
 
 .headword {
-  font-family: "New York", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  font-family: var(--font-headword);
   font-size: 27px;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -743,7 +1147,7 @@ svg {
 }
 
 .pos-chip {
-  font-family: "New York", Georgia, serif;
+  font-family: var(--font-headword);
   font-style: italic;
   font-size: 13px;
   font-weight: 600;
@@ -857,7 +1261,7 @@ svg {
 .ledger {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   overflow: hidden;
 }
@@ -891,7 +1295,7 @@ svg {
 }
 
 .ledger-word {
-  font-family: "New York", Georgia, serif;
+  font-family: var(--font-headword);
   font-size: 18px;
   font-weight: 700;
   color: var(--text);
@@ -935,7 +1339,7 @@ svg {
 
 .deck-bar strong {
   color: var(--text);
-  font-family: "New York", Georgia, serif;
+  font-family: var(--font-headword);
   font-size: 15px;
 }
 
@@ -954,7 +1358,7 @@ svg {
   right: 14px;
   bottom: -9px;
   height: 24px;
-  border-radius: 0 0 18px 18px;
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
   background: var(--surface);
   border: 1px solid var(--border);
   z-index: 0;
@@ -987,7 +1391,7 @@ svg {
   min-height: 390px;
   background: var(--surface);
   border: 1px solid var(--border-strong);
-  border-radius: 20px;
+  border-radius: calc(var(--radius-card) + 4px);
   padding: 28px 30px;
   box-shadow: var(--shadow-deck);
   backface-visibility: hidden;
@@ -1029,7 +1433,7 @@ svg {
 }
 
 .fc-big-word {
-  font-family: "New York", "Iowan Old Style", Georgia, serif;
+  font-family: var(--font-headword);
   font-size: 44px;
   font-weight: 700;
   letter-spacing: -0.025em;
@@ -1097,7 +1501,7 @@ svg {
 }
 
 .fc-back-word {
-  font-family: "New York", Georgia, serif;
+  font-family: var(--font-headword);
   font-size: 24px;
   font-weight: 700;
 }
@@ -1144,7 +1548,7 @@ svg {
 .empty-box {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: var(--radius-card);
   padding: 56px 24px;
   text-align: center;
   box-shadow: var(--shadow-card);
@@ -1152,7 +1556,7 @@ svg {
 
 .empty-box h3 {
   margin: 0 0 6px;
-  font-family: "Songti SC", "PingFang SC", serif;
+  font-family: var(--font-display);
   font-size: 18px;
 }
 
@@ -1182,7 +1586,7 @@ svg {
   max-width: 440px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: calc(var(--radius-card) + 2px);
   padding: 22px;
   box-shadow: var(--shadow-deck);
 }

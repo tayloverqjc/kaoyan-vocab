@@ -621,26 +621,92 @@
     renderMain();
   }
 
-  // Theme init
-  function updateThemeBtn() {
-    const dark = document.documentElement.getAttribute("data-theme") === "dark";
-    document.getElementById("themeBtn").innerHTML = dark
-      ? `${ICONS.sun}<span>纸感浅色</span>`
-      : `${ICONS.moon}<span>深夜护眼</span>`;
+  // 5 Handcrafted Themes
+  const THEMES = [
+    {
+      id: "paper",
+      name: "精装纸感",
+      swatch: "linear-gradient(135deg, #f3efe6 52%, #1e5b4c 52%)"
+    },
+    {
+      id: "mono",
+      name: "极简黑白",
+      swatch: "linear-gradient(135deg, #ffffff 50%, #0a0a0a 50%)"
+    },
+    {
+      id: "glass",
+      name: "苹果毛玻璃",
+      swatch: "linear-gradient(135deg, #b8dcff 0%, #f4d6e8 50%, #0071e3 100%)"
+    },
+    {
+      id: "momo",
+      name: "墨墨背词风",
+      swatch: "linear-gradient(135deg, #edf7f3 50%, #16b385 50%)"
+    },
+    {
+      id: "dark",
+      name: "深夜护眼",
+      swatch: "linear-gradient(135deg, #1b1917 52%, #56b89a 52%)"
+    }
+  ];
+
+  function normalizeTheme(id) {
+    if (id === "light" || !id) return "paper";
+    return THEMES.some(t => t.id === id) ? id : "paper";
   }
 
-  const savedTheme = localStorage.getItem(THEME_KEY);
-  if (savedTheme === "dark" || savedTheme === "light") {
-    document.documentElement.setAttribute("data-theme", savedTheme);
-  }
-  updateThemeBtn();
+  let activeTheme = "paper";
+  try {
+    activeTheme = normalizeTheme(localStorage.getItem(THEME_KEY));
+  } catch (_) {}
 
-  document.getElementById("themeBtn").onclick = () => {
-    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
-    try { localStorage.setItem(THEME_KEY, next); } catch (_) {}
-    updateThemeBtn();
-  };
+  function applyTheme(themeId, notify = false) {
+    const id = normalizeTheme(themeId);
+    activeTheme = id;
+    if (id === "paper") {
+      document.documentElement.removeAttribute("data-theme");
+    } else {
+      document.documentElement.setAttribute("data-theme", id);
+    }
+    try {
+      localStorage.setItem(THEME_KEY, id);
+    } catch (_) {}
+
+    document.querySelectorAll("[data-theme-pick]").forEach(btn => {
+      const isCurrent = btn.getAttribute("data-theme-pick") === id;
+      btn.classList.toggle("active", isCurrent);
+      btn.setAttribute("aria-checked", isCurrent ? "true" : "false");
+    });
+
+    if (notify) {
+      const meta = THEMES.find(t => t.id === id);
+      if (meta) showToast("已切换主题：" + meta.name);
+    }
+  }
+
+  function initThemePickers() {
+    const grid = document.getElementById("themeGrid");
+    const dots = document.getElementById("themeDots");
+    if (grid) {
+      grid.innerHTML = THEMES.map(t => `
+        <button type="button" class="theme-chip" role="radio" aria-checked="false" data-theme-pick="${t.id}">
+          <span class="theme-swatch" style="background:${t.swatch}"></span>
+          <span class="theme-chip-label">${t.name}</span>
+        </button>
+      `).join("");
+    }
+    if (dots) {
+      dots.innerHTML = THEMES.map(t => `
+        <button type="button" class="theme-dot-btn" role="radio" aria-checked="false" data-theme-pick="${t.id}" title="主题：${t.name}" aria-label="切换主题：${t.name}" style="background:${t.swatch}"></button>
+      `).join("");
+    }
+    document.querySelectorAll("[data-theme-pick]").forEach(btn => {
+      btn.onclick = () => applyTheme(btn.getAttribute("data-theme-pick"), true);
+    });
+    applyTheme(activeTheme, false);
+  }
+
+  initThemePickers();
 
   // Controls bindings
   document.querySelectorAll("[data-view]").forEach(btn => {
