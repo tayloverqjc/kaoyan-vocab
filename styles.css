@@ -198,38 +198,38 @@ body {
 }
 
 [data-theme="glass"] .sidebar {
-  background: linear-gradient(180deg, rgba(10, 15, 28, 0.52) 0%, rgba(10, 15, 28, 0.38) 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(36px) saturate(185%);
-  -webkit-backdrop-filter: blur(36px) saturate(185%);
+  background: linear-gradient(180deg, rgba(8, 12, 22, 0.66) 0%, rgba(8, 12, 22, 0.52) 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(36px) saturate(155%);
+  -webkit-backdrop-filter: blur(36px) saturate(155%);
 }
 
 [data-theme="glass"] .lex-card,
 [data-theme="glass"] .ledger,
 [data-theme="glass"] .ring-card,
 [data-theme="glass"] .empty-box {
-  background: linear-gradient(155deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.07) 58%, rgba(255, 255, 255, 0.11) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(var(--glass-blur)) saturate(185%) brightness(1.03);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(185%) brightness(1.03);
+  background: linear-gradient(155deg, rgba(16, 23, 38, 0.54) 0%, rgba(11, 16, 28, 0.42) 60%, rgba(15, 22, 36, 0.48) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(var(--glass-blur)) saturate(155%) brightness(0.92);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(155%) brightness(0.92);
 }
 
 [data-theme="glass"] .lex-card:hover {
-  background: linear-gradient(155deg, rgba(255, 255, 255, 0.21) 0%, rgba(255, 255, 255, 0.1) 58%, rgba(255, 255, 255, 0.14) 100%);
-  border-color: rgba(255, 255, 255, 0.36);
+  background: linear-gradient(155deg, rgba(22, 31, 50, 0.6) 0%, rgba(14, 21, 36, 0.48) 60%, rgba(19, 28, 45, 0.54) 100%);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 [data-theme="glass"] .flip-face {
-  background: linear-gradient(155deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 60%, rgba(255, 255, 255, 0.12) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  backdrop-filter: blur(34px) saturate(195%) brightness(1.05);
-  -webkit-backdrop-filter: blur(34px) saturate(195%) brightness(1.05);
+  background: linear-gradient(155deg, rgba(16, 23, 38, 0.6) 0%, rgba(11, 16, 28, 0.48) 60%, rgba(16, 23, 38, 0.54) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(34px) saturate(160%) brightness(0.94);
+  -webkit-backdrop-filter: blur(34px) saturate(160%) brightness(0.94);
 }
 
 [data-theme="glass"] .deck-stack::before,
 [data-theme="glass"] .deck-stack::after {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(12, 18, 30, 0.36);
+  border-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
@@ -243,38 +243,38 @@ body {
 [data-theme="glass"] .side-foot-btn,
 [data-theme="glass"] .mobile-menu-btn,
 [data-theme="glass"] .year-btn {
-  background: rgba(255, 255, 255, 0.11);
-  border-color: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(22px) saturate(180%);
-  -webkit-backdrop-filter: blur(22px) saturate(180%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  background: rgba(12, 18, 30, 0.44);
+  border-color: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.11);
 }
 
 [data-theme="glass"] .mobile-bar {
-  background: rgba(10, 15, 28, 0.56);
-  border-bottom-color: rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  background: rgba(8, 12, 22, 0.68);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(28px) saturate(155%);
+  -webkit-backdrop-filter: blur(28px) saturate(155%);
 }
 
 [data-theme="glass"] .modal-box {
-  background: rgba(14, 20, 34, 0.78);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  backdrop-filter: blur(34px) saturate(185%);
-  -webkit-backdrop-filter: blur(34px) saturate(185%);
+  background: rgba(11, 16, 28, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(34px) saturate(160%);
+  -webkit-backdrop-filter: blur(34px) saturate(160%);
 }
 
 [data-theme="glass"] .sync-area {
-  background: rgba(0, 0, 0, 0.34);
-  border-color: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
+  background: rgba(0, 0, 0, 0.38);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: rgba(236, 241, 248, 0.92);
 }
 
 [data-theme="glass"] .stage-title,
 [data-theme="glass"] .headword,
 [data-theme="glass"] .fc-big-word,
 [data-theme="glass"] .chapter-banner h2 {
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.24);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.32);
 }
 
 [data-theme="glass"] .masthead-kicker,
@@ -283,24 +283,24 @@ body {
 }
 
 [data-theme="glass"] .meaning-zone {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="glass"] .memory-strip {
-  background: rgba(8, 13, 24, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(6, 10, 20, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-left: 2.5px solid var(--pine);
   border-radius: 12px;
 }
 
 [data-theme="glass"] .en-quote {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="glass"] .pos-chip {
   font-style: normal;
-  background: rgba(92, 225, 184, 0.16);
-  border: 1px solid rgba(92, 225, 184, 0.26);
+  background: rgba(79, 212, 171, 0.14);
+  border: 1px solid rgba(79, 212, 171, 0.24);
   color: var(--pine);
   padding: 1px 7px;
   border-radius: 6px;
@@ -310,7 +310,7 @@ body {
 [data-theme="glass"] .seal-tag {
   border-radius: 999px;
   padding: 1px 9px;
-  border-color: rgba(255, 128, 112, 0.45);
+  border-color: rgba(232, 122, 107, 0.42);
 }
 
 [data-theme="glass"] .card-num {
@@ -318,80 +318,90 @@ body {
 }
 
 [data-theme="glass"] .side-item.active {
-  background: rgba(255, 255, 255, 0.16);
-  color: #ffffff;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26);
+  background: rgba(255, 255, 255, 0.11);
+  color: rgba(242, 246, 252, 0.96);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 [data-theme="glass"] .side-item.active .chapter-dot {
   background: var(--pine);
-  box-shadow: 0 0 8px rgba(92, 225, 184, 0.7);
+  box-shadow: 0 0 6px rgba(79, 212, 171, 0.55);
 }
 
 [data-theme="glass"] .view-btn.active {
-  background: rgba(255, 255, 255, 0.9);
-  color: #0e1626;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.17);
+  color: #eef3fa;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 3px 10px rgba(0, 0, 0, 0.22);
 }
 
-[data-theme="glass"] .year-btn.active,
+[data-theme="glass"] .year-btn.active {
+  background: rgba(79, 212, 171, 0.18);
+  border-color: rgba(79, 212, 171, 0.46);
+  color: #e0f8f0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 4px 14px rgba(0, 0, 0, 0.24);
+}
+
 [data-theme="glass"] .ink-btn {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(255, 255, 255, 0.92);
-  color: #0e1626;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+  background: rgba(79, 212, 171, 0.22);
+  border: 1px solid rgba(79, 212, 171, 0.44);
+  color: #e6faf3;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+}
+
+[data-theme="glass"] .ink-btn:hover {
+  background: rgba(79, 212, 171, 0.3);
 }
 
 [data-theme="glass"] .mask-btn.active {
-  background: rgba(255, 128, 112, 0.88);
-  border-color: rgba(255, 160, 148, 0.65);
-  color: #ffffff;
+  background: rgba(232, 122, 107, 0.26);
+  border-color: rgba(232, 122, 107, 0.5);
+  color: #fdeae7;
 }
 
 [data-theme="glass"] .rate-pill {
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.13);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
 [data-theme="glass"] .fc-context-hint {
-  background: rgba(8, 13, 24, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.88);
+  background: rgba(6, 10, 20, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(226, 234, 244, 0.84);
 }
 
 [data-theme="glass"] .speak-btn {
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(224, 232, 244, 0.72);
 }
 
 [data-theme="glass"] .speak-btn:hover {
-  background: rgba(92, 225, 184, 0.24);
-  color: #ffffff;
+  background: rgba(79, 212, 171, 0.2);
+  color: #eef5f2;
 }
 
 [data-theme="glass"] .speak-btn.speaking {
   background: var(--pine);
-  color: #0b141a;
+  color: #091318;
 }
 
 [data-theme="glass"] .theme-dot-btn.active {
-  border-color: #ffffff;
-  box-shadow: 0 0 0 2px rgba(10, 15, 28, 0.72), 0 0 0 3.5px var(--pine);
+  border-color: rgba(236, 241, 248, 0.88);
+  box-shadow: 0 0 0 2px rgba(8, 12, 22, 0.78), 0 0 0 3.5px var(--pine);
 }
 
 [data-theme="glass"] .toast {
-  background: rgba(12, 18, 30, 0.78);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(22px) saturate(180%);
-  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  background: rgba(10, 15, 26, 0.84);
+  color: rgba(236, 241, 248, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(22px) saturate(155%);
+  -webkit-backdrop-filter: blur(22px) saturate(155%);
 }
 
 @media (max-width: 860px) {
   [data-theme="glass"] .sidebar {
-    background: rgba(10, 15, 28, 0.74);
+    background: rgba(8, 12, 22, 0.82);
   }
 }
 
@@ -1002,9 +1012,10 @@ svg {
 }
 
 .wp-mini.active {
-  background: rgba(255, 255, 255, 0.88);
-  color: #0e1626;
+  background: rgba(255, 255, 255, 0.18);
+  color: #eef3fa;
   font-weight: 600;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .side-footer {
@@ -1945,10 +1956,10 @@ svg {
 }
 
 [data-theme="glass"] .trash-banner {
-  background: rgba(255, 255, 255, 0.11);
-  border-color: rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  background: rgba(12, 18, 30, 0.48);
+  border-color: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(24px) saturate(155%);
+  -webkit-backdrop-filter: blur(24px) saturate(155%);
 }
 
 [data-theme="dark"] .toast-act {
