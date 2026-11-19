@@ -14,7 +14,9 @@
     sun: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>',
     shuffle: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>',
     prev: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>',
-    next: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>'
+    next: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
+    trash: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>',
+    restore: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>'
   };
 
   const manifest = window.VOCAB_MANIFEST || [];
@@ -32,7 +34,7 @@
   const state = {
     setId: initialSetId(),
     passage: "ALL",
-    collection: "all", // all | unmastered | hard | secondary | mastered
+    collection: "all", // all | unmastered | hard | secondary | mastered | deleted
     view: "cards", // cards | ledger | deck
     maskMeaning: false,
     search: "",
@@ -52,11 +54,12 @@
         const p = JSON.parse(raw);
         return {
           mastered: Array.isArray(p.mastered) ? p.mastered : [],
-          hard: Array.isArray(p.hard) ? p.hard : []
+          hard: Array.isArray(p.hard) ? p.hard : [],
+          deleted: Array.isArray(p.deleted) ? p.deleted : []
         };
       }
     } catch (_) {}
-    return { mastered: [], hard: [] };
+    return { mastered: [], hard: [], deleted: [] };
   }
 
   function saveProgress() {
@@ -67,6 +70,7 @@
 
   const isMastered = id => state.progress.mastered.includes(id);
   const isHard = id => state.progress.hard.includes(id);
+  const isDeleted = id => state.progress.deleted.includes(id);
 
   function toggleMastered(id, force) {
     const next = typeof force === "boolean" ? force : !isMastered(id);
@@ -88,18 +92,58 @@
     saveProgress();
   }
 
+  function deleteWord(item) {
+    const prev = { wasMastered: isMastered(item.id), wasHard: isHard(item.id) };
+    if (!isDeleted(item.id)) state.progress.deleted.push(item.id);
+    state.progress.mastered = state.progress.mastered.filter(x => x !== item.id);
+    state.progress.hard = state.progress.hard.filter(x => x !== item.id);
+    state.fcOrder = state.fcOrder.filter(x => x !== item.id);
+    state.fcFlipped = false;
+    state.fcShowHint = false;
+    saveProgress();
+    render();
+    showToast(`已移出「${item.word}」`, {
+      label: "撤销",
+      onClick: () => {
+        restoreWord(item.id, prev);
+        showToast(`已恢复「${item.word}」`);
+      }
+    });
+  }
+
+  function restoreWord(id, prev = null) {
+    state.progress.deleted = state.progress.deleted.filter(x => x !== id);
+    if (prev && prev.wasMastered && !isMastered(id)) state.progress.mastered.push(id);
+    if (prev && prev.wasHard && !isHard(id)) state.progress.hard.push(id);
+    saveProgress();
+    if (state.collection === "deleted" && !deletedWords().length) {
+      state.collection = "all";
+    }
+    syncDeckOrder(false);
+    render();
+  }
+
+  function restoreAllCurrentDeleted() {
+    const ids = new Set(deletedWords().map(w => w.id));
+    if (!ids.size) return;
+    state.progress.deleted = state.progress.deleted.filter(id => !ids.has(id));
+    saveProgress();
+    state.collection = "all";
+    syncDeckOrder(false);
+    render();
+    showToast(`已恢复本卷 ${ids.size} 个词条`);
+  }
+
   function currentSet() {
     return sets[state.setId] || null;
   }
 
-  function allWords() {
+  function rawWords() {
     const s = currentSet();
     if (!s) return [];
-    let idx = 0;
     return s.passages.flatMap(p =>
       p.words.map(w => ({
         ...w,
-        num: ++idx,
         passageId: p.id,
         passageCode: p.code,
         passageTitle: p.title
@@ -107,9 +151,24 @@
     );
   }
 
+  function allWords() {
+    let idx = 0;
+    return rawWords()
+      .filter(w => !isDeleted(w.id))
+      .map(w => ({ ...w, num: ++idx }));
+  }
+
+  function deletedWords() {
+    let idx = 0;
+    return rawWords()
+      .filter(w => isDeleted(w.id))
+      .map(w => ({ ...w, num: ++idx }));
+  }
+
   function filteredWords() {
     const q = state.search.trim().toLowerCase();
-    return allWords().filter(w => {
+    const base = state.collection === "deleted" ? deletedWords() : allWords();
+    return base.filter(w => {
       if (state.passage !== "ALL" && w.passageId !== state.passage) return false;
       if (state.collection === "unmastered" && isMastered(w.id)) return false;
       if (state.collection === "hard" && !isHard(w.id)) return false;
@@ -136,12 +195,30 @@
   const fmtMeaning = s => esc(s).replace(/`([^`]+)`/g, '<span class="pos-chip">$1</span>');
 
   let toastTimer = null;
-  function showToast(msg) {
+  function showToast(msg, action = null) {
     const el = document.getElementById("toast");
-    el.textContent = msg;
+    el.innerHTML = "";
+    const txt = document.createElement("span");
+    txt.textContent = msg;
+    el.appendChild(txt);
+    if (action && action.label && typeof action.onClick === "function") {
+      el.classList.add("has-action");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "toast-act";
+      btn.textContent = action.label;
+      btn.onclick = () => {
+        el.classList.remove("show", "has-action");
+        clearTimeout(toastTimer);
+        action.onClick();
+      };
+      el.appendChild(btn);
+    } else {
+      el.classList.remove("has-action");
+    }
     el.classList.add("show");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove("show"), 1800);
+    toastTimer = setTimeout(() => el.classList.remove("show", "has-action"), action ? 4200 : 1800);
   }
 
   function speakWord(word, btnEl) {
@@ -242,12 +319,15 @@
     if (cur) {
       const items = [
         { id: "ALL", title: "全部篇目", count: total, done: mastered },
-        ...cur.passages.map(p => ({
-          id: p.id,
-          title: `${p.code} · ${p.title}`,
-          count: p.words.length,
-          done: p.words.filter(w => isMastered(w.id)).length
-        }))
+        ...cur.passages.map(p => {
+          const active = p.words.filter(w => !isDeleted(w.id));
+          return {
+            id: p.id,
+            title: `${p.code} · ${p.title}`,
+            count: active.length,
+            done: active.filter(w => isMastered(w.id)).length
+          };
+        })
       ];
       items.forEach(it => {
         const pPct = it.count ? Math.round((it.done / it.count) * 100) : 0;
@@ -272,6 +352,7 @@
     }
 
     // Smart collections
+    const delCount = deletedWords().length;
     const colEl = document.getElementById("collectionList");
     colEl.innerHTML = "";
     const cols = [
@@ -281,6 +362,9 @@
       { id: "secondary", label: "熟词生义精选", count: secondary },
       { id: "mastered", label: "已掌握词库", count: mastered }
     ];
+    if (delCount > 0 || state.collection === "deleted") {
+      cols.push({ id: "deleted", label: "已移出词库", count: delCount });
+    }
     cols.forEach(c => {
       const b = document.createElement("button");
       b.type = "button";
@@ -309,7 +393,8 @@
       unmastered: "待攻克",
       hard: "易忘钉子户",
       secondary: "熟词生义",
-      mastered: "已掌握"
+      mastered: "已掌握",
+      deleted: "已移出词库"
     };
     document.getElementById("stageKicker").textContent = `${cur ? cur.label : ""} · ${colLabels[state.collection]} (${list.length})`;
     document.getElementById("stageTitle").textContent = title;
@@ -322,6 +407,20 @@
     maskBtn.classList.toggle("active", state.maskMeaning);
     maskBtn.classList.toggle("hidden", state.view === "deck");
     maskBtn.innerHTML = `${state.maskMeaning ? ICONS.eye : ICONS.eyeOff}<span>${state.maskMeaning ? "显示词义" : "遮义自测"}</span>`;
+  }
+
+  function renderTrashBanner(box) {
+    if (state.collection !== "deleted") return;
+    const totalDel = deletedWords().length;
+    if (!totalDel) return;
+    const bar = document.createElement("div");
+    bar.className = "trash-banner";
+    bar.innerHTML = `
+      <span>已移出的简单词/熟词不会计入当前词卷进度，随时可单条或批量恢复。</span>
+      <button type="button" class="foot-btn master-on" id="restoreAllBtn">${ICONS.restore}<span>恢复本卷全部 (${totalDel})</span></button>
+    `;
+    bar.querySelector("#restoreAllBtn").onclick = restoreAllCurrentDeleted;
+    box.appendChild(bar);
   }
 
   function renderEmpty(box) {
@@ -343,6 +442,8 @@
 
   function renderCardsView(list, box) {
     if (!list.length) return renderEmpty(box);
+    renderTrashBanner(box);
+    const inTrash = state.collection === "deleted";
     const cur = currentSet();
     cur.passages.forEach(p => {
       const pw = list.filter(w => w.passageId === p.id);
@@ -353,7 +454,7 @@
       block.innerHTML = `
         <div class="chapter-banner">
           <h2><span class="chapter-roman">${esc(p.code)}</span><span>${esc(p.title)}</span></h2>
-          <span class="chapter-stat">${done} / ${pw.length} 已掌握</span>
+          <span class="chapter-stat">${inTrash ? `${pw.length} 词已移出` : `${done} / ${pw.length} 已掌握`}</span>
         </div>`;
 
       const grid = document.createElement("div");
@@ -386,16 +487,29 @@
           <div class="card-foot">
             <span class="foot-chapter">${esc(item.passageCode)} · ${esc(item.passageTitle)}</span>
             <div class="foot-actions">
-              <button type="button" class="foot-btn ${h ? "hard-on" : ""}" data-a="h">${h ? ICONS.bookmarkFill : ICONS.bookmark}<span>${h ? "已标易忘" : "易忘"}</span></button>
-              <button type="button" class="foot-btn ${m ? "master-on" : ""}" data-a="m">${ICONS.check}<span>${m ? "已掌握" : "掌握"}</span></button>
+              ${inTrash
+                ? `<button type="button" class="foot-btn master-on" data-a="res">${ICONS.restore}<span>恢复词条</span></button>`
+                : `
+                  <button type="button" class="foot-btn ${h ? "hard-on" : ""}" data-a="h">${h ? ICONS.bookmarkFill : ICONS.bookmark}<span>${h ? "已标易忘" : "易忘"}</span></button>
+                  <button type="button" class="foot-btn ${m ? "master-on" : ""}" data-a="m">${ICONS.check}<span>${m ? "已掌握" : "掌握"}</span></button>
+                  <button type="button" class="foot-btn del-btn" data-a="del" title="移出词本（太简单/已熟知）" aria-label="移出词本">${ICONS.trash}</button>
+                `}
             </div>
           </div>
         `;
 
         const spk = card.querySelector(".speak-btn");
         spk.onclick = () => speakWord(item.word, spk);
-        card.querySelector('[data-a="h"]').onclick = () => { toggleHard(item.id); render(); };
-        card.querySelector('[data-a="m"]').onclick = () => { toggleMastered(item.id); render(); };
+        if (inTrash) {
+          card.querySelector('[data-a="res"]').onclick = () => {
+            restoreWord(item.id);
+            showToast(`已恢复「${item.word}」`);
+          };
+        } else {
+          card.querySelector('[data-a="h"]').onclick = () => { toggleHard(item.id); render(); };
+          card.querySelector('[data-a="m"]').onclick = () => { toggleMastered(item.id); render(); };
+          card.querySelector('[data-a="del"]').onclick = () => deleteWord(item);
+        }
         card.querySelector('[data-a="peek"]').onclick = () => {
           if (!state.maskMeaning) return;
           state.revealedIds.has(item.id) ? state.revealedIds.delete(item.id) : state.revealedIds.add(item.id);
@@ -412,6 +526,8 @@
 
   function renderLedgerView(list, box) {
     if (!list.length) return renderEmpty(box);
+    renderTrashBanner(box);
+    const inTrash = state.collection === "deleted";
     const cur = currentSet();
     cur.passages.forEach(p => {
       const pw = list.filter(w => w.passageId === p.id);
@@ -421,7 +537,7 @@
       block.innerHTML = `
         <div class="chapter-banner">
           <h2><span class="chapter-roman">${esc(p.code)}</span><span>${esc(p.title)}</span></h2>
-          <span class="chapter-stat">点击任意一行展开真题用法与记忆法</span>
+          <span class="chapter-stat">${inTrash ? `${pw.length} 词已移出` : "点击任意一行展开真题用法与记忆法 · 右侧可快速清理熟词"}</span>
         </div>`;
       const ledger = document.createElement("div");
       ledger.className = "ledger";
@@ -451,8 +567,13 @@
               ${frosted ? '<div class="frost-veil"><span>点击查看</span></div>' : ""}
             </div>
             <div class="foot-actions">
-              <button type="button" class="foot-btn ${h ? "hard-on" : ""}" data-a="h" title="易忘">${h ? ICONS.bookmarkFill : ICONS.bookmark}</button>
-              <button type="button" class="foot-btn ${m ? "master-on" : ""}" data-a="m" title="已掌握">${ICONS.check}</button>
+              ${inTrash
+                ? `<button type="button" class="foot-btn master-on" data-a="res" title="恢复词条">${ICONS.restore}<span>恢复</span></button>`
+                : `
+                  <button type="button" class="foot-btn ${h ? "hard-on" : ""}" data-a="h" title="易忘">${h ? ICONS.bookmarkFill : ICONS.bookmark}</button>
+                  <button type="button" class="foot-btn ${m ? "master-on" : ""}" data-a="m" title="已掌握">${ICONS.check}</button>
+                  <button type="button" class="foot-btn del-btn" data-a="del" title="移出词本（太简单/已熟知）" aria-label="移出词本">${ICONS.trash}</button>
+                `}
             </div>
           </div>
           ${open ? `
@@ -463,8 +584,17 @@
         `;
 
         row.querySelector('[data-a="spk"]').onclick = e => { e.stopPropagation(); speakWord(item.word, e.currentTarget); };
-        row.querySelector('[data-a="h"]').onclick = e => { e.stopPropagation(); toggleHard(item.id); render(); };
-        row.querySelector('[data-a="m"]').onclick = e => { e.stopPropagation(); toggleMastered(item.id); render(); };
+        if (inTrash) {
+          row.querySelector('[data-a="res"]').onclick = e => {
+            e.stopPropagation();
+            restoreWord(item.id);
+            showToast(`已恢复「${item.word}」`);
+          };
+        } else {
+          row.querySelector('[data-a="h"]').onclick = e => { e.stopPropagation(); toggleHard(item.id); render(); };
+          row.querySelector('[data-a="m"]').onclick = e => { e.stopPropagation(); toggleMastered(item.id); render(); };
+          row.querySelector('[data-a="del"]').onclick = e => { e.stopPropagation(); deleteWord(item); };
+        }
         row.querySelector('[data-a="peek"]').onclick = e => {
           if (!state.maskMeaning) return;
           e.stopPropagation();
@@ -485,6 +615,7 @@
   }
 
   function renderDeckView(list, box) {
+    const inTrash = state.collection === "deleted";
     const map = new Map(list.map(w => [w.id, w]));
     let ids = state.fcOrder.filter(id => map.has(id));
     if (!ids.length && list.length) {
@@ -514,7 +645,12 @@
             <div class="flip-face flip-front">
               <div class="fc-top-row">
                 <span>${esc(item.passageCode)} · ${esc(item.passageTitle)}</span>
-                <span>${item.secondary ? '<span class="seal-tag">熟词生义</span>' : `No.${String(item.num).padStart(2, "0")}`}</span>
+                <div style="display:inline-flex;align-items:center;gap:8px">
+                  <span>${item.secondary ? '<span class="seal-tag">熟词生义</span>' : `No.${String(item.num).padStart(2, "0")}`}</span>
+                  ${inTrash
+                    ? `<button type="button" class="foot-btn master-on" id="fcActionFront">${ICONS.restore}<span>恢复</span></button>`
+                    : `<button type="button" class="foot-btn del-btn" id="fcActionFront" title="移出词本（太简单/已熟知）">${ICONS.trash}<span>移出</span></button>`}
+                </div>
               </div>
               <div class="fc-center">
                 <h2 class="fc-big-word">${esc(item.word)}</h2>
@@ -539,7 +675,12 @@
                     <span class="ipa">${esc(item.ipa)}</span>
                     <button type="button" class="speak-btn" id="fcSpeakBack" title="朗读">${ICONS.speaker}</button>
                   </div>
-                  <button type="button" class="text-link-btn" id="fcUnflipBtn">翻回正面</button>
+                  <div style="display:inline-flex;align-items:center;gap:10px">
+                    ${inTrash
+                      ? `<button type="button" class="foot-btn master-on" id="fcActionBack">${ICONS.restore}<span>恢复</span></button>`
+                      : `<button type="button" class="foot-btn del-btn" id="fcActionBack" title="移出词本（太简单/已熟知）">${ICONS.trash}</button>`}
+                    <button type="button" class="text-link-btn" id="fcUnflipBtn">翻回正面</button>
+                  </div>
                 </div>
                 <div class="fc-back-meaning">${fmtMeaning(item.meaning)}</div>
                 <div class="card-body">
@@ -547,11 +688,12 @@
                   <div class="memory-strip"><span class="note-label">记忆挂钩</span>${fmtBody(item.memory)}</div>
                 </div>
               </div>
+              ${inTrash ? "" : `
               <div class="fc-ratings">
                 <button type="button" class="rate-pill r-forgot" id="rate1">忘了 · 标易忘</button>
                 <button type="button" class="rate-pill r-fuzzy" id="rate2">模糊 · 下张</button>
                 <button type="button" class="rate-pill r-know" id="rate3">秒懂 · 掌握</button>
-              </div>
+              </div>`}
             </div>
           </div>
         </div>
@@ -563,6 +705,17 @@
     const spkB = document.getElementById("fcSpeakBack");
     spkF.onclick = () => speakWord(item.word, spkF);
     spkB.onclick = () => speakWord(item.word, spkB);
+
+    const handleCardAction = () => {
+      if (inTrash) {
+        restoreWord(item.id);
+        showToast(`已恢复「${item.word}」`);
+      } else {
+        deleteWord(item);
+      }
+    };
+    document.getElementById("fcActionFront").onclick = handleCardAction;
+    document.getElementById("fcActionBack").onclick = handleCardAction;
 
     document.getElementById("fcPrev").onclick = () => {
       state.fcIndex = (state.fcIndex - 1 + ids.length) % ids.length;
@@ -598,7 +751,10 @@
       };
     }
 
-    document.getElementById("rate1").onclick = () => {
+    const r1 = document.getElementById("rate1");
+    const r2 = document.getElementById("rate2");
+    const r3 = document.getElementById("rate3");
+    if (r1) r1.onclick = () => {
       toggleHard(item.id, true);
       showToast("已加入「易忘钉子户」");
       state.fcIndex = (state.fcIndex + 1) % ids.length;
@@ -606,13 +762,13 @@
       state.fcShowHint = false;
       render();
     };
-    document.getElementById("rate2").onclick = () => {
+    if (r2) r2.onclick = () => {
       state.fcIndex = (state.fcIndex + 1) % ids.length;
       state.fcFlipped = false;
       state.fcShowHint = false;
       renderMain();
     };
-    document.getElementById("rate3").onclick = () => {
+    if (r3) r3.onclick = () => {
       toggleMastered(item.id, true);
       showToast("已标为掌握");
       if (state.collection !== "unmastered") {
@@ -855,11 +1011,17 @@
     try {
       const parsed = JSON.parse(syncArea.value.trim());
       if (!Array.isArray(parsed.mastered) || !Array.isArray(parsed.hard)) throw 0;
+      const deleted = Array.isArray(parsed.deleted) ? [...new Set(parsed.deleted)] : [];
       state.progress = {
-        mastered: [...new Set(parsed.mastered)],
-        hard: [...new Set(parsed.hard)]
+        mastered: [...new Set(parsed.mastered)].filter(id => !deleted.includes(id)),
+        hard: [...new Set(parsed.hard)].filter(id => !deleted.includes(id)),
+        deleted
       };
+      if (state.collection === "deleted" && deletedWords().length === 0) {
+        state.collection = "all";
+      }
       saveProgress();
+      syncDeckOrder(false);
       syncModal.classList.remove("open");
       showToast("学习进度已导入");
       render();
@@ -868,9 +1030,11 @@
     }
   };
   document.getElementById("resetProgressBtn").onclick = () => {
-    if (!confirm("确定清空所有已掌握与易忘标记吗？")) return;
-    state.progress = { mastered: [], hard: [] };
+    if (!confirm("确定清空所有已掌握、易忘与已移出记录吗？")) return;
+    state.progress = { mastered: [], hard: [], deleted: [] };
+    if (state.collection === "deleted") state.collection = "all";
     saveProgress();
+    syncDeckOrder(false);
     syncModal.classList.remove("open");
     showToast("进度已重置");
     render();
