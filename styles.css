@@ -828,12 +828,31 @@ svg {
   border: 1px solid var(--border-strong);
   color: var(--text-secondary);
   background: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .year-btn.active {
   background: var(--text);
   border-color: var(--text);
   color: var(--bg);
+}
+
+.year-due-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 5.5px;
+  border-radius: 999px;
+  background: var(--vermilion-soft);
+  color: var(--vermilion);
+  font-variant-numeric: tabular-nums;
+}
+
+.year-btn.active .year-due-badge {
+  background: var(--vermilion);
+  color: #ffffff;
 }
 
 /* 5-Theme Handcrafted Picker */
@@ -1799,15 +1818,29 @@ svg {
 }
 
 .rate-pill {
-  height: 44px;
+  min-height: 52px;
+  padding: 7px 8px;
   border-radius: 12px;
   font-size: 13.5px;
   font-weight: 600;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  transition: transform 0.12s ease;
+  gap: 2px;
+  line-height: 1.2;
+  transition: transform 0.12s ease, opacity 0.15s ease;
+}
+
+.rate-main {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.rate-sub {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.78;
 }
 
 .rate-pill:hover { transform: translateY(-1px); }
@@ -1820,6 +1853,374 @@ svg {
   font-size: 12px;
   color: var(--text-muted);
   margin-top: 24px;
+}
+
+/* Ebbinghaus 3D Deck Controls & Schedule */
+.deck-srs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.srs-mode-group {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  gap: 2px;
+}
+
+.srs-mode-btn {
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.srs-mode-btn:hover {
+  color: var(--text);
+}
+
+.srs-mode-btn.active {
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.srs-mode-cnt {
+  font-size: 11px;
+  opacity: 0.78;
+  font-variant-numeric: tabular-nums;
+}
+
+.srs-mode-btn.has-due:not(.active) .srs-mode-cnt {
+  color: var(--vermilion);
+  font-weight: 700;
+  opacity: 1;
+}
+
+.srs-plan-toggle {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.srs-plan-toggle:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.srs-plan-toggle.active {
+  background: var(--pine-soft);
+  border-color: var(--pine);
+  color: var(--pine);
+  font-weight: 600;
+}
+
+.requeue-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--ochre-soft);
+  color: var(--ochre);
+}
+
+.srs-stage-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--surface-tint);
+  color: var(--text-muted);
+}
+
+.srs-plan-card,
+.deck-summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius-card) + 2px);
+  padding: 20px 22px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-card);
+}
+
+.deck-summary-card {
+  padding: 26px 24px;
+}
+
+.srs-plan-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.srs-plan-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.srs-plan-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.srs-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.srs-kpi {
+  padding: 10px 10px;
+  border-radius: 12px;
+  background: var(--surface-tint);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.srs-kpi-val {
+  font-family: var(--font-headword);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.srs-kpi.k-due .srs-kpi-val { color: var(--vermilion); }
+.srs-kpi.k-learn .srs-kpi-val { color: var(--ochre); }
+.srs-kpi.k-solid .srs-kpi-val { color: var(--pine); }
+
+.srs-kpi-lbl {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.srs-forecast-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  letter-spacing: 0.03em;
+}
+
+.srs-forecast {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  align-items: end;
+}
+
+.srs-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.srs-bar-num {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.srs-bar-track {
+  width: 100%;
+  height: 46px;
+  border-radius: 8px;
+  background: var(--surface-tint);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  padding: 2px;
+}
+
+.srs-bar-fill {
+  width: 100%;
+  border-radius: 6px;
+  background: var(--pine);
+  min-height: 3px;
+  opacity: 0.85;
+  transition: height 0.25s ease;
+}
+
+.srs-bar-col.is-today .srs-bar-fill {
+  background: var(--vermilion);
+}
+
+.srs-bar-col.is-empty .srs-bar-fill {
+  opacity: 0.14;
+}
+
+.srs-bar-lbl {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.srs-year-strip {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border-strong);
+}
+
+.srs-year-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.srs-year-chip {
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-tint);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.srs-year-chip:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.srs-year-chip.current {
+  border-color: var(--pine);
+  color: var(--pine);
+  font-weight: 600;
+}
+
+.srs-year-chip .chip-due {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--vermilion);
+}
+
+.srs-year-chip .chip-ok {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.summary-hero {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.summary-hero h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--text);
+}
+
+.summary-hero p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.summary-session-pills {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.summary-pill {
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.summary-pill.sp-know { background: var(--pine-soft); color: var(--pine); }
+.summary-pill.sp-fuzzy { background: var(--ochre-soft); color: var(--ochre); }
+.summary-pill.sp-forgot { background: var(--vermilion-soft); color: var(--vermilion); }
+
+.summary-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+[data-theme="glass"] .srs-mode-group,
+[data-theme="glass"] .srs-plan-toggle {
+  background: rgba(12, 18, 30, 0.44);
+  border-color: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+}
+
+[data-theme="glass"] .srs-mode-btn.active {
+  background: rgba(255, 255, 255, 0.17);
+  color: #eef3fa;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="glass"] .srs-plan-toggle.active {
+  background: rgba(79, 212, 171, 0.18);
+  border-color: rgba(79, 212, 171, 0.44);
+  color: #e0f8f0;
+}
+
+[data-theme="glass"] .srs-plan-card,
+[data-theme="glass"] .deck-summary-card {
+  background: linear-gradient(155deg, rgba(16, 23, 38, 0.56) 0%, rgba(11, 16, 28, 0.44) 60%, rgba(15, 22, 36, 0.5) 100%);
+  border-color: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(var(--glass-blur)) saturate(155%) brightness(0.92);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(155%) brightness(0.92);
+}
+
+[data-theme="glass"] .srs-kpi,
+[data-theme="glass"] .srs-bar-track,
+[data-theme="glass"] .srs-year-chip {
+  background: rgba(6, 10, 20, 0.36);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="glass"] .year-btn.active .year-due-badge {
+  background: rgba(232, 122, 107, 0.28);
+  color: #ffd7d1;
 }
 
 /* Empty State */
@@ -2030,5 +2431,18 @@ svg {
   .flip-face {
     padding: 22px 20px;
     min-height: 360px;
+  }
+
+  .srs-kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .deck-srs-bar {
+    gap: 8px;
+  }
+
+  .srs-mode-btn {
+    padding: 0 9px;
+    font-size: 11.5px;
   }
 }

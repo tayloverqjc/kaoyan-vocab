@@ -16,11 +16,42 @@
     prev: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>',
     next: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
     trash: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>',
-    restore: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>'
+    restore: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>',
+    calendar: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>'
   };
+
+  // Ebbinghaus forgetting curve ladder (days): 1 -> 2 -> 4 -> 7 -> 15 -> 30
+  const EBBINGHAUS_DAYS = [1, 2, 4, 7, 15, 30];
 
   const manifest = window.VOCAB_MANIFEST || [];
   const sets = window.VOCAB_SETS || {};
+
+  function localDateStr(offsetDays = 0) {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + offsetDays);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function daysFromToday(dateStr) {
+    if (!dateStr || typeof dateStr !== "string") return 0;
+    const parts = dateStr.split("-").map(Number);
+    if (parts.length !== 3 || parts.some(Number.isNaN)) return 0;
+    const target = new Date(parts[0], parts[1] - 1, parts[2]);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return Math.round((target - now) / 86400000);
+  }
+
+  function formatDueLabel(days) {
+    if (days <= 0) return "今天";
+    if (days === 1) return "明天";
+    if (days === 2) return "后天";
+    return `${days}天后`;
+  }
 
   function initialSetId() {
     try {
@@ -44,8 +75,29 @@
     fcFlipped: false,
     fcShowHint: false,
     fcOrder: [],
+    fcMode: "due", // due | new | all
+    fcShowPlan: false,
+    fcSession: { know: 0, fuzzy: 0, forgot: 0, requeued: new Set(), finished: false },
     progress: loadProgress()
   };
+
+  function sanitizeSrs(raw) {
+    const out = {};
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) return out;
+    Object.keys(raw).forEach(k => {
+      const v = raw[k];
+      if (v && typeof v === "object" && typeof v.due === "string") {
+        out[k] = {
+          step: Math.max(0, Math.min(EBBINGHAUS_DAYS.length, Number(v.step) || 0)),
+          due: v.due,
+          last: typeof v.last === "string" ? v.last : "",
+          reps: Math.max(0, Number(v.reps) || 0),
+          lapses: Math.max(0, Number(v.lapses) || 0)
+        };
+      }
+    });
+    return out;
+  }
 
   function loadProgress() {
     try {
@@ -55,11 +107,12 @@
         return {
           mastered: Array.isArray(p.mastered) ? p.mastered : [],
           hard: Array.isArray(p.hard) ? p.hard : [],
-          deleted: Array.isArray(p.deleted) ? p.deleted : []
+          deleted: Array.isArray(p.deleted) ? p.deleted : [],
+          srs: sanitizeSrs(p.srs)
         };
       }
     } catch (_) {}
-    return { mastered: [], hard: [], deleted: [] };
+    return { mastered: [], hard: [], deleted: [], srs: {} };
   }
 
   function saveProgress() {
@@ -71,6 +124,138 @@
   const isMastered = id => state.progress.mastered.includes(id);
   const isHard = id => state.progress.hard.includes(id);
   const isDeleted = id => state.progress.deleted.includes(id);
+  const getSrs = id => (state.progress.srs && state.progress.srs[id]) || null;
+  const isDueToday = id => {
+    const rec = getSrs(id);
+    return !!(rec && rec.due <= localDateStr(0));
+  };
+  const isUntested = id => !getSrs(id);
+
+  function previewRating(id, quality) {
+    const rec = getSrs(id);
+    if (quality === "forgot") {
+      return {
+        nextStep: 0,
+        days: 1,
+        due: localDateStr(1),
+        label: "本轮重测 · 明天"
+      };
+    }
+    if (quality === "fuzzy") {
+      const curStep = rec ? (rec.step || 0) : 0;
+      const nextStep = curStep >= 2 ? Math.max(1, curStep - 1) : 1;
+      const days = EBBINGHAUS_DAYS[nextStep - 1];
+      return {
+        nextStep,
+        days,
+        due: localDateStr(days),
+        label: `${formatDueLabel(days)}巩固`
+      };
+    }
+    // quality === "know"
+    const curStep = rec ? (rec.step || 0) : 0;
+    const nextStep = Math.min(EBBINGHAUS_DAYS.length, curStep + 1);
+    const days = EBBINGHAUS_DAYS[nextStep - 1];
+    return {
+      nextStep,
+      days,
+      due: localDateStr(days),
+      label: `${formatDueLabel(days)}复习`
+    };
+  }
+
+  function applySrsRating(id, quality) {
+    const prev = getSrs(id);
+    const p = previewRating(id, quality);
+    if (!state.progress.srs) state.progress.srs = {};
+    state.progress.srs[id] = {
+      step: p.nextStep,
+      due: p.due,
+      last: localDateStr(0),
+      reps: (prev ? prev.reps : 0) + 1,
+      lapses: (prev ? prev.lapses : 0) + (quality === "forgot" ? 1 : 0)
+    };
+    if (quality === "forgot") {
+      toggleHard(id, true);
+    } else if (quality === "know") {
+      toggleMastered(id, true);
+    } else {
+      // fuzzy: unmark mastered if it was previously mastered, keep hard status as-is
+      state.progress.mastered = state.progress.mastered.filter(x => x !== id);
+      saveProgress();
+    }
+    return p;
+  }
+
+  function setActiveWords(setId) {
+    const s = sets[setId];
+    if (!s) return [];
+    return s.passages.flatMap(p => p.words).filter(w => !isDeleted(w.id));
+  }
+
+  function yearScheduleStats(setId) {
+    const words = setActiveWords(setId);
+    const today = localDateStr(0);
+    let dueToday = 0;
+    let untested = 0;
+    let learning = 0;
+    let solid = 0;
+    const buckets = [
+      { key: "today", label: "今天到期", count: 0, isToday: true },
+      { key: "d1", label: "明天", count: 0 },
+      { key: "d2", label: "后天", count: 0 },
+      { key: "d34", label: "3–4天", count: 0 },
+      { key: "d57", label: "5–7天", count: 0 },
+      { key: "d8p", label: "7天后+", count: 0 }
+    ];
+    let earliestFutureDays = null;
+    let earliestFutureCount = 0;
+
+    words.forEach(w => {
+      const rec = getSrs(w.id);
+      if (!rec) {
+        untested++;
+        return;
+      }
+      if (rec.due <= today) {
+        dueToday++;
+        buckets[0].count++;
+        return;
+      }
+      if (rec.step >= 4) solid++;
+      else learning++;
+
+      const diff = daysFromToday(rec.due);
+      if (earliestFutureDays === null || diff < earliestFutureDays) {
+        earliestFutureDays = diff;
+        earliestFutureCount = 1;
+      } else if (diff === earliestFutureDays) {
+        earliestFutureCount++;
+      }
+
+      if (diff === 1) buckets[1].count++;
+      else if (diff === 2) buckets[2].count++;
+      else if (diff <= 4) buckets[3].count++;
+      else if (diff <= 7) buckets[4].count++;
+      else buckets[5].count++;
+    });
+
+    return {
+      total: words.length,
+      tested: words.length - untested,
+      dueToday,
+      untested,
+      learning,
+      solid,
+      buckets,
+      nextDueDays: earliestFutureDays,
+      nextDueCount: earliestFutureCount
+    };
+  }
+
+  function resetDeckSession() {
+    state.fcSession = { know: 0, fuzzy: 0, forgot: 0, requeued: new Set(), finished: false };
+  }
 
   function toggleMastered(id, force) {
     const next = typeof force === "boolean" ? force : !isMastered(id);
@@ -98,6 +283,7 @@
     state.progress.mastered = state.progress.mastered.filter(x => x !== item.id);
     state.progress.hard = state.progress.hard.filter(x => x !== item.id);
     state.fcOrder = state.fcOrder.filter(x => x !== item.id);
+    state.fcSession.requeued.delete(item.id);
     state.fcFlipped = false;
     state.fcShowHint = false;
     saveProgress();
@@ -240,8 +426,38 @@
     } catch (_) {}
   }
 
-  function syncDeckOrder(shuffle = false) {
-    const ids = filteredWords().map(w => w.id);
+  function deckPool(list, mode = state.fcMode, includeRequeued = false) {
+    if (state.collection === "deleted" || mode === "all") return list.slice();
+    if (mode === "due") {
+      return list
+        .filter(w => isDueToday(w.id) || (includeRequeued && state.fcSession.requeued.has(w.id)))
+        .sort((a, b) => {
+          const ra = getSrs(a.id);
+          const rb = getSrs(b.id);
+          if (ra && rb && ra.due !== rb.due) return ra.due < rb.due ? -1 : 1;
+          return ((rb && rb.lapses) || 0) - ((ra && ra.lapses) || 0);
+        });
+    }
+    if (mode === "new") {
+      return list.filter(w => isUntested(w.id) || (includeRequeued && state.fcSession.requeued.has(w.id)));
+    }
+    return list.slice();
+  }
+
+  function pickSmartDeckMode() {
+    if (state.collection === "deleted") {
+      state.fcMode = "all";
+      return;
+    }
+    const list = filteredWords();
+    if (list.some(w => isDueToday(w.id))) state.fcMode = "due";
+    else if (list.some(w => isUntested(w.id))) state.fcMode = "new";
+    else state.fcMode = "all";
+  }
+
+  function syncDeckOrder(shuffle = false, resetSession = true) {
+    if (resetSession) resetDeckSession();
+    const ids = deckPool(filteredWords(), state.fcMode, !resetSession).map(w => w.id);
     if (shuffle) {
       for (let i = ids.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -252,6 +468,28 @@
     state.fcIndex = 0;
     state.fcFlipped = false;
     state.fcShowHint = false;
+  }
+
+  function switchToYear(setId, opts = {}) {
+    const item = manifest.find(m => m.id === setId);
+    if (!item) return;
+    const changed = state.setId !== setId;
+    state.setId = setId;
+    if (changed || opts.resetFilters) {
+      state.passage = "ALL";
+      state.collection = "all";
+      state.revealedIds.clear();
+      state.expandedIds.clear();
+    }
+    if (opts.view) state.view = opts.view;
+    if (opts.fcMode) state.fcMode = opts.fcMode;
+    else if (state.view === "deck") pickSmartDeckMode();
+    try { localStorage.setItem(SET_KEY, setId); } catch (_) {}
+    syncDeckOrder(false, true);
+    closeDrawer();
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (opts.notify !== false) showToast(`已切换：${item.label}`);
   }
 
   function closeDrawer() {
@@ -286,28 +524,21 @@
     document.getElementById("statRemain").textContent = remain;
     document.getElementById("statHard").textContent = hard;
 
-    // Year switcher
+    // Year switcher with per-year Ebbinghaus due-today badges
     const setEl = document.getElementById("yearList");
     setEl.innerHTML = "";
     manifest.forEach(item => {
+      const stats = yearScheduleStats(item.id);
       const b = document.createElement("button");
       b.type = "button";
       b.className = `year-btn ${item.id === state.setId ? "active" : ""}`;
-      b.textContent = item.shortLabel;
-      b.title = `${item.label}（共 ${item.count} 词）`;
+      b.innerHTML = `<span>${esc(item.shortLabel)}</span>${stats.dueToday > 0 ? `<span class="year-due-badge" title="今日到期复习 ${stats.dueToday} 词">${stats.dueToday}</span>` : ""}`;
+      b.title = stats.dueToday > 0
+        ? `${item.label}（共 ${stats.total} 词 · 今日到期复习 ${stats.dueToday} 词）`
+        : `${item.label}（共 ${stats.total} 词）`;
       b.onclick = () => {
         if (state.setId === item.id) return;
-        state.setId = item.id;
-        state.passage = "ALL";
-        state.collection = "all";
-        state.revealedIds.clear();
-        state.expandedIds.clear();
-        try { localStorage.setItem(SET_KEY, item.id); } catch (_) {}
-        syncDeckOrder(false);
-        closeDrawer();
-        render();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        showToast(`已切换：${item.label}`);
+        switchToYear(item.id, { resetFilters: true });
       };
       setEl.appendChild(b);
     });
@@ -614,92 +845,308 @@
     });
   }
 
+  function renderYearPlanHTML(setId) {
+    const cur = sets[setId];
+    const stats = yearScheduleStats(setId);
+    const maxBucket = Math.max(1, ...stats.buckets.map(b => b.count));
+
+    const nextHint = stats.dueToday > 0
+      ? `今日到期 ${stats.dueToday} 词待复习`
+      : stats.nextDueDays !== null
+        ? `下次复习：${formatDueLabel(stats.nextDueDays)}（${stats.nextDueCount} 词）`
+        : "尚未在 3D 闪卡开始首测";
+
+    const yearChipsHTML = manifest.map(m => {
+      const ys = yearScheduleStats(m.id);
+      const isCur = m.id === state.setId;
+      let statusHtml = `<span class="chip-ok">未测</span>`;
+      if (ys.dueToday > 0) statusHtml = `<span class="chip-due">今日 ${ys.dueToday}</span>`;
+      else if (ys.nextDueDays !== null) statusHtml = `<span class="chip-ok">${formatDueLabel(ys.nextDueDays)} ${ys.nextDueCount}</span>`;
+      else if (ys.tested > 0) statusHtml = `<span class="chip-ok">已稳固</span>`;
+      return `<button type="button" class="srs-year-chip ${isCur ? "current" : ""}" data-jump-year="${esc(m.id)}"><span>${esc(m.shortLabel)}</span>${statusHtml}</button>`;
+    }).join("");
+
+    return `
+      <div class="srs-plan-head">
+        <h4 class="srs-plan-title">${esc(cur ? cur.label : "")} · 艾宾浩斯复习日程</h4>
+        <span class="srs-plan-sub">${esc(nextHint)}</span>
+      </div>
+      <div class="srs-kpi-row">
+        <div class="srs-kpi k-due"><div class="srs-kpi-val">${stats.dueToday}</div><div class="srs-kpi-lbl">今日到期</div></div>
+        <div class="srs-kpi k-learn"><div class="srs-kpi-val">${stats.learning}</div><div class="srs-kpi-lbl">短期巩固</div></div>
+        <div class="srs-kpi k-solid"><div class="srs-kpi-val">${stats.solid}</div><div class="srs-kpi-lbl">已稳固 ≥7天</div></div>
+        <div class="srs-kpi"><div class="srs-kpi-val">${stats.untested}</div><div class="srs-kpi-lbl">未首测</div></div>
+      </div>
+      <div class="srs-forecast-title">本年未来复习排期（1 → 2 → 4 → 7 → 15 → 30 天）</div>
+      <div class="srs-forecast">
+        ${stats.buckets.map(b => {
+          const pct = b.count ? Math.max(16, Math.round((b.count / maxBucket) * 100)) : 8;
+          return `
+            <div class="srs-bar-col ${b.isToday ? "is-today" : ""} ${b.count === 0 ? "is-empty" : ""}">
+              <span class="srs-bar-num">${b.count}</span>
+              <div class="srs-bar-track"><div class="srs-bar-fill" style="height:${pct}%"></div></div>
+              <span class="srs-bar-lbl">${esc(b.label)}</span>
+            </div>`;
+        }).join("")}
+      </div>
+      <div class="srs-year-strip">
+        <div class="srs-forecast-title">各年份复习进度总览（点击直达）</div>
+        <div class="srs-year-chips">${yearChipsHTML}</div>
+      </div>
+    `;
+  }
+
+  function bindYearJumpChips(container) {
+    container.querySelectorAll("[data-jump-year]").forEach(btn => {
+      btn.onclick = () => {
+        const targetId = btn.getAttribute("data-jump-year");
+        if (!targetId) return;
+        const ys = yearScheduleStats(targetId);
+        const mode = ys.dueToday > 0 ? "due" : ys.untested > 0 ? "new" : "all";
+        switchToYear(targetId, { resetFilters: targetId !== state.setId, view: "deck", fcMode: mode });
+      };
+    });
+  }
+
   function renderDeckView(list, box) {
     const inTrash = state.collection === "deleted";
-    const map = new Map(list.map(w => [w.id, w]));
-    let ids = state.fcOrder.filter(id => map.has(id));
-    if (!ids.length && list.length) {
-      syncDeckOrder(false);
-      ids = state.fcOrder.filter(id => map.has(id));
+    if (!list.length) return renderEmpty(box);
+
+    const dueList = inTrash ? [] : deckPool(list, "due", state.fcMode === "due");
+    const newList = inTrash ? [] : deckPool(list, "new", state.fcMode === "new");
+    const activePool = inTrash ? list : deckPool(list, state.fcMode, true);
+    const poolMap = new Map(activePool.map(w => [w.id, w]));
+
+    let ids = state.fcOrder.filter(id => poolMap.has(id));
+    if (!ids.length && activePool.length && !state.fcSession.finished) {
+      syncDeckOrder(false, false);
+      ids = state.fcOrder.filter(id => poolMap.has(id));
     }
+
+    const stage = document.createElement("div");
+    stage.className = "deck-stage";
+
+    // Top Ebbinghaus mode bar (hidden in trash view)
+    if (!inTrash) {
+      const srsBar = document.createElement("div");
+      srsBar.className = "deck-srs-bar";
+      srsBar.innerHTML = `
+        <div class="srs-mode-group" role="tablist" aria-label="闪卡复习队列">
+          <button type="button" class="srs-mode-btn ${state.fcMode === "due" ? "active" : ""} ${dueList.length ? "has-due" : ""}" data-srs-mode="due">
+            <span>今日到期</span><span class="srs-mode-cnt">${dueList.length}</span>
+          </button>
+          <button type="button" class="srs-mode-btn ${state.fcMode === "new" ? "active" : ""}" data-srs-mode="new">
+            <span>未测新词</span><span class="srs-mode-cnt">${newList.length}</span>
+          </button>
+          <button type="button" class="srs-mode-btn ${state.fcMode === "all" ? "active" : ""}" data-srs-mode="all">
+            <span>自由全量</span><span class="srs-mode-cnt">${list.length}</span>
+          </button>
+        </div>
+        <button type="button" class="srs-plan-toggle ${state.fcShowPlan ? "active" : ""}" id="togglePlanBtn">
+          ${ICONS.calendar}<span>本年日程</span>
+        </button>
+      `;
+      srsBar.querySelectorAll("[data-srs-mode]").forEach(btn => {
+        btn.onclick = () => {
+          const nextMode = btn.getAttribute("data-srs-mode");
+          if (state.fcMode === nextMode && !state.fcSession.finished) return;
+          state.fcMode = nextMode;
+          syncDeckOrder(false, true);
+          renderMain();
+        };
+      });
+      srsBar.querySelector("#togglePlanBtn").onclick = () => {
+        state.fcShowPlan = !state.fcShowPlan;
+        renderMain();
+      };
+      stage.appendChild(srsBar);
+
+      if (state.fcShowPlan && ids.length > 0 && !state.fcSession.finished) {
+        const planCard = document.createElement("div");
+        planCard.className = "srs-plan-card";
+        planCard.innerHTML = renderYearPlanHTML(state.setId);
+        bindYearJumpChips(planCard);
+        stage.appendChild(planCard);
+      }
+    }
+
+    // Completion / Empty-queue Ebbinghaus Summary Card
+    if (!inTrash && (state.fcSession.finished || !ids.length)) {
+      const ses = state.fcSession;
+      const totalTestedNow = ses.know + ses.fuzzy + ses.forgot;
+      const cur = currentSet();
+      const stats = yearScheduleStats(state.setId);
+      const otherDueYear = manifest
+        .map(m => ({ meta: m, stats: yearScheduleStats(m.id) }))
+        .find(x => x.meta.id !== state.setId && x.stats.dueToday > 0);
+
+      let heroTitle = "本轮自测已完成";
+      let heroDesc = stats.nextDueDays !== null
+        ? `已根据你的记忆表现排好艾宾浩斯复习日程，下次复习在${formatDueLabel(stats.nextDueDays)}（${stats.nextDueCount} 词）。`
+        : "所有测试结果已写入本年遗忘曲线。";
+
+      if (totalTestedNow === 0 && state.fcMode === "due") {
+        heroTitle = `${cur ? cur.label : "本卷"} · 今日到期已清零`;
+        heroDesc = stats.nextDueDays !== null
+          ? `太棒了！本卷今天没有到期词，下次复习是${formatDueLabel(stats.nextDueDays)}（${stats.nextDueCount} 词）。`
+          : "本卷还没有进入艾宾浩斯曲线的词条，可以先测一遍「未测新词」建立复习计划。";
+      } else if (totalTestedNow === 0 && state.fcMode === "new") {
+        heroTitle = `${cur ? cur.label : "本卷"} · 全部词条均已首测`;
+        heroDesc = stats.dueToday > 0
+          ? `当前范围内没有未测新词了，有 ${stats.dueToday} 个词今天到期需要复习。`
+          : "当前范围内所有词条都已进入艾宾浩斯复习日程。";
+      }
+
+      const summary = document.createElement("div");
+      summary.className = "deck-summary-card";
+      summary.innerHTML = `
+        <div class="summary-hero">
+          <h3>${esc(heroTitle)}</h3>
+          <p>${esc(heroDesc)}</p>
+          ${totalTestedNow > 0 ? `
+            <div class="summary-session-pills">
+              <span class="summary-pill sp-know">秒懂 ${ses.know}</span>
+              <span class="summary-pill sp-fuzzy">模糊 ${ses.fuzzy}</span>
+              <span class="summary-pill sp-forgot">忘了重测 ${ses.forgot}</span>
+            </div>` : ""}
+        </div>
+        ${renderYearPlanHTML(state.setId)}
+        <div class="summary-actions">
+          ${dueList.length > 0 ? `<button type="button" class="ink-btn" id="sumGoDue">开始今日到期复习 (${dueList.length})</button>` : ""}
+          ${dueList.length === 0 && newList.length > 0 ? `<button type="button" class="ink-btn" id="sumGoNew">自测未测新词 (${newList.length})</button>` : ""}
+          ${otherDueYear ? `<button type="button" class="mask-btn" id="sumGoOtherYear">去复习 ${esc(otherDueYear.meta.shortLabel)} (${otherDueYear.stats.dueToday})</button>` : ""}
+          <button type="button" class="mask-btn" id="sumGoAll">${state.fcMode === "all" ? "洗牌再来一轮" : `自由全量自测 (${list.length})`}</button>
+        </div>
+      `;
+      bindYearJumpChips(summary);
+
+      const bDue = summary.querySelector("#sumGoDue");
+      if (bDue) bDue.onclick = () => { state.fcMode = "due"; syncDeckOrder(false, true); renderMain(); };
+      const bNew = summary.querySelector("#sumGoNew");
+      if (bNew) bNew.onclick = () => { state.fcMode = "new"; syncDeckOrder(false, true); renderMain(); };
+      const bOther = summary.querySelector("#sumGoOtherYear");
+      if (bOther && otherDueYear) {
+        bOther.onclick = () => switchToYear(otherDueYear.meta.id, { resetFilters: true, view: "deck", fcMode: "due" });
+      }
+      const bAll = summary.querySelector("#sumGoAll");
+      if (bAll) {
+        bAll.onclick = () => {
+          const reshuffle = state.fcMode === "all";
+          state.fcMode = "all";
+          syncDeckOrder(reshuffle, true);
+          renderMain();
+        };
+      }
+
+      stage.appendChild(summary);
+      box.appendChild(stage);
+      return;
+    }
+
     if (!ids.length) return renderEmpty(box);
     if (state.fcIndex >= ids.length) state.fcIndex = 0;
 
-    const item = map.get(ids[state.fcIndex]);
+    const item = poolMap.get(ids[state.fcIndex]);
     const hintQuote = extractEnglishHint(item.usage);
+    const rec = getSrs(item.id);
+    const isRequeued = state.fcSession.requeued.has(item.id);
+    const pForgot = previewRating(item.id, "forgot");
+    const pFuzzy = previewRating(item.id, "fuzzy");
+    const pKnow = previewRating(item.id, "know");
 
-    box.innerHTML = `
-      <div class="deck-stage">
-        <div class="deck-bar">
-          <span>卡片 <strong>${state.fcIndex + 1}</strong> / ${ids.length}</span>
-          <div style="display:flex;gap:8px">
-            <button type="button" class="mask-btn" style="height:32px;padding:0 10px" id="fcPrev">${ICONS.prev}<span>上一张</span></button>
-            <button type="button" class="mask-btn" style="height:32px;padding:0 10px" id="fcShuffle">${ICONS.shuffle}<span>洗牌</span></button>
-            <button type="button" class="mask-btn" style="height:32px;padding:0 10px" id="fcNext"><span>下一张</span>${ICONS.next}</button>
-          </div>
+    const stageLabel = rec
+      ? (rec.step > 0 ? `第 ${rec.step} 阶 · 已测 ${rec.reps} 次` : `易忘巩固 · 已测 ${rec.reps} 次`)
+      : "首次自测";
+
+    const progressText = (!inTrash && (state.fcMode === "due" || state.fcMode === "new"))
+      ? `本轮剩余 <strong>${ids.length}</strong> 张${state.fcSession.know + state.fcSession.fuzzy > 0 ? ` · 已过 ${state.fcSession.know + state.fcSession.fuzzy}` : ""}`
+      : `卡片 <strong>${state.fcIndex + 1}</strong> / ${ids.length}`;
+
+    const deckWrap = document.createElement("div");
+    deckWrap.innerHTML = `
+      <div class="deck-bar">
+        <span>${progressText}</span>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="mask-btn" style="height:32px;padding:0 10px" id="fcPrev">${ICONS.prev}<span>上一张</span></button>
+          <button type="button" class="mask-btn" style="height:32px;padding:0 10px" id="fcShuffle">${ICONS.shuffle}<span>洗牌</span></button>
+          <button type="button" class="mask-btn" style="height:32px;padding:0 10px" id="fcNext"><span>下一张</span>${ICONS.next}</button>
         </div>
+      </div>
 
-        <div class="deck-stack">
-          <div class="flip-scene ${state.fcFlipped ? "flipped" : ""}" id="flipScene">
-            <!-- Front Face -->
-            <div class="flip-face flip-front">
-              <div class="fc-top-row">
-                <span>${esc(item.passageCode)} · ${esc(item.passageTitle)}</span>
-                <div style="display:inline-flex;align-items:center;gap:8px">
-                  <span>${item.secondary ? '<span class="seal-tag">熟词生义</span>' : `No.${String(item.num).padStart(2, "0")}`}</span>
-                  ${inTrash
-                    ? `<button type="button" class="foot-btn master-on" id="fcActionFront">${ICONS.restore}<span>恢复</span></button>`
-                    : `<button type="button" class="foot-btn del-btn" id="fcActionFront" title="移出词本（太简单/已熟知）">${ICONS.trash}<span>移出</span></button>`}
-                </div>
+      <div class="deck-stack">
+        <div class="flip-scene ${state.fcFlipped ? "flipped" : ""}" id="flipScene">
+          <!-- Front Face -->
+          <div class="flip-face flip-front">
+            <div class="fc-top-row">
+              <span>${esc(item.passageCode)} · ${esc(item.passageTitle)}</span>
+              <div style="display:inline-flex;align-items:center;gap:8px">
+                ${isRequeued ? '<span class="requeue-badge">本轮重测</span>' : ""}
+                <span>${item.secondary ? '<span class="seal-tag">熟词生义</span>' : `No.${String(item.num).padStart(2, "0")}`}</span>
+                ${inTrash
+                  ? `<button type="button" class="foot-btn master-on" id="fcActionFront">${ICONS.restore}<span>恢复</span></button>`
+                  : `<button type="button" class="foot-btn del-btn" id="fcActionFront" title="移出词本（太简单/已熟知）">${ICONS.trash}<span>移出</span></button>`}
               </div>
-              <div class="fc-center">
-                <h2 class="fc-big-word">${esc(item.word)}</h2>
-                <div class="fc-ipa-line">
+            </div>
+            <div class="fc-center">
+              <h2 class="fc-big-word">${esc(item.word)}</h2>
+              <div class="fc-ipa-line">
+                <span class="ipa">${esc(item.ipa)}</span>
+                <button type="button" class="speak-btn" id="fcSpeakFront" title="朗读">${ICONS.speaker}</button>
+              </div>
+              ${state.fcShowHint && hintQuote ? `<div class="fc-context-hint">“${esc(hintQuote)}”</div>` : ""}
+            </div>
+            <div class="fc-front-actions">
+              <button type="button" class="ink-btn" id="fcFlipBtn">翻转查看释义</button>
+              ${hintQuote && !state.fcShowHint ? '<button type="button" class="text-link-btn" id="fcHintBtn">先看真题英文语境提示</button>' : ""}
+            </div>
+          </div>
+
+          <!-- Back Face -->
+          <div class="flip-face flip-back">
+            <div>
+              <div class="fc-back-head">
+                <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+                  <span class="fc-back-word">${esc(item.word)}</span>
                   <span class="ipa">${esc(item.ipa)}</span>
-                  <button type="button" class="speak-btn" id="fcSpeakFront" title="朗读">${ICONS.speaker}</button>
+                  <button type="button" class="speak-btn" id="fcSpeakBack" title="朗读">${ICONS.speaker}</button>
+                  ${inTrash ? "" : `<span class="srs-stage-pill">${esc(stageLabel)}</span>`}
                 </div>
-                ${state.fcShowHint && hintQuote ? `<div class="fc-context-hint">“${esc(hintQuote)}”</div>` : ""}
+                <div style="display:inline-flex;align-items:center;gap:10px">
+                  ${inTrash
+                    ? `<button type="button" class="foot-btn master-on" id="fcActionBack">${ICONS.restore}<span>恢复</span></button>`
+                    : `<button type="button" class="foot-btn del-btn" id="fcActionBack" title="移出词本（太简单/已熟知）">${ICONS.trash}</button>`}
+                  <button type="button" class="text-link-btn" id="fcUnflipBtn">翻回正面</button>
+                </div>
               </div>
-              <div class="fc-front-actions">
-                <button type="button" class="ink-btn" id="fcFlipBtn">翻转查看释义</button>
-                ${hintQuote && !state.fcShowHint ? '<button type="button" class="text-link-btn" id="fcHintBtn">先看真题英文语境提示</button>' : ""}
+              <div class="fc-back-meaning">${fmtMeaning(item.meaning)}</div>
+              <div class="card-body">
+                <div class="note-section"><span class="note-label">真题用法</span>${fmtBody(item.usage)}</div>
+                <div class="memory-strip"><span class="note-label">记忆挂钩</span>${fmtBody(item.memory)}</div>
               </div>
             </div>
-
-            <!-- Back Face -->
-            <div class="flip-face flip-back">
-              <div>
-                <div class="fc-back-head">
-                  <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
-                    <span class="fc-back-word">${esc(item.word)}</span>
-                    <span class="ipa">${esc(item.ipa)}</span>
-                    <button type="button" class="speak-btn" id="fcSpeakBack" title="朗读">${ICONS.speaker}</button>
-                  </div>
-                  <div style="display:inline-flex;align-items:center;gap:10px">
-                    ${inTrash
-                      ? `<button type="button" class="foot-btn master-on" id="fcActionBack">${ICONS.restore}<span>恢复</span></button>`
-                      : `<button type="button" class="foot-btn del-btn" id="fcActionBack" title="移出词本（太简单/已熟知）">${ICONS.trash}</button>`}
-                    <button type="button" class="text-link-btn" id="fcUnflipBtn">翻回正面</button>
-                  </div>
-                </div>
-                <div class="fc-back-meaning">${fmtMeaning(item.meaning)}</div>
-                <div class="card-body">
-                  <div class="note-section"><span class="note-label">真题用法</span>${fmtBody(item.usage)}</div>
-                  <div class="memory-strip"><span class="note-label">记忆挂钩</span>${fmtBody(item.memory)}</div>
-                </div>
-              </div>
-              ${inTrash ? "" : `
-              <div class="fc-ratings">
-                <button type="button" class="rate-pill r-forgot" id="rate1">忘了 · 标易忘</button>
-                <button type="button" class="rate-pill r-fuzzy" id="rate2">模糊 · 下张</button>
-                <button type="button" class="rate-pill r-know" id="rate3">秒懂 · 掌握</button>
-              </div>`}
-            </div>
+            ${inTrash ? "" : `
+            <div class="fc-ratings">
+              <button type="button" class="rate-pill r-forgot" id="rate1">
+                <span class="rate-main">1 · 忘了</span>
+                <span class="rate-sub">${esc(pForgot.label)}</span>
+              </button>
+              <button type="button" class="rate-pill r-fuzzy" id="rate2">
+                <span class="rate-main">2 · 模糊</span>
+                <span class="rate-sub">${esc(pFuzzy.label)}</span>
+              </button>
+              <button type="button" class="rate-pill r-know" id="rate3">
+                <span class="rate-main">3 · 秒懂</span>
+                <span class="rate-sub">${esc(pKnow.label)}</span>
+              </button>
+            </div>`}
           </div>
         </div>
+      </div>
 
-        <div class="deck-kbd">快捷键：空格翻转 · 1 忘了 · 2 模糊 · 3 掌握 · ←/→ 切卡</div>
-      </div>`;
+      <div class="deck-kbd">快捷键：空格翻转 · 1 忘了 · 2 模糊 · 3 秒懂 · ←/→ 切卡</div>
+    `;
+    stage.appendChild(deckWrap);
+    box.appendChild(stage);
 
     const spkF = document.getElementById("fcSpeakFront");
     const spkB = document.getElementById("fcSpeakBack");
@@ -730,7 +1177,7 @@
       renderMain();
     };
     document.getElementById("fcShuffle").onclick = () => {
-      syncDeckOrder(true);
+      syncDeckOrder(true, false);
       showToast("已重新洗牌");
       renderMain();
     };
@@ -751,33 +1198,63 @@
       };
     }
 
+    function advanceAfterRating(quality) {
+      const p = applySrsRating(item.id, quality);
+      // Keep state.fcOrder aligned with currently active ids
+      const curOrder = ids.slice();
+
+      if (quality === "forgot") {
+        state.fcSession.forgot++;
+        state.fcSession.requeued.add(item.id);
+        if (curOrder.length > 1) {
+          curOrder.splice(state.fcIndex, 1);
+          const insertPos = Math.min(curOrder.length, state.fcIndex + 4);
+          curOrder.splice(insertPos, 0, item.id);
+          state.fcOrder = curOrder;
+          if (state.fcIndex >= curOrder.length) state.fcIndex = 0;
+          showToast("已标易忘 · 稍后本轮重测（明天巩固）");
+        } else {
+          state.fcOrder = curOrder;
+          state.fcIndex = 0;
+          showToast("已标易忘 · 立刻再测一遍（明天巩固）");
+        }
+      } else {
+        if (quality === "know") state.fcSession.know++;
+        else state.fcSession.fuzzy++;
+        state.fcSession.requeued.delete(item.id);
+
+        if (state.fcMode === "due" || state.fcMode === "new") {
+          curOrder.splice(state.fcIndex, 1);
+          state.fcOrder = curOrder;
+          if (curOrder.length === 0) {
+            state.fcSession.finished = true;
+            state.fcIndex = 0;
+          } else if (state.fcIndex >= curOrder.length) {
+            state.fcIndex = 0;
+          }
+        } else {
+          state.fcOrder = curOrder;
+          if (state.fcIndex + 1 >= curOrder.length) {
+            state.fcSession.finished = true;
+            state.fcIndex = 0;
+          } else {
+            state.fcIndex++;
+          }
+        }
+        showToast(quality === "know" ? `秒懂 · 已安排${formatDueLabel(p.days)}复习` : `模糊 · 已安排${formatDueLabel(p.days)}巩固`);
+      }
+
+      state.fcFlipped = false;
+      state.fcShowHint = false;
+      render();
+    }
+
     const r1 = document.getElementById("rate1");
     const r2 = document.getElementById("rate2");
     const r3 = document.getElementById("rate3");
-    if (r1) r1.onclick = () => {
-      toggleHard(item.id, true);
-      showToast("已加入「易忘钉子户」");
-      state.fcIndex = (state.fcIndex + 1) % ids.length;
-      state.fcFlipped = false;
-      state.fcShowHint = false;
-      render();
-    };
-    if (r2) r2.onclick = () => {
-      state.fcIndex = (state.fcIndex + 1) % ids.length;
-      state.fcFlipped = false;
-      state.fcShowHint = false;
-      renderMain();
-    };
-    if (r3) r3.onclick = () => {
-      toggleMastered(item.id, true);
-      showToast("已标为掌握");
-      if (state.collection !== "unmastered") {
-        state.fcIndex = (state.fcIndex + 1) % ids.length;
-      }
-      state.fcFlipped = false;
-      state.fcShowHint = false;
-      render();
-    };
+    if (r1) r1.onclick = () => advanceAfterRating("forgot");
+    if (r2) r2.onclick = () => advanceAfterRating("fuzzy");
+    if (r3) r3.onclick = () => advanceAfterRating("know");
   }
 
   function renderMain() {
@@ -944,8 +1421,14 @@
   // Controls bindings
   document.querySelectorAll("[data-view]").forEach(btn => {
     btn.onclick = () => {
+      const prevView = state.view;
       state.view = btn.getAttribute("data-view");
-      if (state.view === "deck") syncDeckOrder(false);
+      if (state.view === "deck" && prevView !== "deck") {
+        pickSmartDeckMode();
+        syncDeckOrder(false, true);
+      } else if (state.view === "deck") {
+        syncDeckOrder(false, true);
+      }
       render();
     };
   });
@@ -958,7 +1441,7 @@
 
   document.getElementById("searchInput").oninput = e => {
     state.search = e.target.value;
-    if (state.view === "deck") syncDeckOrder(false);
+    if (state.view === "deck") syncDeckOrder(false, true);
     renderStageHeader();
     renderMain();
   };
@@ -1015,13 +1498,15 @@
       state.progress = {
         mastered: [...new Set(parsed.mastered)].filter(id => !deleted.includes(id)),
         hard: [...new Set(parsed.hard)].filter(id => !deleted.includes(id)),
-        deleted
+        deleted,
+        srs: sanitizeSrs(parsed.srs)
       };
       if (state.collection === "deleted" && deletedWords().length === 0) {
         state.collection = "all";
       }
       saveProgress();
-      syncDeckOrder(false);
+      pickSmartDeckMode();
+      syncDeckOrder(false, true);
       syncModal.classList.remove("open");
       showToast("学习进度已导入");
       render();
@@ -1030,16 +1515,18 @@
     }
   };
   document.getElementById("resetProgressBtn").onclick = () => {
-    if (!confirm("确定清空所有已掌握、易忘与已移出记录吗？")) return;
-    state.progress = { mastered: [], hard: [], deleted: [] };
+    if (!confirm("确定清空所有已掌握、易忘、移出与艾宾浩斯复习记录吗？")) return;
+    state.progress = { mastered: [], hard: [], deleted: [], srs: {} };
     if (state.collection === "deleted") state.collection = "all";
     saveProgress();
-    syncDeckOrder(false);
+    pickSmartDeckMode();
+    syncDeckOrder(false, true);
     syncModal.classList.remove("open");
     showToast("进度已重置");
     render();
   };
 
-  syncDeckOrder(false);
+  pickSmartDeckMode();
+  syncDeckOrder(false, true);
   render();
 })();
