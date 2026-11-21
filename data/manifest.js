@@ -32,6 +32,14 @@ window.VOCAB_MANIFEST = [
     file: "data/2012.js"
   },
   {
+    id: "2013-en2-reading",
+    year: 2013,
+    label: "2013 英语（二）阅读",
+    shortLabel: "2013 英二",
+    count: 73,
+    file: "data/2013.js"
+  },
+  {
     id: "2014-en2-reading",
     year: 2014,
     label: "2014 英语（二）阅读",
