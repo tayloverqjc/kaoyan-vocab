@@ -1164,17 +1164,63 @@
     document.getElementById("fcActionFront").onclick = handleCardAction;
     document.getElementById("fcActionBack").onclick = handleCardAction;
 
+    function alignDeckCardInView(forFlip = false) {
+      requestAnimationFrame(() => {
+        const stack = document.querySelector(".deck-stack");
+        const deckBar = document.querySelector(".deck-bar");
+        if (!stack) return;
+
+        const mobileBar = document.querySelector(".mobile-bar");
+        const isMobile = window.innerWidth <= 860;
+        const topOffset = (mobileBar && getComputedStyle(mobileBar).display !== "none")
+          ? mobileBar.getBoundingClientRect().height + 10
+          : 16;
+
+        const vh = window.innerHeight;
+        const stackRect = stack.getBoundingClientRect();
+        const stackTopY = stackRect.top + window.scrollY;
+        const stackBottomY = stackTopY + stack.offsetHeight;
+
+        if (forFlip) {
+          // Lift the flipped card so bottom rating pills sit comfortably clear of bottom-right controls
+          const bottomSafe = isMobile
+            ? Math.min(148, Math.max(108, Math.round(vh * 0.165)))
+            : 32;
+          const neededScroll = stackBottomY - (vh - bottomSafe);
+          const maxScrollForCard = Math.max(0, stackTopY - topOffset);
+          if (neededScroll > window.scrollY + 4) {
+            window.scrollTo({
+              top: Math.max(0, Math.min(neededScroll, maxScrollForCard)),
+              behavior: "smooth"
+            });
+          }
+        } else if (isMobile) {
+          // When advancing to the next card, ensure the card header/top isn't clipped above the sticky bar
+          const anchor = deckBar || stack;
+          const anchorTop = anchor.getBoundingClientRect().top;
+          if (anchorTop < topOffset - 6) {
+            window.scrollTo({
+              top: Math.max(0, anchorTop + window.scrollY - topOffset),
+              behavior: "smooth"
+            });
+          }
+        }
+      });
+    }
+
     document.getElementById("fcPrev").onclick = () => {
       state.fcIndex = (state.fcIndex - 1 + ids.length) % ids.length;
       state.fcFlipped = false;
       state.fcShowHint = false;
       renderMain();
+      alignDeckCardInView(false);
     };
     document.getElementById("fcNext").onclick = () => {
       state.fcIndex = (state.fcIndex + 1) % ids.length;
       state.fcFlipped = false;
       state.fcShowHint = false;
       renderMain();
+      alignDeckCardInView(false);
     };
     document.getElementById("fcShuffle").onclick = () => {
       syncDeckOrder(true, false);
@@ -1185,6 +1231,7 @@
     document.getElementById("fcFlipBtn").onclick = () => {
       state.fcFlipped = true;
       document.getElementById("flipScene").classList.add("flipped");
+      alignDeckCardInView(true);
     };
     document.getElementById("fcUnflipBtn").onclick = () => {
       state.fcFlipped = false;
@@ -1247,6 +1294,7 @@
       state.fcFlipped = false;
       state.fcShowHint = false;
       render();
+      alignDeckCardInView(false);
     }
 
     const r1 = document.getElementById("rate1");
@@ -1455,9 +1503,8 @@
     if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
     if (e.code === "Space") {
       e.preventDefault();
-      state.fcFlipped = !state.fcFlipped;
-      const scene = document.getElementById("flipScene");
-      if (scene) scene.classList.toggle("flipped", state.fcFlipped);
+      const b = document.getElementById(state.fcFlipped ? "fcUnflipBtn" : "fcFlipBtn");
+      if (b) b.click();
     } else if (e.key === "ArrowLeft") {
       const b = document.getElementById("fcPrev");
       if (b) b.click();
