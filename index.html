@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>考研英语阅读精装词本 · Lexicon</title>
   <meta name="description" content="考研英语真题阅读核心生词本：精装书房排版、真题详细用法、词根联想记忆、模糊遮义自测与 3D 物理闪卡。" />
-  <link rel="stylesheet" href="styles.css?v=7" />
+  <link rel="stylesheet" href="styles.css?v=8" />
   <script>
     (function(){try{var t=localStorage.getItem("kaoyan_vocab_theme_v1");if(t==="light")t="paper";if(["mono","glass","momo","dark"].indexOf(t)>=0)document.documentElement.setAttribute("data-theme",t);var w=localStorage.getItem("kaoyan_vocab_wallpaper_v1");if(["alpine","sunset","forest"].indexOf(w)>=0)document.documentElement.setAttribute("data-wallpaper",w);}catch(e){}})();
   </script>
@@ -13,11 +13,17 @@
 <body>
   <!-- Mobile Sticky Header -->
   <div class="mobile-bar">
-    <button type="button" class="mobile-menu-btn" id="mobileMenuBtn">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
-      <span>目录</span>
-      <span class="mobile-pct-pill" id="mobilePct">0%</span>
-    </button>
+    <div class="mobile-left">
+      <button type="button" class="mobile-menu-btn" id="mobileMenuBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
+        <span>目录</span>
+        <span class="mobile-pct-pill" id="mobilePct">0%</span>
+      </button>
+      <button type="button" class="mobile-sync-btn" id="mobileSyncBtn" title="云同步状态" aria-label="云同步">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+        <span class="sync-dot" id="mobileSyncDot"></span>
+      </button>
+    </div>
     <div class="view-seg" role="tablist">
       <button type="button" class="view-btn active" data-view="cards">精读</button>
       <button type="button" class="view-btn" data-view="ledger">速刷</button>
@@ -79,7 +85,8 @@
       <div class="side-footer">
         <button type="button" class="side-foot-btn" id="syncBtn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
-          <span>同步 / 备份进度</span>
+          <span class="sync-dot" id="syncDot"></span>
+          <span id="syncBtnLabel">云同步 / 备份</span>
         </button>
       </div>
     </aside>
@@ -117,19 +124,98 @@
   </div>
 
   <!-- Sync Progress Modal -->
-  <div class="modal-bg" id="syncModal" role="dialog" aria-modal="true">
+  <div class="modal-bg" id="syncModal" role="dialog" aria-modal="true" aria-labelledby="syncModalTitle">
     <div class="modal-box">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <h3 style="margin:0;font-size:16px">同步学习进度</h3>
+      <div class="sync-modal-head">
+        <h3 id="syncModalTitle" style="margin:0;font-size:16px">三端云同步与备份</h3>
         <button type="button" class="foot-btn" id="closeSyncBtn">关闭</button>
       </div>
-      <p style="margin:0;font-size:12.5px;color:var(--text-muted)">你的掌握与易忘记录保存在当前浏览器本地。切换手机/电脑时，复制进度码粘贴导入即可。</p>
-      <textarea id="syncArea" class="sync-area" spellcheck="false"></textarea>
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-        <button type="button" class="foot-btn" id="resetProgressBtn">重置进度</button>
-        <div style="display:flex;gap:8px">
-          <button type="button" class="mask-btn" style="height:34px" id="copySyncBtn">复制进度码</button>
-          <button type="button" class="ink-btn" style="height:34px;padding:0 16px;font-size:13px" id="importSyncBtn">导入覆盖</button>
+
+      <div class="sync-tabs" role="tablist" aria-label="同步方式切换">
+        <button type="button" class="sync-tab-btn active" role="tab" aria-selected="true" data-sync-tab="cloud">GitHub 云同步</button>
+        <button type="button" class="sync-tab-btn" role="tab" aria-selected="false" data-sync-tab="manual">手动备份 / 重置</button>
+      </div>
+
+      <div id="syncTabCloud">
+        <!-- Disconnected Setup View -->
+        <div id="syncSetupView">
+          <div class="sync-steps">
+            <div class="sync-step-item">
+              <span class="sync-step-num">1</span>
+              <div class="sync-step-body">
+                <span>前往 GitHub 生成仅含 <code>gist</code> 权限的 Token（无仓库权限，建议选 <strong>No expiration</strong>）：</span>
+                <a class="sync-link-btn" href="https://github.com/settings/tokens/new?scopes=gist&description=Kaoyan+Vocab+Sync" target="_blank" rel="noopener noreferrer">一键前往创建 Token ↗</a>
+              </div>
+            </div>
+            <div class="sync-step-item">
+              <span class="sync-step-num">2</span>
+              <div class="sync-step-body">粘贴 Token 并连接。系统会自动在你账号下查找或创建一个<strong>私密 Gist</strong>，之后每次背词/切回网页都会按词条自动合并同步；其他设备可直接扫配对二维码免输入绑定。</div>
+            </div>
+          </div>
+
+          <label class="sync-field-lbl" for="gistTokenInput">GitHub Token</label>
+          <div class="sync-input-wrap">
+            <input id="gistTokenInput" class="sync-input" type="password" autocomplete="off" spellcheck="false" placeholder="粘贴 ghp_... 或 github_pat_... Token" />
+            <button type="button" class="foot-btn sync-vis-btn" id="toggleTokenVisBtn" title="显示/隐藏 Token">显示</button>
+          </div>
+
+          <details class="sync-adv">
+            <summary>高级选项：指定已有 Gist ID（可选）</summary>
+            <input id="gistIdInput" class="sync-input" type="text" autocomplete="off" spellcheck="false" placeholder="留空则自动查找或新建私密 Gist" style="margin-top:8px" />
+          </details>
+
+          <div class="sync-form-msg hidden" id="syncFormMsg" role="alert"></div>
+
+          <div class="sync-act-row">
+            <button type="button" class="ink-btn" id="connectGistBtn">连接并开启三端同步</button>
+          </div>
+        </div>
+
+        <!-- Connected Status & Pairing View -->
+        <div id="syncConnectedView" class="hidden">
+          <div class="sync-status-card">
+            <div class="sync-status-row">
+              <span class="sync-status-left">
+                <span class="sync-dot" id="modalSyncDot"></span>
+                <strong id="syncStateText">已同步</strong>
+              </span>
+              <span class="sync-last-time" id="syncLastTime">刚刚</span>
+            </div>
+            <div class="sync-meta-row">
+              <span id="syncAccountText">@github</span>
+              <a id="syncGistLink" href="https://gist.github.com" target="_blank" rel="noopener noreferrer">查看私密 Gist 历史 ↗</a>
+            </div>
+            <p class="sync-hint">仅同步学习进度（已掌握、易忘、移出、艾宾浩斯排期），各端主题与壁纸独立保留。</p>
+          </div>
+
+          <div class="sync-act-row">
+            <button type="button" class="ink-btn" id="syncNowBtn">立即同步</button>
+            <button type="button" class="foot-btn" id="disconnectGistBtn">断开云同步</button>
+          </div>
+
+          <div class="sync-pair-box">
+            <div class="sync-pair-head">手机 / 平板一键绑定</div>
+            <div class="sync-pair-btns">
+              <button type="button" class="mask-btn" style="height:34px" id="toggleQrBtn">显示配对二维码</button>
+              <button type="button" class="mask-btn" style="height:34px" id="copyPairLinkBtn">复制配对链接</button>
+            </div>
+            <div class="sync-qr-wrap hidden" id="syncQrWrap">
+              <div class="sync-qr-card" id="syncQrBox"></div>
+              <p class="sync-warn">二维码与链接包含你的 Gist 同步凭证，仅限本人设备使用，切勿截图发给他人。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="syncTabManual" class="hidden">
+        <p style="margin:0;font-size:12.5px;color:var(--text-muted)">可手动导出 JSON 进度码做本地归档，或导入覆盖当前进度（若已开启云同步，导入与重置也会同步到云端）。</p>
+        <textarea id="syncArea" class="sync-area" spellcheck="false"></textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <button type="button" class="foot-btn" id="resetProgressBtn">重置进度</button>
+          <div style="display:flex;gap:8px">
+            <button type="button" class="mask-btn" style="height:34px" id="copySyncBtn">复制进度码</button>
+            <button type="button" class="ink-btn" style="height:34px;padding:0 16px;font-size:13px" id="importSyncBtn">导入覆盖</button>
+          </div>
         </div>
       </div>
     </div>
@@ -144,6 +230,7 @@
   <script src="data/2012.js?v=3"></script>
   <script src="data/2013.js?v=1"></script>
   <script src="data/2014.js?v=3"></script>
-  <script src="app.js?v=6"></script>
+  <script src="qr.js?v=1"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>

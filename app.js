@@ -1,7 +1,10 @@
 (() => {
   const STORAGE_KEY = "kaoyan_vocab_progress_v1";
+  const SYNC_CONFIG_KEY = "kaoyan_vocab_gist_sync_v1";
   const THEME_KEY = "kaoyan_vocab_theme_v1";
   const SET_KEY = "kaoyan_vocab_set_v1";
+  const GIST_FILENAME = "kaoyan-vocab-progress.json";
+  const GIST_DESCRIPTION = "Kaoyan Vocab Sync Data (Auto-managed)";
 
   const ICONS = {
     speaker: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>',
@@ -62,6 +65,8 @@
     return def ? def.id : "";
   }
 
+  const STATUS_PRIO = { d: 4, m: 3, h: 2, n: 1 };
+
   const state = {
     setId: initialSetId(),
     passage: "ALL",
@@ -92,33 +97,243 @@
           due: v.due,
           last: typeof v.last === "string" ? v.last : "",
           reps: Math.max(0, Number(v.reps) || 0),
-          lapses: Math.max(0, Number(v.lapses) || 0)
+          lapses: Math.max(0, Number(v.lapses) || 0),
+          updatedAt: Math.max(0, Math.floor(Number(v.updatedAt) || 0))
         };
       }
     });
     return out;
   }
 
+  function rebuildStatusArrays(p) {
+    const mastered = [];
+    const hard = [];
+    const deleted = [];
+    const meta = p.meta || {};
+    Object.keys(meta).sort().forEach(id => {
+      const entry = meta[id];
+      if (!entry) return;
+      if (entry.s === "m") mastered.push(id);
+      else if (entry.s === "h") hard.push(id);
+      else if (entry.s === "d") deleted.push(id);
+    });
+    p.mastered = mastered;
+    p.hard = hard;
+    p.deleted = deleted;
+    return p;
+  }
+
+  function normalizeProgress(raw) {
+    const src = raw && typeof raw === "object" && !Array.isArray(raw) ? raw : {};
+    const resetAt = Math.max(0, Math.floor(Number(src.resetAt) || 0));
+    let updatedAt = Math.max(0, Math.floor(Number(src.updatedAt) || 0), resetAt);
+    const srs = sanitizeSrs(src.srs);
+    const meta = {};
+
+    if (src.meta && typeof src.meta === "object" && !Array.isArray(src.meta)) {
+      Object.keys(src.meta).forEach(id => {
+        const entry = src.meta[id];
+        if (entry && typeof entry === "object" && STATUS_PRIO[entry.s]) {
+          const t = Math.max(0, Math.floor(Number(entry.t) || 0));
+          meta[id] = { s: entry.s, t };
+          if (t > updatedAt) updatedAt = t;
+        }
+      });
+    }
+
+    // Legacy v1 compatibility: backfill missing meta entries from arrays
+    const legacyFallback = (arr, status) => {
+      if (!Array.isArray(arr)) return;
+      arr.forEach(id => {
+        if (typeof id !== "string" || !id) return;
+        if (!meta[id]) {
+          meta[id] = { s: status, t: 1 };
+        }
+      });
+    };
+    legacyFallback(src.deleted, "d");
+    legacyFallback(src.mastered, "m");
+    legacyFallback(src.hard, "h");
+
+    Object.keys(srs).forEach(id => {
+      if (srs[id].updatedAt > updatedAt) updatedAt = srs[id].updatedAt;
+    });
+
+    return rebuildStatusArrays({
+      version: 2,
+      updatedAt,
+      resetAt,
+      mastered: [],
+      hard: [],
+      deleted: [],
+      srs,
+      meta
+    });
+  }
+
+  function srsEffectiveTime(rec) {
+    if (!rec) return 0;
+    return rec.updatedAt || (rec.last ? 1 : 0);
+  }
+
+  function pickNewerSrs(a, b) {
+    if (a.updatedAt !== b.updatedAt) return a.updatedAt > b.updatedAt ? a : b;
+    if (a.last !== b.last) return a.last > b.last ? a : b;
+    if (a.reps !== b.reps) return a.reps > b.reps ? a : b;
+    if (a.step !== b.step) return a.step > b.step ? a : b;
+    return a;
+  }
+
+  function mergeProgress(localRaw, remoteRaw) {
+    const a = normalizeProgress(localRaw);
+    const b = normalizeProgress(remoteRaw);
+    const resetAt = Math.max(a.resetAt || 0, b.resetAt || 0);
+
+    const mergedMeta = {};
+    const allMetaIds = new Set([...Object.keys(a.meta), ...Object.keys(b.meta)]);
+    allMetaIds.forEach(id => {
+      const ea = a.meta[id] && a.meta[id].t > resetAt ? a.meta[id] : null;
+      const eb = b.meta[id] && b.meta[id].t > resetAt ? b.meta[id] : null;
+      if (!ea && !eb) return;
+      if (ea && !eb) { mergedMeta[id] = { s: ea.s, t: ea.t }; return; }
+      if (eb && !ea) { mergedMeta[id] = { s: eb.s, t: eb.t }; return; }
+      if (ea.t !== eb.t) {
+        const win = ea.t > eb.t ? ea : eb;
+        mergedMeta[id] = { s: win.s, t: win.t };
+      } else {
+        const win = STATUS_PRIO[ea.s] >= STATUS_PRIO[eb.s] ? ea : eb;
+        mergedMeta[id] = { s: win.s, t: win.t };
+      }
+    });
+
+    const mergedSrs = {};
+    const allSrsIds = new Set([...Object.keys(a.srs), ...Object.keys(b.srs)]);
+    allSrsIds.forEach(id => {
+      const ra = a.srs[id] && srsEffectiveTime(a.srs[id]) > resetAt ? a.srs[id] : null;
+      const rb = b.srs[id] && srsEffectiveTime(b.srs[id]) > resetAt ? b.srs[id] : null;
+      if (!ra && !rb) return;
+      if (ra && !rb) { mergedSrs[id] = { ...ra }; return; }
+      if (rb && !ra) { mergedSrs[id] = { ...rb }; return; }
+      mergedSrs[id] = { ...pickNewerSrs(ra, rb) };
+    });
+
+    let updatedAt = Math.max(a.updatedAt || 0, b.updatedAt || 0, resetAt);
+    Object.keys(mergedMeta).forEach(id => {
+      if (mergedMeta[id].t > updatedAt) updatedAt = mergedMeta[id].t;
+    });
+    Object.keys(mergedSrs).forEach(id => {
+      if (mergedSrs[id].updatedAt > updatedAt) updatedAt = mergedSrs[id].updatedAt;
+    });
+
+    return rebuildStatusArrays({
+      version: 2,
+      updatedAt,
+      resetAt,
+      mastered: [],
+      hard: [],
+      deleted: [],
+      srs: mergedSrs,
+      meta: mergedMeta
+    });
+  }
+
+  function progressFingerprint(raw) {
+    const p = normalizeProgress(raw);
+    const sortedMeta = {};
+    Object.keys(p.meta).sort().forEach(k => { sortedMeta[k] = p.meta[k]; });
+    const sortedSrs = {};
+    Object.keys(p.srs).sort().forEach(k => { sortedSrs[k] = p.srs[k]; });
+    return JSON.stringify({ resetAt: p.resetAt, meta: sortedMeta, srs: sortedSrs });
+  }
+
+  function hasMeaningfulProgress(raw) {
+    const p = normalizeProgress(raw);
+    return Object.keys(p.meta).length > 0 || Object.keys(p.srs).length > 0 || p.resetAt > 0;
+  }
+
   function loadProgress() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const p = JSON.parse(raw);
-        return {
-          mastered: Array.isArray(p.mastered) ? p.mastered : [],
-          hard: Array.isArray(p.hard) ? p.hard : [],
-          deleted: Array.isArray(p.deleted) ? p.deleted : [],
-          srs: sanitizeSrs(p.srs)
-        };
-      }
+      if (raw) return normalizeProgress(JSON.parse(raw));
     } catch (_) {}
-    return { mastered: [], hard: [], deleted: [], srs: {} };
+    return normalizeProgress({});
   }
 
-  function saveProgress() {
+  function loadSyncConfig() {
+    try {
+      const raw = localStorage.getItem(SYNC_CONFIG_KEY);
+      if (raw) {
+        const c = JSON.parse(raw);
+        if (c && typeof c === "object") {
+          return {
+            enabled: Boolean(c.enabled && c.token && c.gistId),
+            token: typeof c.token === "string" ? c.token : "",
+            gistId: typeof c.gistId === "string" ? c.gistId : "",
+            login: typeof c.login === "string" ? c.login : "",
+            lastSyncAt: Number(c.lastSyncAt) || 0,
+            dirty: Boolean(c.dirty)
+          };
+        }
+      }
+    } catch (_) {}
+    return { enabled: false, token: "", gistId: "", login: "", lastSyncAt: 0, dirty: false };
+  }
+
+  let syncConfig = loadSyncConfig();
+  const syncRuntime = {
+    status: syncConfig.enabled ? (syncConfig.dirty ? "dirty" : "synced") : "idle",
+    error: "",
+    inFlight: false,
+    queued: false,
+    debounceTimer: null,
+    lastPullAt: 0
+  };
+
+  function saveSyncConfig() {
+    try {
+      localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(syncConfig));
+    } catch (_) {}
+  }
+
+  function nextTimestamp() {
+    const cur = (state && state.progress && state.progress.updatedAt) || 0;
+    return Math.max(Date.now(), cur + 1);
+  }
+
+  function getWordStatus(id) {
+    const entry = state.progress.meta && state.progress.meta[id];
+    if (entry && STATUS_PRIO[entry.s]) return entry.s;
+    if (isDeleted(id)) return "d";
+    if (isMastered(id)) return "m";
+    if (isHard(id)) return "h";
+    return "n";
+  }
+
+  function setWordStatus(id, status, opts = {}) {
+    if (!state.progress.meta) state.progress.meta = {};
+    const now = opts.now || nextTimestamp();
+    state.progress.meta[id] = { s: STATUS_PRIO[status] ? status : "n", t: now };
+    rebuildStatusArrays(state.progress);
+    if (opts.save !== false) {
+      saveProgress({ now });
+    }
+    return now;
+  }
+
+  function saveProgress(opts = {}) {
+    if (opts.touchTimestamp !== false) {
+      state.progress.updatedAt = Math.max(state.progress.updatedAt || 0, opts.now || nextTimestamp());
+    }
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));
     } catch (_) {}
+    if (opts.markDirty !== false && syncConfig.enabled) {
+      syncConfig.dirty = true;
+      saveSyncConfig();
+      if (!syncRuntime.inFlight) syncRuntime.status = "dirty";
+      updateSyncIndicators();
+      scheduleAutoSync(1800);
+    }
   }
 
   const isMastered = id => state.progress.mastered.includes(id);
@@ -167,23 +382,25 @@
   function applySrsRating(id, quality) {
     const prev = getSrs(id);
     const p = previewRating(id, quality);
+    const now = nextTimestamp();
     if (!state.progress.srs) state.progress.srs = {};
     state.progress.srs[id] = {
       step: p.nextStep,
       due: p.due,
       last: localDateStr(0),
       reps: (prev ? prev.reps : 0) + 1,
-      lapses: (prev ? prev.lapses : 0) + (quality === "forgot" ? 1 : 0)
+      lapses: (prev ? prev.lapses : 0) + (quality === "forgot" ? 1 : 0),
+      updatedAt: now
     };
     if (quality === "forgot") {
-      toggleHard(id, true);
+      setWordStatus(id, "h", { save: false, now });
     } else if (quality === "know") {
-      toggleMastered(id, true);
-    } else {
+      setWordStatus(id, "m", { save: false, now });
+    } else if (getWordStatus(id) === "m") {
       // fuzzy: unmark mastered if it was previously mastered, keep hard status as-is
-      state.progress.mastered = state.progress.mastered.filter(x => x !== id);
-      saveProgress();
+      setWordStatus(id, "n", { save: false, now });
     }
+    saveProgress({ now });
     return p;
   }
 
@@ -259,49 +476,40 @@
 
   function toggleMastered(id, force) {
     const next = typeof force === "boolean" ? force : !isMastered(id);
-    state.progress.mastered = state.progress.mastered.filter(x => x !== id);
-    if (next) {
-      state.progress.mastered.push(id);
-      state.progress.hard = state.progress.hard.filter(x => x !== id);
-    }
-    saveProgress();
+    setWordStatus(id, next ? "m" : "n");
   }
 
   function toggleHard(id, force) {
     const next = typeof force === "boolean" ? force : !isHard(id);
-    state.progress.hard = state.progress.hard.filter(x => x !== id);
-    if (next) {
-      state.progress.hard.push(id);
-      state.progress.mastered = state.progress.mastered.filter(x => x !== id);
-    }
-    saveProgress();
+    setWordStatus(id, next ? "h" : "n");
   }
 
   function deleteWord(item) {
-    const prev = { wasMastered: isMastered(item.id), wasHard: isHard(item.id) };
-    if (!isDeleted(item.id)) state.progress.deleted.push(item.id);
-    state.progress.mastered = state.progress.mastered.filter(x => x !== item.id);
-    state.progress.hard = state.progress.hard.filter(x => x !== item.id);
+    const prevStatus = getWordStatus(item.id);
+    setWordStatus(item.id, "d");
     state.fcOrder = state.fcOrder.filter(x => x !== item.id);
     state.fcSession.requeued.delete(item.id);
     state.fcFlipped = false;
     state.fcShowHint = false;
-    saveProgress();
     render();
     showToast(`已移出「${item.word}」`, {
       label: "撤销",
       onClick: () => {
-        restoreWord(item.id, prev);
+        restoreWord(item.id, prevStatus);
         showToast(`已恢复「${item.word}」`);
       }
     });
   }
 
   function restoreWord(id, prev = null) {
-    state.progress.deleted = state.progress.deleted.filter(x => x !== id);
-    if (prev && prev.wasMastered && !isMastered(id)) state.progress.mastered.push(id);
-    if (prev && prev.wasHard && !isHard(id)) state.progress.hard.push(id);
-    saveProgress();
+    let targetStatus = "n";
+    if (typeof prev === "string" && (prev === "m" || prev === "h" || prev === "n")) {
+      targetStatus = prev;
+    } else if (prev && typeof prev === "object") {
+      if (prev.wasMastered) targetStatus = "m";
+      else if (prev.wasHard) targetStatus = "h";
+    }
+    setWordStatus(id, targetStatus);
     if (state.collection === "deleted" && !deletedWords().length) {
       state.collection = "all";
     }
@@ -312,8 +520,13 @@
   function restoreAllCurrentDeleted() {
     const ids = new Set(deletedWords().map(w => w.id));
     if (!ids.size) return;
-    state.progress.deleted = state.progress.deleted.filter(id => !ids.has(id));
-    saveProgress();
+    const now = nextTimestamp();
+    if (!state.progress.meta) state.progress.meta = {};
+    ids.forEach(id => {
+      state.progress.meta[id] = { s: "n", t: now };
+    });
+    rebuildStatusArrays(state.progress);
+    saveProgress({ now });
     state.collection = "all";
     syncDeckOrder(false);
     render();
@@ -1497,10 +1710,15 @@
   document.getElementById("mobileMenuBtn").onclick = openDrawer;
   document.getElementById("drawerBackdrop").onclick = closeDrawer;
 
-  // Keyboard shortcuts for 3D deck
+  // Keyboard shortcuts for 3D deck & modal
   document.addEventListener("keydown", e => {
+    const modal = document.getElementById("syncModal");
+    if (modal && modal.classList.contains("open")) {
+      if (e.key === "Escape") closeSyncModal();
+      return;
+    }
     if (state.view !== "deck") return;
-    if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+    if (document.activeElement && ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
     if (e.code === "Space") {
       e.preventDefault();
       const b = document.getElementById(state.fcFlipped ? "fcUnflipBtn" : "fcFlipBtn");
@@ -1517,16 +1735,594 @@
     }
   });
 
-  // Sync Modal
+  // ------------------------------------------------------------------
+  // GitHub Private Gist 3-Device Auto-Sync Engine
+  // ------------------------------------------------------------------
+  function toBase64Url(str) {
+    const bytes = typeof TextEncoder !== "undefined"
+      ? new TextEncoder().encode(str)
+      : Array.from(unescape(encodeURIComponent(str))).map(c => c.charCodeAt(0));
+    let bin = "";
+    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+
+  function fromBase64Url(encoded) {
+    let b64 = String(encoded || "").replace(/-/g, "+").replace(/_/g, "/");
+    while (b64.length % 4) b64 += "=";
+    const bin = atob(b64);
+    if (typeof TextDecoder !== "undefined") {
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return new TextDecoder().decode(bytes);
+    }
+    let escStr = "";
+    for (let i = 0; i < bin.length; i++) {
+      escStr += "%" + ("00" + bin.charCodeAt(i).toString(16)).slice(-2);
+    }
+    return decodeURIComponent(escStr);
+  }
+
+  function encodePairingPayload(token, gistId) {
+    return toBase64Url(JSON.stringify({ t: token, g: gistId }));
+  }
+
+  function decodePairingPayload(hashStr) {
+    const prefix = "#kv_sync=";
+    if (!hashStr || !hashStr.startsWith(prefix)) return null;
+    const raw = hashStr.slice(prefix.length);
+    const parsed = JSON.parse(fromBase64Url(raw));
+    if (!parsed || typeof parsed.t !== "string" || typeof parsed.g !== "string") return null;
+    const t = parsed.t.trim();
+    const g = extractGistId(parsed.g);
+    if (!t || !g) return null;
+    return { token: t, gistId: g };
+  }
+
+  function extractGistId(input) {
+    const val = String(input || "").trim();
+    if (!val) return "";
+    const urlMatch = val.match(/gist\.github\.com\/(?:[^/]+\/)?([a-f0-9]{16,64})/i);
+    if (urlMatch) return urlMatch[1];
+    return val.replace(/^\/+|\/+$/g, "");
+  }
+
+  function buildPairingUrl() {
+    if (!syncConfig.token || !syncConfig.gistId) return "";
+    return `${window.location.origin}${window.location.pathname}#kv_sync=${encodePairingPayload(syncConfig.token, syncConfig.gistId)}`;
+  }
+
+  function formatSyncTime(ts) {
+    if (!ts) return "尚未同步";
+    const diff = Date.now() - ts;
+    if (diff < 60000) return "刚刚";
+    if (diff < 3600000) return `${Math.floor(diff / 60000)} 分钟前`;
+    const d = new Date(ts);
+    const now = new Date();
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    if (d.toDateString() === now.toDateString()) return `今天 ${hh}:${mm}`;
+    return `${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")} ${hh}:${mm}`;
+  }
+
+  async function ghFetch(path, opts = {}) {
+    const method = (opts.method || "GET").toUpperCase();
+    const token = opts.token || syncConfig.token;
+    let url = path.startsWith("http") ? path : `https://api.github.com${path}`;
+    if (method === "GET" && url.includes("api.github.com")) {
+      url += (url.includes("?") ? "&" : "?") + "_=" + Date.now();
+    }
+    const headers = {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${token}`,
+      "X-GitHub-Api-Version": "2022-11-28"
+    };
+    if (opts.body !== undefined) {
+      headers["Content-Type"] = "application/json";
+    }
+    let res;
+    try {
+      res = await fetch(url, {
+        method,
+        headers,
+        body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+        keepalive: Boolean(opts.keepalive)
+      });
+    } catch (_) {
+      throw new Error("网络连接失败，请检查网络或代理（进度已保存本地）");
+    }
+
+    const scopesHeader = res.headers && typeof res.headers.get === "function" ? res.headers.get("X-OAuth-Scopes") : null;
+    const hasScopes = typeof scopesHeader === "string" && scopesHeader.trim() !== "";
+    if (!res.ok) {
+      let msg = "";
+      try {
+        const errJson = await res.json();
+        if (errJson && errJson.message) msg = errJson.message;
+      } catch (_) {}
+
+      if (res.status === 401) {
+        throw new Error("Token 无效或已过期，请重新生成并勾选 gist 权限");
+      }
+      if (res.status === 403) {
+        if (hasScopes && !scopesHeader.split(/[,\s]+/).includes("gist")) {
+          throw new Error("该 Token 未包含 gist 权限，请重新创建并勾选 gist");
+        }
+        throw new Error(msg && msg.toLowerCase().includes("rate limit")
+          ? "GitHub API 请求频率受限，请稍后自动重试"
+          : "权限不足或访问被拒，请确认 Token 具备 gist 权限");
+      }
+      if (res.status === 404) {
+        throw new Error("找不到对应的私密 Gist（可能已被删除），可断开后留空重连");
+      }
+      throw new Error(msg ? `GitHub 接口异常（${res.status}）：${msg}` : `同步失败（HTTP ${res.status}）`);
+    }
+
+    if (hasScopes && !scopesHeader.split(/[,\s]+/).includes("gist")) {
+      throw new Error("该 Token 未勾选 gist 权限，请在 GitHub 勾选 gist 后重试");
+    }
+
+    const data = res.status === 204 ? null : await res.json();
+    return { data, scopes: scopesHeader };
+  }
+
+  async function readGistProgress(gist) {
+    const files = (gist && gist.files) || {};
+    const file = files[GIST_FILENAME];
+    if (!file) return normalizeProgress({});
+    let rawText = file.content;
+    if (file.truncated && file.raw_url) {
+      const rawRes = await fetch(file.raw_url);
+      if (!rawRes.ok) throw new Error("读取云端词库进度文件失败");
+      rawText = await rawRes.text();
+    }
+    if (!rawText || !String(rawText).trim()) return normalizeProgress({});
+    try {
+      return normalizeProgress(JSON.parse(rawText));
+    } catch (_) {
+      throw new Error("云端 Gist 中的进度 JSON 格式损坏，请检查 Gist 修订历史");
+    }
+  }
+
+  function applyRemoteMergedProgress(merged) {
+    state.progress = merged;
+    if (state.collection === "deleted" && deletedWords().length === 0) {
+      state.collection = "all";
+    }
+    saveProgress({ touchTimestamp: false, markDirty: false });
+    renderSidebar();
+    renderStageHeader();
+
+    const syncAreaEl = document.getElementById("syncArea");
+    if (syncAreaEl && document.activeElement !== syncAreaEl) {
+      syncAreaEl.value = JSON.stringify(state.progress);
+    }
+
+    if (state.view === "deck") {
+      const pool = deckPool(filteredWords(), state.fcMode, true);
+      const poolIds = new Set(pool.map(w => w.id));
+      const curId = state.fcOrder[state.fcIndex];
+      const readingFlippedCard = Boolean(state.fcFlipped && curId && poolIds.has(curId));
+      if (!readingFlippedCard) {
+        if (!curId || !poolIds.has(curId) || !state.fcOrder.length) {
+          syncDeckOrder(false, false);
+        }
+        renderMain();
+      }
+    } else {
+      renderMain();
+    }
+  }
+
+  function scheduleAutoSync(delayMs = 1800) {
+    if (!syncConfig.enabled || !syncConfig.token || !syncConfig.gistId) return;
+    if (syncRuntime.debounceTimer) clearTimeout(syncRuntime.debounceTimer);
+    syncRuntime.debounceTimer = setTimeout(() => {
+      syncRuntime.debounceTimer = null;
+      syncNow({ silent: true, reason: "auto" });
+    }, delayMs);
+  }
+
+  async function syncNow(opts = {}) {
+    const silent = opts.silent !== false;
+    if (!syncConfig.enabled || !syncConfig.token || !syncConfig.gistId) return false;
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      syncRuntime.status = "error";
+      syncRuntime.error = "当前离线，联网后将自动合并同步";
+      updateSyncIndicators();
+      if (!silent) showToast(syncRuntime.error);
+      return false;
+    }
+    if (syncRuntime.inFlight) {
+      syncRuntime.queued = true;
+      return false;
+    }
+
+    syncRuntime.inFlight = true;
+    syncRuntime.status = "syncing";
+    syncRuntime.error = "";
+    updateSyncIndicators();
+
+    try {
+      const { data: gist } = await ghFetch(`/gists/${encodeURIComponent(syncConfig.gistId)}`, {
+        token: syncConfig.token
+      });
+      if (gist && gist.owner && gist.owner.login) {
+        syncConfig.login = gist.owner.login;
+      }
+      const remoteProgress = await readGistProgress(gist);
+      const liveLocal = state.progress;
+      const merged = mergeProgress(liveLocal, remoteProgress);
+
+      const localChanged = progressFingerprint(liveLocal) !== progressFingerprint(merged);
+      const remoteChanged = progressFingerprint(remoteProgress) !== progressFingerprint(merged);
+
+      if (localChanged) {
+        applyRemoteMergedProgress(merged);
+      }
+
+      if (remoteChanged) {
+        const snapshotUpdatedAt = merged.updatedAt;
+        const bodyObj = {
+          description: GIST_DESCRIPTION,
+          files: {
+            [GIST_FILENAME]: {
+              content: JSON.stringify(merged)
+            }
+          }
+        };
+        const useKeepalive = Boolean(opts.keepalive && JSON.stringify(bodyObj).length < 55000);
+        await ghFetch(`/gists/${encodeURIComponent(syncConfig.gistId)}`, {
+          method: "PATCH",
+          token: syncConfig.token,
+          body: bodyObj,
+          keepalive: useKeepalive
+        });
+        if (state.progress.updatedAt > snapshotUpdatedAt) {
+          syncConfig.dirty = true;
+          syncRuntime.queued = true;
+        } else {
+          syncConfig.dirty = false;
+        }
+      } else if (state.progress.updatedAt <= merged.updatedAt) {
+        syncConfig.dirty = false;
+      } else {
+        syncRuntime.queued = true;
+      }
+
+      syncConfig.lastSyncAt = Date.now();
+      syncRuntime.lastPullAt = Date.now();
+      syncRuntime.status = syncConfig.dirty ? "dirty" : "synced";
+      syncRuntime.error = "";
+      saveSyncConfig();
+      updateSyncIndicators();
+      if (!silent) {
+        showToast(localChanged ? "云同步完成 · 已自动合并最新进度" : "云端已是最新进度");
+      }
+      return true;
+    } catch (err) {
+      syncRuntime.status = "error";
+      syncRuntime.error = err && err.message ? err.message : "同步失败";
+      updateSyncIndicators();
+      if (!silent) showToast(syncRuntime.error);
+      return false;
+    } finally {
+      syncRuntime.inFlight = false;
+      updateSyncIndicators();
+      if (syncRuntime.queued) {
+        syncRuntime.queued = false;
+        scheduleAutoSync(450);
+      }
+    }
+  }
+
+  async function connectGist(rawToken, rawGistId = "") {
+    const token = String(rawToken || "").trim();
+    const customGistId = extractGistId(rawGistId);
+    if (!token) throw new Error("请先粘贴 GitHub Token");
+
+    let targetGist = null;
+    if (customGistId) {
+      const res = await ghFetch(`/gists/${encodeURIComponent(customGistId)}`, { token });
+      targetGist = res.data;
+    } else {
+      const { data: gists } = await ghFetch("/gists?per_page=100", { token });
+      const candidates = Array.isArray(gists)
+        ? gists.filter(g => g && g.files && Object.prototype.hasOwnProperty.call(g.files, GIST_FILENAME))
+        : [];
+      candidates.sort((a, b) => {
+        if (Boolean(a.public) !== Boolean(b.public)) return a.public ? 1 : -1;
+        return String(b.updated_at || "").localeCompare(String(a.updated_at || ""));
+      });
+      if (candidates.length) {
+        const full = await ghFetch(`/gists/${encodeURIComponent(candidates[0].id)}`, { token });
+        targetGist = full.data;
+      }
+    }
+
+    let login = "";
+    let gistId = "";
+    let merged = state.progress;
+
+    if (targetGist) {
+      gistId = targetGist.id;
+      login = (targetGist.owner && targetGist.owner.login) || "";
+      const remoteProgress = await readGistProgress(targetGist);
+      merged = mergeProgress(state.progress, remoteProgress);
+      const localChanged = progressFingerprint(state.progress) !== progressFingerprint(merged);
+      const remoteChanged = progressFingerprint(remoteProgress) !== progressFingerprint(merged);
+      if (localChanged) applyRemoteMergedProgress(merged);
+      if (remoteChanged) {
+        await ghFetch(`/gists/${encodeURIComponent(gistId)}`, {
+          method: "PATCH",
+          token,
+          body: {
+            description: GIST_DESCRIPTION,
+            files: { [GIST_FILENAME]: { content: JSON.stringify(merged) } }
+          }
+        });
+      }
+    } else {
+      const { data: created } = await ghFetch("/gists", {
+        method: "POST",
+        token,
+        body: {
+          description: GIST_DESCRIPTION,
+          public: false,
+          files: { [GIST_FILENAME]: { content: JSON.stringify(state.progress) } }
+        }
+      });
+      gistId = created.id;
+      login = (created.owner && created.owner.login) || "";
+    }
+
+    syncConfig = {
+      enabled: true,
+      token,
+      gistId,
+      login,
+      lastSyncAt: Date.now(),
+      dirty: false
+    };
+    syncRuntime.status = "synced";
+    syncRuntime.error = "";
+    syncRuntime.lastPullAt = Date.now();
+    saveSyncConfig();
+    updateSyncIndicators();
+    return { targetGistExists: Boolean(targetGist), gistId, login };
+  }
+
+  function disconnectGist() {
+    if (syncRuntime.debounceTimer) {
+      clearTimeout(syncRuntime.debounceTimer);
+      syncRuntime.debounceTimer = null;
+    }
+    syncRuntime.queued = false;
+    syncRuntime.status = "idle";
+    syncRuntime.error = "";
+    syncConfig = { enabled: false, token: "", gistId: "", login: "", lastSyncAt: 0, dirty: false };
+    saveSyncConfig();
+    updateSyncIndicators();
+  }
+
+  function updateSyncIndicators() {
+    let dotClass = "is-off";
+    let sideLabel = "云同步 / 备份";
+    let modalText = "未连接";
+
+    if (syncConfig.enabled) {
+      if (syncRuntime.status === "syncing") {
+        dotClass = "is-syncing";
+        sideLabel = "正在同步...";
+        modalText = "正在同步...";
+      } else if (syncRuntime.status === "error") {
+        dotClass = "is-error";
+        sideLabel = "同步异常";
+        modalText = syncRuntime.error || "同步失败";
+      } else if (syncConfig.dirty || syncRuntime.status === "dirty") {
+        dotClass = "is-dirty";
+        sideLabel = "待上传同步";
+        modalText = "有本地修改待同步";
+      } else {
+        dotClass = "is-synced";
+        sideLabel = "云端已同步";
+        modalText = "三端自动同步中";
+      }
+    }
+
+    ["syncDot", "mobileSyncDot", "modalSyncDot"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.className = `sync-dot ${dotClass}`;
+    });
+
+    const lbl = document.getElementById("syncBtnLabel");
+    if (lbl) lbl.textContent = sideLabel;
+
+    const mobBtn = document.getElementById("mobileSyncBtn");
+    if (mobBtn) mobBtn.title = `${sideLabel}${syncConfig.lastSyncAt ? " · " + formatSyncTime(syncConfig.lastSyncAt) : ""}`;
+
+    const stateEl = document.getElementById("syncStateText");
+    if (stateEl) stateEl.textContent = modalText;
+
+    const lastEl = document.getElementById("syncLastTime");
+    if (lastEl) lastEl.textContent = syncConfig.lastSyncAt ? `上次同步：${formatSyncTime(syncConfig.lastSyncAt)}` : "尚未同步";
+
+    const accEl = document.getElementById("syncAccountText");
+    if (accEl) accEl.textContent = syncConfig.login ? `@${syncConfig.login} · 私密 Gist` : "私密 Gist 已绑定";
+
+    const linkEl = document.getElementById("syncGistLink");
+    if (linkEl && syncConfig.gistId) {
+      linkEl.href = `https://gist.github.com/${encodeURIComponent(syncConfig.gistId)}`;
+    }
+
+    const setupView = document.getElementById("syncSetupView");
+    const connView = document.getElementById("syncConnectedView");
+    if (setupView && connView) {
+      setupView.classList.toggle("hidden", syncConfig.enabled);
+      connView.classList.toggle("hidden", !syncConfig.enabled);
+    }
+
+    const syncNowBtn = document.getElementById("syncNowBtn");
+    if (syncNowBtn) {
+      syncNowBtn.disabled = syncRuntime.inFlight;
+      syncNowBtn.textContent = syncRuntime.inFlight ? "同步中..." : "立即同步";
+    }
+  }
+
+  // Sync Modal & Tab Bindings
   const syncModal = document.getElementById("syncModal");
   const syncArea = document.getElementById("syncArea");
-  document.getElementById("syncBtn").onclick = () => {
+  const syncFormMsg = document.getElementById("syncFormMsg");
+  const gistTokenInput = document.getElementById("gistTokenInput");
+  const gistIdInput = document.getElementById("gistIdInput");
+  const syncQrWrap = document.getElementById("syncQrWrap");
+  const syncQrBox = document.getElementById("syncQrBox");
+  const toggleQrBtn = document.getElementById("toggleQrBtn");
+
+  function switchSyncTab(tabName) {
+    document.querySelectorAll("[data-sync-tab]").forEach(btn => {
+      const active = btn.getAttribute("data-sync-tab") === tabName;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-selected", active ? "true" : "false");
+    });
+    const cloudPane = document.getElementById("syncTabCloud");
+    const manualPane = document.getElementById("syncTabManual");
+    if (cloudPane) cloudPane.classList.toggle("hidden", tabName !== "cloud");
+    if (manualPane) manualPane.classList.toggle("hidden", tabName !== "manual");
+    if (tabName === "manual" && syncArea) {
+      syncArea.value = JSON.stringify(state.progress);
+    }
+  }
+
+  function showFormMsg(msg, isErr = true) {
+    if (!syncFormMsg) return;
+    if (!msg) {
+      syncFormMsg.classList.add("hidden");
+      syncFormMsg.textContent = "";
+      return;
+    }
+    syncFormMsg.textContent = msg;
+    syncFormMsg.className = `sync-form-msg ${isErr ? "is-err" : "is-ok"}`;
+  }
+
+  function openSyncModal(defaultTab = "cloud") {
     closeDrawer();
-    syncArea.value = JSON.stringify(state.progress);
+    showFormMsg("");
+    if (syncArea) syncArea.value = JSON.stringify(state.progress);
+    if (syncQrWrap) syncQrWrap.classList.add("hidden");
+    if (toggleQrBtn) toggleQrBtn.textContent = "显示配对二维码";
+    switchSyncTab(defaultTab);
+    updateSyncIndicators();
     syncModal.classList.add("open");
-  };
-  document.getElementById("closeSyncBtn").onclick = () => syncModal.classList.remove("open");
-  syncModal.onclick = e => { if (e.target === syncModal) syncModal.classList.remove("open"); };
+  }
+
+  function closeSyncModal() {
+    syncModal.classList.remove("open");
+    if (syncQrWrap) syncQrWrap.classList.add("hidden");
+    if (syncQrBox) syncQrBox.innerHTML = "";
+    if (toggleQrBtn) toggleQrBtn.textContent = "显示配对二维码";
+  }
+
+  document.getElementById("syncBtn").onclick = () => openSyncModal("cloud");
+  const mobileSyncBtn = document.getElementById("mobileSyncBtn");
+  if (mobileSyncBtn) mobileSyncBtn.onclick = () => openSyncModal("cloud");
+  document.getElementById("closeSyncBtn").onclick = closeSyncModal;
+  syncModal.onclick = e => { if (e.target === syncModal) closeSyncModal(); };
+
+  document.querySelectorAll("[data-sync-tab]").forEach(btn => {
+    btn.onclick = () => switchSyncTab(btn.getAttribute("data-sync-tab"));
+  });
+
+  const toggleTokenVisBtn = document.getElementById("toggleTokenVisBtn");
+  if (toggleTokenVisBtn && gistTokenInput) {
+    toggleTokenVisBtn.onclick = () => {
+      const show = gistTokenInput.type === "password";
+      gistTokenInput.type = show ? "text" : "password";
+      toggleTokenVisBtn.textContent = show ? "隐藏" : "显示";
+    };
+  }
+
+  const connectGistBtn = document.getElementById("connectGistBtn");
+  if (connectGistBtn) {
+    connectGistBtn.onclick = async () => {
+      showFormMsg("");
+      const token = gistTokenInput ? gistTokenInput.value : "";
+      const gid = gistIdInput ? gistIdInput.value : "";
+      connectGistBtn.disabled = true;
+      connectGistBtn.textContent = "连接中...";
+      try {
+        const res = await connectGist(token, gid);
+        if (gistTokenInput) gistTokenInput.value = "";
+        if (gistIdInput) gistIdInput.value = "";
+        showToast(res.targetGistExists ? "已连接现有私密 Gist 并合并进度" : "已新建私密 Gist 并开启三端自动同步");
+      } catch (err) {
+        showFormMsg(err && err.message ? err.message : "连接失败", true);
+      } finally {
+        connectGistBtn.disabled = false;
+        connectGistBtn.textContent = "连接并开启三端同步";
+      }
+    };
+  }
+
+  const syncNowBtn = document.getElementById("syncNowBtn");
+  if (syncNowBtn) syncNowBtn.onclick = () => syncNow({ silent: false, reason: "manual" });
+
+  const disconnectGistBtn = document.getElementById("disconnectGistBtn");
+  if (disconnectGistBtn) {
+    disconnectGistBtn.onclick = () => {
+      if (!confirm("断开后仅清除当前设备的同步凭证，本地背词记录和 GitHub 私密 Gist 中的数据都会保留。确定断开吗？")) return;
+      disconnectGist();
+      if (syncQrWrap) syncQrWrap.classList.add("hidden");
+      if (syncQrBox) syncQrBox.innerHTML = "";
+      showToast("已断开当前设备的云同步");
+    };
+  }
+
+  if (toggleQrBtn && syncQrWrap && syncQrBox) {
+    toggleQrBtn.onclick = () => {
+      const willShow = syncQrWrap.classList.contains("hidden");
+      if (willShow) {
+        const url = buildPairingUrl();
+        try {
+          if (!window.KaoyanQR || typeof window.KaoyanQR.toSvg !== "function") {
+            throw new Error("QR 模块未就绪");
+          }
+          syncQrBox.innerHTML = window.KaoyanQR.toSvg(url, { margin: 3, dark: "#111111", light: "#ffffff" });
+          syncQrWrap.classList.remove("hidden");
+          toggleQrBtn.textContent = "隐藏配对二维码";
+        } catch (err) {
+          showToast("生成二维码失败，请使用右侧复制配对链接");
+        }
+      } else {
+        syncQrWrap.classList.add("hidden");
+        syncQrBox.innerHTML = "";
+        toggleQrBtn.textContent = "显示配对二维码";
+      }
+    };
+  }
+
+  const copyPairLinkBtn = document.getElementById("copyPairLinkBtn");
+  if (copyPairLinkBtn) {
+    copyPairLinkBtn.onclick = async () => {
+      const url = buildPairingUrl();
+      if (!url) return;
+      try {
+        await navigator.clipboard.writeText(url);
+        showToast("已复制配对链接，在手机/平板浏览器打开即可自动绑定");
+      } catch (_) {
+        const tmp = document.createElement("textarea");
+        tmp.value = url;
+        tmp.style.position = "fixed";
+        tmp.style.opacity = "0";
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand("copy");
+        document.body.removeChild(tmp);
+        showToast("已复制配对链接，在手机/平板浏览器打开即可自动绑定");
+      }
+    };
+  }
+
   document.getElementById("copySyncBtn").onclick = async () => {
     try {
       await navigator.clipboard.writeText(syncArea.value);
@@ -1537,43 +2333,184 @@
       showToast("进度码已复制");
     }
   };
+
   document.getElementById("importSyncBtn").onclick = () => {
     try {
       const parsed = JSON.parse(syncArea.value.trim());
       if (!Array.isArray(parsed.mastered) || !Array.isArray(parsed.hard)) throw 0;
-      const deleted = Array.isArray(parsed.deleted) ? [...new Set(parsed.deleted)] : [];
-      state.progress = {
-        mastered: [...new Set(parsed.mastered)].filter(id => !deleted.includes(id)),
-        hard: [...new Set(parsed.hard)].filter(id => !deleted.includes(id)),
-        deleted,
-        srs: sanitizeSrs(parsed.srs)
-      };
+      const resetAt = nextTimestamp();
+      const entryT = resetAt + 1;
+      const imported = normalizeProgress(parsed);
+      imported.resetAt = resetAt;
+      imported.updatedAt = entryT;
+      Object.keys(imported.meta).forEach(id => {
+        imported.meta[id].t = entryT;
+      });
+      Object.keys(imported.srs).forEach(id => {
+        imported.srs[id].updatedAt = entryT;
+      });
+      state.progress = rebuildStatusArrays(imported);
       if (state.collection === "deleted" && deletedWords().length === 0) {
         state.collection = "all";
       }
-      saveProgress();
+      saveProgress({ touchTimestamp: false });
       pickSmartDeckMode();
       syncDeckOrder(false, true);
-      syncModal.classList.remove("open");
+      closeSyncModal();
       showToast("学习进度已导入");
       render();
     } catch (_) {
       showToast("进度码格式不正确");
     }
   };
+
   document.getElementById("resetProgressBtn").onclick = () => {
     if (!confirm("确定清空所有已掌握、易忘、移出与艾宾浩斯复习记录吗？")) return;
-    state.progress = { mastered: [], hard: [], deleted: [], srs: {} };
+    const resetAt = nextTimestamp();
+    state.progress = {
+      version: 2,
+      updatedAt: resetAt,
+      resetAt,
+      mastered: [],
+      hard: [],
+      deleted: [],
+      srs: {},
+      meta: {}
+    };
     if (state.collection === "deleted") state.collection = "all";
-    saveProgress();
+    saveProgress({ touchTimestamp: false });
     pickSmartDeckMode();
     syncDeckOrder(false, true);
-    syncModal.classList.remove("open");
+    closeSyncModal();
     showToast("进度已重置");
     render();
   };
 
+  // Automatic lifecycle triggers
+  function handlePairingHash() {
+    try {
+      const hash = window.location && window.location.hash;
+      if (!hash || !hash.startsWith("#kv_sync=")) return false;
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      const paired = decodePairingPayload(hash);
+      if (!paired) {
+        showToast("配对链接无效或已损坏");
+        return false;
+      }
+      syncConfig = {
+        enabled: true,
+        token: paired.token,
+        gistId: paired.gistId,
+        login: "",
+        lastSyncAt: 0,
+        dirty: hasMeaningfulProgress(state.progress)
+      };
+      syncRuntime.status = "syncing";
+      syncRuntime.error = "";
+      saveSyncConfig();
+      updateSyncIndicators();
+      syncNow({ silent: false, reason: "pair" });
+      showToast("已通过配对链接绑定，正在同步三端进度...");
+      return true;
+    } catch (_) {
+      showToast("配对链接解析失败");
+      return false;
+    }
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (!syncConfig.enabled) return;
+    if (document.visibilityState === "visible") {
+      if (syncConfig.dirty || Date.now() - syncRuntime.lastPullAt > 15000) {
+        syncNow({ silent: true, reason: "focus" });
+      }
+    } else if (document.visibilityState === "hidden" && syncConfig.dirty) {
+      if (syncRuntime.debounceTimer) {
+        clearTimeout(syncRuntime.debounceTimer);
+        syncRuntime.debounceTimer = null;
+      }
+      syncNow({ silent: true, reason: "hide", keepalive: true });
+    }
+  });
+
+  window.addEventListener("focus", () => {
+    if (!syncConfig.enabled) return;
+    if (syncConfig.dirty || Date.now() - syncRuntime.lastPullAt > 15000) {
+      syncNow({ silent: true, reason: "focus" });
+    }
+  });
+
+  window.addEventListener("pagehide", () => {
+    if (!syncConfig.enabled || !syncConfig.dirty) return;
+    if (syncRuntime.debounceTimer) {
+      clearTimeout(syncRuntime.debounceTimer);
+      syncRuntime.debounceTimer = null;
+    }
+    if (!syncRuntime.inFlight && Date.now() - syncRuntime.lastPullAt < 60000) {
+      const bodyObj = {
+        description: GIST_DESCRIPTION,
+        files: { [GIST_FILENAME]: { content: JSON.stringify(state.progress) } }
+      };
+      const raw = JSON.stringify(bodyObj);
+      if (raw.length < 55000) {
+        try {
+          fetch(`https://api.github.com/gists/${encodeURIComponent(syncConfig.gistId)}`, {
+            method: "PATCH",
+            headers: {
+              Accept: "application/vnd.github+json",
+              Authorization: `Bearer ${syncConfig.token}`,
+              "Content-Type": "application/json",
+              "X-GitHub-Api-Version": "2022-11-28"
+            },
+            body: raw,
+            keepalive: true
+          }).catch(() => {});
+        } catch (_) {}
+      }
+    }
+  });
+
+  window.addEventListener("online", () => {
+    if (syncConfig.enabled) syncNow({ silent: true, reason: "online" });
+  });
+
+  window.addEventListener("storage", e => {
+    if (e.key === STORAGE_KEY) {
+      applyRemoteMergedProgress(loadProgress());
+    } else if (e.key === SYNC_CONFIG_KEY) {
+      syncConfig = loadSyncConfig();
+      syncRuntime.status = syncConfig.enabled ? (syncConfig.dirty ? "dirty" : "synced") : "idle";
+      updateSyncIndicators();
+    }
+  });
+
   pickSmartDeckMode();
   syncDeckOrder(false, true);
   render();
+  updateSyncIndicators();
+
+  if (!handlePairingHash() && syncConfig.enabled) {
+    syncNow({ silent: true, reason: "startup" });
+  }
+
+  if (typeof globalThis !== "undefined" && typeof globalThis.__KAOYAN_TEST_HOOK__ === "function") {
+    globalThis.__KAOYAN_TEST_HOOK__({
+      normalizeProgress,
+      mergeProgress,
+      progressFingerprint,
+      encodePairingPayload,
+      decodePairingPayload,
+      extractGistId,
+      syncNow,
+      connectGist,
+      disconnectGist,
+      setWordStatus,
+      applySrsRating,
+      toggleMastered,
+      toggleHard,
+      getState: () => state,
+      getSyncConfig: () => syncConfig,
+      getSyncRuntime: () => syncRuntime
+    });
+  }
 })();
