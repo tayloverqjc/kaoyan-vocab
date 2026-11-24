@@ -52,7 +52,7 @@ window.VOCAB_MANIFEST = [
     year: 2015,
     label: "2015 英语（二）阅读",
     shortLabel: "2015 英二",
-    count: 47,
+    count: 88,
     file: "data/2015.js"
   }
 ];

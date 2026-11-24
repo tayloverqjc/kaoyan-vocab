@@ -3,8 +3,8 @@ window.VOCAB_SETS['2015-en2-reading'] = {
   "id": "2015-en2-reading",
   "year": 2015,
   "label": "2015 英语（二）阅读",
-  "subtitle": "Reading Comprehension Part A · Text 1–2 复盘词库（持续更新）",
-  "updatedAt": "2026-11-23",
+  "subtitle": "Reading Comprehension Part A · Text 1–4 复盘词库",
+  "updatedAt": "2026-11-24",
   "passages": [
     {
       "id": "T1",
@@ -439,6 +439,389 @@ window.VOCAB_SETS['2015-en2-reading'] = {
           "meaning": "`v. phr.` 应受责备；对……负有过错",
           "usage": "原文考点：第 30 题干扰项 B `students are usually to blame for their lack of resources`（学生通常要为缺乏资源负责）。原文归因于高校很少谈论阶层影响，而非责备学生，故选 D `colleges are partly responsible`。",
           "memory": "固定语法：注意这里用**主动表被动**（不用 `be to be blamed`），`A is to blame for B` = **A 应该为 B 负责/受责备**。",
+          "secondary": false
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "code": "Text 3",
+      "title": "职场黑话与企业语言",
+      "words": [
+        {
+          "id": "2015-T3-1",
+          "word": "term",
+          "ipa": "/tɜːrm/",
+          "meaning": "`n.` 术语；措辞；用语",
+          "usage": "原文：`less frequent use of terms like journey, mission, passion`（像旅程、使命、激情这类术语的使用频率低得多）；第 3 段 `These terms are also intended to...`；第 33 题干扰项 A `revive historical terms`。常义为“学期/条款”，考研阅读极高频考“**术语、措辞**”。",
+          "memory": "延伸：`term`（限定边界的词 → 术语），衍生出同段核心大词 **`terminology`（术语体系）**。",
+          "secondary": true
+        },
+        {
+          "id": "2015-T3-2",
+          "word": "mission",
+          "ipa": "/ˈmɪʃn/",
+          "meaning": "`n.` 使命；任务；代表团",
+          "usage": "原文：`terms like journey, mission, passion`（旅程、使命、激情这类感性词汇）。作为现代企业感性化用语的代表，呼应第 31 题答案 D `more emotional`。",
+          "memory": "词根：`miss`（派、送，同 `dismiss` 解散、`transmit` 传送）+ `-ion` → **被派去完成的重要任务 → 使命**（电影《碟中谍》*Mission: Impossible*）。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-3",
+          "word": "era",
+          "ipa": "/ˈɪrə/",
+          "meaning": "`n.` 时代；纪元；年代",
+          "usage": "原文：`this new era of corporate vocabulary is very \"team\"-oriented`（这个新时代的企业词汇非常强调“团队”导向）。考研社科与科技文章超高频词（如 `the digital era` 数字时代）。",
+          "memory": "短小精悍直接记：三个字母 **`e-r-a`** = **时代、纪元**（区别于 `area` 区域）。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-4",
+          "word": "vocabulary",
+          "ipa": "/voʊˈkæbjəleri/",
+          "meaning": "`n.` 词汇；用语；词汇量",
+          "usage": "原文：`this new era of corporate vocabulary is very \"team\"-oriented`（新时代的企业词汇以团队为导向）。直接复现于第 32 题题干 `\"Team\"-oriented corporate vocabulary`。",
+          "memory": "词根：`voc`（声音、叫喊，同 `voice` 声音、`vocal` 发声的）+ `-abulary` → **用来发声表达的词汇总和 → 词汇、用语**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-5",
+          "word": "-oriented",
+          "ipa": "/ˈɔːrientɪd/",
+          "meaning": "`adj.`（构词后缀）以……为导向的；面向……的",
+          "usage": "原文：`corporate vocabulary is very \"team\"-oriented`（企业词汇非常以“团队”为导向）。直接出现在第 32 题题干，考研高频构词如 `market-oriented`（市场导向的）、`profit-oriented`（逐利的）。",
+          "memory": "词根：`orient`（东方、定位方向）+ `-ed` → **把方向朝向某处 → 以……为导向的**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-6",
+          "word": "coincidence",
+          "ipa": "/koʊˈɪnsɪdəns/",
+          "meaning": "`n.` 巧合；同时发生；一致",
+          "usage": "原文：`this new era of corporate vocabulary is very \"team\"-oriented – and not by coincidence`（新时代企业词汇强调团队导向，而且绝非巧合）。引出下句原因 `sports`（第 32 题答案 A `sports culture`）。",
+          "memory": "词根：`co-`（共同）+ `in-`（向内）+ `cid`（落下，同 `incident`）+ `-ence` → **两件事恰好同时落到一块 → 巧合**（短语 `by coincidence` 巧合地）。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-7",
+          "word": "dominate",
+          "ipa": "/ˈdɑːmɪneɪt/",
+          "meaning": "`v.` 主导；支配；占优势",
+          "usage": "原文：`in male-dominated corporate America, it's still a big deal`（在男性主导的美国商界，体育依然分量很重）。`male-dominated`（男性主导的）是考研高频复合形容词。",
+          "memory": "词根：`domin`（主人、统治，同 `domain` 领域、`domestic` 国内的）+ `-ate` → **当家作主 → 主导、支配**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-8",
+          "word": "explicitly",
+          "ipa": "/ɪkˈsplɪsɪtli/",
+          "meaning": "`adv.` 明确地；直白地；清楚地",
+          "usage": "原文：`It's not explicitly conscious`（这并非明确有意识的）。反义词 **`implicitly`（含蓄地、暗中地）** 同样是考研高频词。",
+          "memory": "词根：`ex-`（向外）+ `plic`（折叠，同 `imply`）→ **把折叠的东西全部摊开亮在外面 → 明确地、直白地**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-9",
+          "word": "conscious",
+          "ipa": "/ˈkɑːnʃəs/",
+          "meaning": "`adj.` 有意识的；刻意的；清醒的",
+          "usage": "原文：`It's not explicitly conscious; it's the idea that I'm a coach, and you're my team`（这并非刻意为之，而是潜意识里“我是教练、你们是球队”的观念）。",
+          "memory": "词根：`con-`（共同）+ `sci`（知道，同 `science` 科学）+ `-ous` → **心里明明白白知道的 → 有意识的、清醒的**（`unconscious` 无意识的）。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-10",
+          "word": "infuse",
+          "ipa": "/ɪnˈfjuːz/",
+          "meaning": "`v.` 注入；灌输；使充满",
+          "usage": "原文：`These terms are also intended to infuse work with meaning`（这些术语的另一个目的是给工作注入意义）。常用搭配 **`infuse A with B`（给 A 注入 B）**。",
+          "memory": "词根：`in-`（向内）+ `fus`（流、倒，同 `confuse` 混淆、`refuse` 拒绝）→ **往里倒进去 → 注入、灌输**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-11",
+          "word": "allegiance",
+          "ipa": "/əˈliːdʒəns/",
+          "meaning": "`n.` 忠诚；效忠；归属感",
+          "usage": "原文：`as Rakesh Khurana, another professor, points out, increase allegiance to the firm`（正如另一位教授库拉纳所指出的，还能增强对公司的忠诚度）。**第 33 题核心定位词**，直接同义替换为答案 D **`employee loyalty`**。",
+          "memory": "词根联想：`al-`（去、向）+ `leg`（法律、盟约，同 `legal`）→ **恪守对组织的盟约 → 忠诚、效忠**（配介词 `to`：`allegiance to`）。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-12",
+          "word": "importation",
+          "ipa": "/ˌɪmpɔːrˈteɪʃn/",
+          "meaning": "`n.` 引入；输入；进口",
+          "usage": "原文：`You have the importation of terminology that historically used to be associated with non-profit organizations`（企业引入了历史上属于非营利组织的术语）。直接复现于第 33 题题干 `the importation of terminology`。",
+          "memory": "词族：`import`（`im-` 进 + `port` 港口 → 进口、引入）+ `-ation` 名词后缀 → **引入、输入**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-13",
+          "word": "terminology",
+          "ipa": "/ˌtɜːrməˈnɑːlədʒi/",
+          "meaning": "`n.` 专业术语；用语体系",
+          "usage": "原文：`the importation of terminology that historically used to be associated with non-profit organizations and religious organizations`（引入历史上属于公益与宗教组织的专业术语）。第 33 题题干原词。",
+          "memory": "构词：`term`（术语）+ `-in` + `-ology`（学科、体系）→ **成体系的专用词 → 专业术语、用语体系**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-14",
+          "word": "vision",
+          "ipa": "/ˈvɪʒn/",
+          "meaning": "`n.` 愿景；远见；视力",
+          "usage": "原文：`terms like vision, values, passion, and purpose`（愿景、价值观、激情和使命感这类术语）。在商业和管理语境中优先译为“**愿景、远见**”。",
+          "memory": "词根：`vis`（看，同 `visible` 可见的、`television` 电视）+ `-ion` → **能看到未来的眼光 → 愿景、远见**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-15",
+          "word": "amid",
+          "ipa": "/əˈmɪd/",
+          "meaning": "`prep.` 在……之中；在……背景下",
+          "usage": "原文：`keep employees motivated amid increasingly loud debates over work-life balance`（在关于工作与生活平衡的激烈争论中让员工保持干劲）。考研新闻与外刊高频介词。",
+          "memory": "拆解：`a-`（在）+ `mid`（中间，同 `middle`）→ **身处……正中间 → 在……之中、在……背景下**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-16",
+          "word": "prompt",
+          "ipa": "/prɑːmpt/",
+          "meaning": "`v.` 促使；催生；引发；`adj.` 迅速的；及时的",
+          "usage": "原文：`The \"mommy wars\" of the 1990s are still going on today, prompting arguments about why women still can't have it all and books like Sheryl Sandberg's Lean In`（90 年代的“妈妈战争”仍在继续，催生了女性困境争论和《向前一步》这类书）。**第 34 题核心因果动词**，注意因果方向是“争论 → 催生书”，据此秒排因果倒置的干扰项 C。",
+          "memory": "词根：`pro-`（向前）+ `mpt`（拿、推）→ **往前推一把 → 动词“促使、催生”；形容词“行动迅速的”**（AI 里的提示词也叫 `prompt`）。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-17",
+          "word": "in one's own right",
+          "ipa": "/ɪn wʌnz oʊn raɪt/",
+          "meaning": "`prep. phr.` 凭自身资格；本身就",
+          "usage": "原文：`whose title has become a buzzword in its own right`（它的书名本身就已经成了一个流行热词）。",
+          "memory": "字面理解：不靠别人衬托，**凭着自己的权利/资格（in its own right）** → **本身就、凭自身**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-18",
+          "word": "boundary",
+          "ipa": "/ˈbaʊndri/",
+          "meaning": "`n.` 边界；界限；分界线",
+          "usage": "原文：`Terms like unplug, offline, life-hack, bandwidth, and capacity are all about setting boundaries between the office and the home`（这些词全都是为了在办公室和家庭之间划清界限）。常搭动词 `set / draw / cross boundaries`。",
+          "memory": "词族：`bound`（界限、边界）+ `-ary`（场所/事物）→ **划定范围的线 → 边界、界限**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-19",
+          "word": "devote ... to",
+          "ipa": "/dɪˈvoʊt tuː/",
+          "meaning": "`v. phr.` 致力于；全身心投入到；奉献给",
+          "usage": "原文：`if your work is your \"passion,\" you'll be more likely to devote yourself to it`（如果工作成了你的“激情”，你就更可能全身心投入其中）。注意这里的 `to` 是介词，后接名词或 `doing`。",
+          "memory": "词根：`de-`（加强）+ `vot`（发誓，同 `vote` 投票）→ **发誓把时间和心血全献出去 → 致力于、全身心投入**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-20",
+          "word": "irony",
+          "ipa": "/ˈaɪrəni/",
+          "meaning": "`n.` 讽刺；具有讽刺意味的事；反讽",
+          "usage": "原文：`But this seems to be the irony of office speak: Everyone makes fun of it, but managers love it, companies depend on it, and regular people willingly absorb it`（这正是职场黑话的讽刺之处：人人嘲笑却又照单全收）。总领末段与第 35 题核心态度。",
+          "memory": "联想：别看成 `iron`（铁）加 `y`；记住形容词 **`ironic`（讽刺的）**——嘴上说不要身体很诚实就是 **`irony`（反讽）**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-21",
+          "word": "willingly",
+          "ipa": "/ˈwɪlɪŋli/",
+          "meaning": "`adv.` 心甘情愿地；乐意地；主动地",
+          "usage": "原文：`and regular people willingly absorb it`（普通员工也心甘情愿地吸收它）。与前文 `makes fun of it` 构成强烈转折，直接支撑第 35 题答案 B `Regular people mock it but accept it`。",
+          "memory": "构词：`will`（意愿）+ `-ing`（愿意的）+ `-ly` → **出于自己意愿地 → 心甘情愿地**（反义：`unwillingly` 不情愿地）。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-22",
+          "word": "linguist",
+          "ipa": "/ˈlɪŋɡwɪst/",
+          "meaning": "`n.` 语言学家；通晓数国语言的人",
+          "usage": "原文：`As a linguist once said, \"You can get people to think it's nonsense at the same time that you buy into it.\"`（正如一位语言学家曾说……）。第 35 题干扰项 A 偷换主体为 `Linguists believe it to be nonsense`。",
+          "memory": "词根：`lingu`（舌头、语言，同 `language`）+ `-ist`（专家）→ **研究语言的专家 → 语言学家**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-23",
+          "word": "buy into",
+          "ipa": "/baɪ ˈɪntuː/",
+          "meaning": "`v. phr.` 相信；买账；全盘接受（观念/说法）",
+          "usage": "原文：`You can get people to think it's nonsense at the same time that you buy into it`（你可以让人们一边觉得它是胡扯，一边又买账接受它）。与前句 `willingly absorb` 互为同义复现，双保险锁定第 35 题答案 B `accept it`。",
+          "memory": "画面感：掏钱**买进（buy into）**别人推销的观念 → 中文里也说“**买账、信以为真、接受**”。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-24",
+          "word": "incident",
+          "ipa": "/ˈɪnsɪdənt/",
+          "meaning": "`n.` 事件；事变；插曲",
+          "usage": "原文考点：第 32 题干扰项 C `historical incidents`（历史事件）。常与 `accident`（意外事故）辨析，`incident` 侧重值得注意的事件或冲突。",
+          "memory": "词根：`in-`（落到……上）+ `cid`（落下，同 `coincidence` 巧合）+ `-ent` → **落到头上发生的事 → 事件**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-25",
+          "word": "athletic",
+          "ipa": "/æθˈletɪk/",
+          "meaning": "`adj.` 体育运动的；健壮的；擅长运动的",
+          "usage": "原文考点：第 32 题干扰项 D `athletic executives`（爱运动的高管）。原文说 CEO 们受体育文化影响把自己当教练，并非说高管本人都是健壮的运动员，故排 D 选 A `sports culture`。",
+          "memory": "词族：`athlete`（运动员）+ `-ic` 形容词后缀 → **体育运动的、健壮的**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-26",
+          "word": "executive",
+          "ipa": "/ɪɡˈzekjətɪv/",
+          "meaning": "`n.` 公司高管；主管；`adj.` 行政的；决策的",
+          "usage": "原文考点：第 32 题干扰项 D `athletic executives`（对应原文 CEOs）。商业类阅读超高频词（CEO = Chief Executive Officer 首席执行官）。",
+          "memory": "词族：`execute`（执行）+ `-ive` → **负责执行和拍板的高层人物 → 公司高管、主管**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-27",
+          "word": "revive",
+          "ipa": "/rɪˈvaɪv/",
+          "meaning": "`v.` 复兴；恢复；使重现生机",
+          "usage": "原文考点：第 33 题干扰项 A `revive historical terms`（复兴历史术语）。原文仅说这些词“历史上曾与公益/宗教组织有关”，并非为了“复兴历史词汇”。",
+          "memory": "词根：`re-`（再次）+ `viv`（生命、活，同 `survive` 存活、`vivid` 生动的）→ **重新活过来 → 复兴、恢复生机**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-28",
+          "word": "cooperation",
+          "ipa": "/koʊˌɑːpəˈreɪʃn/",
+          "meaning": "`n.` 合作；协作；配合",
+          "usage": "原文考点：第 33 题干扰项 C `foster corporate cooperation`（促进企业合作）。原文强调的是 `increase allegiance to the firm`（对公司的忠诚），而非“合作”。",
+          "memory": "词根：`co-`（共同）+ `oper`（工作、操作，同 `operate`）+ `-ation` → **一起干活 → 合作、协作**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-29",
+          "word": "loyalty",
+          "ipa": "/ˈlɔɪəlti/",
+          "meaning": "`n.` 忠诚；忠心；归属感",
+          "usage": "原文考点：第 33 题正确答案 D `strengthen employee loyalty`（增强员工忠诚度），精准同义替换第 3 段 **`increase allegiance to the firm`**。",
+          "memory": "词族：`loyal`（忠诚的）+ `-ty` 名词后缀 → **忠诚、忠心**（和 `allegiance` 绑定成一对同义词记！）。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-30",
+          "word": "trigger",
+          "ipa": "/ˈtrɪɡər/",
+          "meaning": "`v.` 引发；触发；引起；`n.` 扳机；诱因",
+          "usage": "原文考点：第 34 题干扰项 C `triggers debates among mommies`（引发妈妈间的争论）。经典**因果倒置陷阱**：原文是 `mommy wars` 催生（`prompting`）了 *Lean In*，而不是书引发争论。",
+          "memory": "画面感：扣动枪的**扳机（trigger）**瞬间击发子弹 → 动词引申为**引发、触发**（同义词：`prompt / spark / cause`）。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-31",
+          "word": "praise",
+          "ipa": "/preɪz/",
+          "meaning": "`v.` 赞扬；表扬；称赞；`n.` 赞美",
+          "usage": "原文考点：第 34 题干扰项 D `praises motivated employees`（赞扬有干劲的员工）。考研态度与选项高频动词。",
+          "memory": "形近对比：`praise`（赞扬）vs `prize`（奖品）→ 拿了奖品（`prize`）自然人人**赞扬（`praise`）**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T3-32",
+          "word": "mock",
+          "ipa": "/mɑːk/",
+          "meaning": "`v.` 嘲笑；取笑；戏弄；`adj.` 模拟的；仿制的",
+          "usage": "原文考点：第 35 题正确答案 B `Regular people mock it but accept it`（普通人嘲笑它却又接受它），精准同义替换末段 **`Everyone makes fun of it, ..., and regular people willingly absorb it`**。",
+          "memory": "场景记忆：除了“嘲笑、取笑”，考前做的模拟考也叫 **`mock exam`**（拿真考试“模仿戏弄”一下 → 模拟的/嘲笑）。",
+          "secondary": false
+        }
+      ]
+    },
+    {
+      "id": "T4",
+      "code": "Text 4",
+      "title": "美国兼职就业与医改",
+      "words": [
+        {
+          "id": "2015-T4-1",
+          "word": "decent",
+          "ipa": "/ˈdiːsnt/",
+          "meaning": "`adj.` 像样的；不错的；体面的；正派的",
+          "usage": "原文：`For now it appears the economy is creating jobs at a decent pace`（目前来看，经济正以不错的速度创造就业岗位）。考研阅读常见正向评价形容词。",
+          "memory": "形近防混：`decent`（体面的、不错的）vs `recent`（最近的）vs `descent`（下降）→ `decent` 记住 **`a decent job`（一份体面的好工作）**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T4-2",
+          "word": "distinction",
+          "ipa": "/dɪˈstɪŋkʃn/",
+          "meaning": "`n.` 区分；差别；显著特征；卓越",
+          "usage": "原文：`Before explaining the connection to the Obamacare, it is worth making an important distinction`（在解释与奥巴马医改的联系前，有必要做一个重要区分）。固定搭配 **`make a distinction`（加以区分）**。",
+          "memory": "词族：`distinct`（明显的、截然不同的）+ `-ion` → **把不同之处划开 → 区分、差别**（动词 `distinguish`）。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T4-3",
+          "word": "make ends meet",
+          "ipa": "/meɪk endz miːt/",
+          "meaning": "`v. phr.` 维持生计；勉强糊口；收支相抵",
+          "usage": "原文：`it means that many people will be having a very hard time making ends meet`（这意味着许多人将很难维持生计）。复现于第 37 题干扰项 B `feel that is enough to make ends meet`（方向相反）。",
+          "memory": "画面感：月初的收入那一头（end）和月底的开销那一头（end）勉强能**接上头（meet）** → **收支相抵、勉强糊口**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T4-4",
+          "word": "classify",
+          "ipa": "/ˈklæsɪfaɪ/",
+          "meaning": "`v.` 分类；归类；划分",
+          "usage": "原文：`If the answer is \"yes,\" they are classified as working part-time`（如果回答是“是”，他们就会被归类为兼职工作者）。名词形式 `classification` 出现在第 40 题局部干扰项 B `part-timer classification`。",
+          "memory": "构词：`class`（类别）+ `-ify`（动词后缀：使成为）→ **分门别类 → 分类、归类**（常搭 `be classified as`）。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T4-5",
+          "word": "reference",
+          "ipa": "/ˈrefrəns/",
+          "meaning": "`n.` 参考；参照；基准；提及",
+          "usage": "原文：`The survey used by the Labor Department asks people if they worked less than 35 hours in the reference week`（劳工部调查询问受访者在统计基准周内工作是否少于 35 小时）。",
+          "memory": "词族：`refer`（参考、提及）+ `-ence` → **拿来做参照标准的东西 → 参考、基准**（写论文的“参考文献”即 `References`）。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T4-6",
+          "word": "prospect",
+          "ipa": "/ˈprɑːspekt/",
+          "meaning": "`n.` 前景；展望；可能性",
+          "usage": "原文考点：第 36 题干扰项 A `The prospect of a thriving job market`（繁荣就业市场的前景）。原文首段说就业好消息被广泛讨论，被忽视的是第 2 段的自愿兼职激增（答案 B）。",
+          "memory": "词根：`pro-`（向前）+ `spect`（看，同 `inspect` 检查、`respect` 尊重）→ **向前看到的未来景象 → 前景、展望**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T4-7",
+          "word": "thriving",
+          "ipa": "/ˈθraɪvɪŋ/",
+          "meaning": "`adj.` 繁荣的；蓬勃发展的；兴旺的",
+          "usage": "原文考点：第 36 题干扰项 A `a thriving job market`（蓬勃发展的就业市场）。动词原形 **`thrive`（繁荣、茁壮成长）** 在同卷完形第 19 题后句也出现过 `human beings thrive off of social connections`。",
+          "memory": "音义联想：`thrive` 像 `arrive` + `drive` → **一路高歌猛进 → 蓬勃发展、繁荣兴旺**（同义词：`flourishing / booming`）。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T4-8",
+          "word": "satisfy",
+          "ipa": "/ˈsætɪsfaɪ/",
+          "meaning": "`v.` 满足（需求/条件）；使满意",
+          "usage": "原文考点：第 38 题干扰项 C `satisfies the real need of the jobless`（满足失业者的真实需求）。原文说非自愿兼职者其实想要全职工作，显然并未满足真实需求。",
+          "memory": "词根：`satis`（足够，同 `satisfaction` 满意）+ `-fy`（使……）→ **让人觉得足够了 → 满足、使满意**。",
+          "secondary": false
+        },
+        {
+          "id": "2015-T4-9",
+          "word": "essential",
+          "ipa": "/ɪˈsenʃl/",
+          "meaning": "`adj.` 必不可少的；极其重要的；本质的",
+          "usage": "原文考点：第 39 题干扰项 B `full-time employment is still essential for insurance`（全职工作对买保险仍然必不可少）。故意把“医改前”的限制套到了“医改后”，与末句 `no longer a link` 直接矛盾。",
+          "memory": "词族：`essence`（本质、精华）+ `-ial` → **属于最核心本质的东西 → 必不可少的、极其重要的**（同义：`vital / crucial`）。",
           "secondary": false
         }
       ]
