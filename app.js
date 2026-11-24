@@ -353,7 +353,7 @@
         nextStep: 0,
         days: 1,
         due: localDateStr(1),
-        label: "本轮重测 · 明天"
+        label: "重测 · 明天"
       };
     }
     if (quality === "fuzzy") {
@@ -997,17 +997,17 @@
         row.innerHTML = `
           <div class="ledger-main" data-a="exp">
             <div class="ledger-word-col">
-              <button type="button" class="speak-btn" style="transform:none;width:24px;height:24px" data-a="spk">${ICONS.speaker}</button>
+              <button type="button" class="speak-btn speak-btn-sm" data-a="spk" title="朗读发音" aria-label="朗读">${ICONS.speaker}</button>
               <div>
-                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                <div class="ledger-word-line">
                   <span class="ledger-word">${esc(item.word)}</span>
-                  ${item.secondary ? '<span class="seal-tag">熟</span>' : ""}
+                  ${item.secondary ? '<span class="seal-tag">熟词生义</span>' : ""}
                 </div>
                 <div class="ledger-ipa">${esc(item.ipa)}</div>
               </div>
             </div>
-            <div style="position:relative" data-a="peek">
-              <div class="meaning-val ${frosted ? "frosted" : ""}" style="font-size:14.5px;font-weight:500">${fmtMeaning(item.meaning)}</div>
+            <div class="ledger-meaning-col" data-a="peek">
+              <div class="meaning-val ledger-meaning ${frosted ? "frosted" : ""}">${fmtMeaning(item.meaning)}</div>
               ${frosted ? '<div class="frost-veil"><span>点击查看</span></div>' : ""}
             </div>
             <div class="foot-actions">
@@ -1279,10 +1279,10 @@
     deckWrap.innerHTML = `
       <div class="deck-bar">
         <span>${progressText}</span>
-        <div style="display:flex;gap:8px">
-          <button type="button" class="mask-btn" style="height:32px;padding:0 10px" id="fcPrev">${ICONS.prev}<span>上一张</span></button>
-          <button type="button" class="mask-btn" style="height:32px;padding:0 10px" id="fcShuffle">${ICONS.shuffle}<span>洗牌</span></button>
-          <button type="button" class="mask-btn" style="height:32px;padding:0 10px" id="fcNext"><span>下一张</span>${ICONS.next}</button>
+        <div class="deck-nav-seg" role="group" aria-label="卡片切换">
+          <button type="button" class="deck-nav-btn" id="fcPrev">${ICONS.prev}<span>上一张</span></button>
+          <button type="button" class="deck-nav-btn" id="fcShuffle">${ICONS.shuffle}<span>洗牌</span></button>
+          <button type="button" class="deck-nav-btn" id="fcNext"><span>下一张</span>${ICONS.next}</button>
         </div>
       </div>
 

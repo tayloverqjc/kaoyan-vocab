@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>考研英语阅读精装词本 · Lexicon</title>
   <meta name="description" content="考研英语真题阅读核心生词本：精装书房排版、真题详细用法、词根联想记忆、模糊遮义自测与 3D 物理闪卡。" />
-  <link rel="stylesheet" href="styles.css?v=8" />
+  <link rel="stylesheet" href="styles.css?v=9" />
   <script>
     (function(){try{var t=localStorage.getItem("kaoyan_vocab_theme_v1");if(t==="light")t="paper";if(["mono","glass","momo","dark"].indexOf(t)>=0)document.documentElement.setAttribute("data-theme",t);var w=localStorage.getItem("kaoyan_vocab_wallpaper_v1");if(["alpine","sunset","forest"].indexOf(w)>=0)document.documentElement.setAttribute("data-wallpaper",w);}catch(e){}})();
   </script>
@@ -36,7 +36,6 @@
     <!-- Left Study Rail -->
     <aside class="sidebar" id="sidebar">
       <div class="masthead">
-        <div class="masthead-kicker">Lexicon · Reading Archive</div>
         <h1 class="masthead-title">考研英语精装词本</h1>
         <p class="masthead-desc">真题语境精读 · 词根画面记忆</p>
       </div>
@@ -94,9 +93,9 @@
     <!-- Right Main Reading Stage -->
     <main class="stage">
       <header class="stage-header">
-        <div>
-          <div class="stage-kicker" id="stageKicker">2012 英语（二）阅读</div>
+        <div class="stage-heading">
           <h2 class="stage-title" id="stageTitle">全部篇目</h2>
+          <p class="stage-meta" id="stageKicker">2012 英语（二）阅读</p>
         </div>
 
         <div class="stage-controls">
@@ -108,7 +107,7 @@
 
           <div class="search-field">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input id="searchInput" class="search-input" type="search" placeholder="搜单词、词义、原句..." />
+            <input id="searchInput" class="search-input" type="search" placeholder="搜单词、词义..." />
           </div>
 
           <button type="button" class="mask-btn" id="maskBtn"></button>
@@ -127,7 +126,7 @@
   <div class="modal-bg" id="syncModal" role="dialog" aria-modal="true" aria-labelledby="syncModalTitle">
     <div class="modal-box">
       <div class="sync-modal-head">
-        <h3 id="syncModalTitle" style="margin:0;font-size:16px">三端云同步与备份</h3>
+        <h3 class="sync-modal-title" id="syncModalTitle">三端云同步与备份</h3>
         <button type="button" class="foot-btn" id="closeSyncBtn">关闭</button>
       </div>
 
@@ -196,8 +195,8 @@
           <div class="sync-pair-box">
             <div class="sync-pair-head">手机 / 平板一键绑定</div>
             <div class="sync-pair-btns">
-              <button type="button" class="mask-btn" style="height:34px" id="toggleQrBtn">显示配对二维码</button>
-              <button type="button" class="mask-btn" style="height:34px" id="copyPairLinkBtn">复制配对链接</button>
+              <button type="button" class="mask-btn sync-compact-btn" id="toggleQrBtn">显示配对二维码</button>
+              <button type="button" class="mask-btn sync-compact-btn" id="copyPairLinkBtn">复制配对链接</button>
             </div>
             <div class="sync-qr-wrap hidden" id="syncQrWrap">
               <div class="sync-qr-card" id="syncQrBox"></div>
@@ -208,13 +207,13 @@
       </div>
 
       <div id="syncTabManual" class="hidden">
-        <p style="margin:0;font-size:12.5px;color:var(--text-muted)">可手动导出 JSON 进度码做本地归档，或导入覆盖当前进度（若已开启云同步，导入与重置也会同步到云端）。</p>
+        <p class="sync-manual-desc">可手动导出 JSON 进度码做本地归档，或导入覆盖当前进度（若已开启云同步，导入与重置也会同步到云端）。</p>
         <textarea id="syncArea" class="sync-area" spellcheck="false"></textarea>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <div class="sync-manual-foot">
           <button type="button" class="foot-btn" id="resetProgressBtn">重置进度</button>
-          <div style="display:flex;gap:8px">
-            <button type="button" class="mask-btn" style="height:34px" id="copySyncBtn">复制进度码</button>
-            <button type="button" class="ink-btn" style="height:34px;padding:0 16px;font-size:13px" id="importSyncBtn">导入覆盖</button>
+          <div class="sync-manual-actions">
+            <button type="button" class="mask-btn sync-compact-btn" id="copySyncBtn">复制进度码</button>
+            <button type="button" class="ink-btn sync-compact-btn" id="importSyncBtn">导入覆盖</button>
           </div>
         </div>
       </div>
@@ -232,6 +231,6 @@
   <script src="data/2014.js?v=3"></script>
   <script src="data/2015.js?v=2"></script>
   <script src="qr.js?v=1"></script>
-  <script src="app.js?v=7"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>
