@@ -6,6 +6,39 @@
    Contrast: WCAG AA (>= 4.5:1) across all 5 themes
    ========================================================================== */
 
+/* Self-hosted Tinos (Apache-2.0, 1:1 metric equivalent to Times New Roman) */
+@font-face {
+  font-family: "Tinos";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/tinos-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Tinos";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/tinos-latin-400-italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Tinos";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/tinos-latin-700-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Tinos";
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/tinos-latin-700-italic.woff2") format("woff2");
+}
+
 :root {
   /* Core Palette — Theme 1: 精装纸感 (Archival Paper) */
   --bg: #f4f0e8;
@@ -40,7 +73,7 @@
 
   /* Strictly 2 Font Families */
   --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
-  --font-serif: "New York", "Iowan Old Style", "Songti SC", "STSong", "Noto Serif SC", Georgia, serif;
+  --font-serif: "Tinos", "Times New Roman", "Songti SC", "STSong", "Noto Serif SC", Georgia, serif;
   --font-display: var(--font-serif);
   --font-headword: var(--font-serif);
 
@@ -52,8 +85,8 @@
   /* Exempt Display / Brand Scale */
   --text-brand: 1.375rem;    /* 22px */
   --text-stage: 1.75rem;     /* 28px */
-  --text-headword: 1.75rem;  /* 28px */
-  --text-fc-word: clamp(2.125rem, 5vw, 3rem);
+  --text-headword: 1.875rem; /* 30px (calibrated for Tinos / Times New Roman x-height) */
+  --text-fc-word: clamp(2.25rem, 5.2vw, 3.125rem);
 
   /* Calibrated Motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -1192,7 +1225,7 @@ svg {
   font-family: var(--font-headword);
   font-style: italic;
   font-size: var(--text-body);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--pine);
   margin-right: 6px;
 }
